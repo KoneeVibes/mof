@@ -12,7 +12,7 @@ export const Auth = () => {
                 <div className="auth-form-div">
                     <form>
                         {/* login form hTML should begin below this line. */}
-
+        
 
 
 
