@@ -1,14 +1,13 @@
-import { AuthImg } from "../../assets";
 import { BaseButton } from "../../components/button/styled";
-import { Row } from "../../components/flex";
-import { AuthWrapper } from "./styled";
+import { AuthWrapper, AuthRow } from "./styled";
+import authImg from "../../assets/authImg.svg";
 
 export const Auth = () => {
     return (
         <AuthWrapper>
-            <Row tocolumn={"true"}>
+            <AuthRow tocolumn={"true"}>
                 <div className="auth-img-div">
-                    <AuthImg />
+                    <img src={authImg} alt="auth-img" />
                 </div>
                 <div className="auth-form-div">
                     <h1>Welcome!</h1>
@@ -23,7 +22,7 @@ export const Auth = () => {
                         <BaseButton>LOG IN</BaseButton>
                     </form>
                 </div>
-            </Row>
+            </AuthRow>
         </AuthWrapper>
     )
 }
