@@ -1,4 +1,4 @@
-import { BaseButton } from "../../components/button/styled";
+import { BaseButton } from "../../components/buttons/styled";
 import { AuthWrapper, AuthRow } from "./styled";
 import authImg from "../../assets/authImg.svg";
 

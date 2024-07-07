@@ -1,0 +1,30 @@
+@media screen and (min-width: 0px) {
+    html {
+        box-sizing: border-box;
+        margin: 0;
+        height: 100%;
+        background-color: #F0F0F0;
+        --pagePadding: 1.5rem;
+        --sectionMargin: 2rem;
+        --flexGap: 2rem;
+        --cardPadding: 2rem;
+        --navHeight: 7.1875rem;
+        --navWidth: 16.125rem;
+    }
+
+    * {
+        /* outline: 1px red solid; */
+    }
+}
+
+@media screen and (min-width: 425px) {
+    html {
+        --pagePadding: 2.5rem;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    html {
+        --pagePadding: 4rem
+    }
+}
