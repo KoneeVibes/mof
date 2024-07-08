@@ -9,10 +9,10 @@ export const BaseButton = styled.button(
             border: "none",
             color: "white",
             borderRadius: "7px",
-            width: "35%",
-            paddingTop: "1.5%",
-            paddingBottom: "1.5%",
-            textTransform: "lowercase",
+            width: "100%",
+            paddingTop: "1.5rem",
+            paddingBottom: "1.5rem",
+            textTransform: "uppercase",
             fontSize: "1rem",
         }
     }

@@ -1,10 +1,25 @@
 /* Import Fonts Below this Line */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+@import url('https://globalfonts.pro/global_files/5c1696fcb2143e318c4cdb12/avenir-next.zip');
 
+ @font-face {
+  font-family: "Avenir-next";
+  src: url("../src/fonts/avenir-next/New\ folder\ \(10\)/AvenirNextLTPro-Bold.otf");
+  font-weight: 700;
+} 
+@font-face {
+  font-family: "Avenir-next";
+  src: url("../src/fonts/avenir-next/New\ folder\ \(10\)/AvenirNextLTPro-Regular.otf");
+  font-weight: 400;
+}
 
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Work Sans', 
+    'Inter','Assistant', 'Avenir-next'
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
