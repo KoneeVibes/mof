@@ -62,7 +62,7 @@ export const LineGraph = ({ title, label1, values1, label2, values2, label3, val
     };
     return (
         <Card>
-            <Line data={data} options={options} />
+            <Line data={data} options={options} className="line-graph-component"/>
         </Card>
     )
 }

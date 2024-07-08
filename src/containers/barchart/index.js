@@ -48,7 +48,7 @@ export const BarChart = ({ axis, title, labels, values, label }) => {
 
     return (
         <Card>
-            <Bar data={data} options={options} />
+            <Bar data={data} options={options} className='bar-chart-component'/>
         </Card>
     )
 }

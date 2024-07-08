@@ -25,7 +25,7 @@ export const PieChart = ({values}) => {
     };
     return (
         <Card>
-            <Doughnut data={data} />
+            <Doughnut data={data} className='pie-chart-component'/>
         </Card>
     )
 }

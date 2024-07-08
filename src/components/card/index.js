@@ -1,8 +1,10 @@
 import { CardWrapper } from "./styled";
 
-export const Card = ({children}) => {
+export const Card = ({ children }) => {
     return (
-        <CardWrapper>
+        <CardWrapper
+            className="card-component"
+        >
             {children}
         </CardWrapper>
     )

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from "../../components/card";
 import { Dashboard } from "../dashboard";
 import { MetricsAreaWrapper } from "./styled";
 import { Row } from '../../components/flex/styled';
