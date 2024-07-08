@@ -8,7 +8,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { Card } from '../../components/card';
+import { ChartsCard } from '../metricsarea/styled';
 
 ChartJS.register(
     CategoryScale,
@@ -32,6 +32,26 @@ export const BarChart = ({ axis, title, labels, values, label }) => {
                 text: title,
             },
         },
+        scales: {
+            x: {
+                ticks: {
+                    font: {
+                        size: 8,
+                        family: 'Arial, sans-serif',
+                        color: '#00FF00' // Green color
+                    }
+                },
+            },
+            y: {
+                ticks: {
+                    font: {
+                        size: 8,
+                        family: 'Arial, sans-serif',
+                        color: '#00FF00' // Green color
+                    }
+                },
+            }
+        }
     };
 
     const data = {
@@ -47,8 +67,10 @@ export const BarChart = ({ axis, title, labels, values, label }) => {
     };
 
     return (
-        <Card>
-            <Bar data={data} options={options} className='bar-chart-component'/>
-        </Card>
+        < ChartsCard
+            className="card-component"
+        >
+            <Bar data={data} options={options} className='bar-chart-component' />
+        </ChartsCard>
     )
 }

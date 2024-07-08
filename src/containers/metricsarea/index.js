@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dashboard } from "../dashboard";
-import { MetricsAreaWrapper } from "./styled";
+import { ChartsRowWrapper, MetricsAreaWrapper } from "./styled";
 import { Row } from '../../components/flex/styled';
 import { BarChart } from '../barchart';
 import { PieChart } from '../doughnut';
@@ -11,7 +11,7 @@ export const MetricsArea = () => {
         <Dashboard>
             <MetricsAreaWrapper>
                 <h1>DASHBOARD</h1>
-                <Row>
+                <ChartsRowWrapper>
                     <PieChart
                         values={[80, 20]}
                     />
@@ -25,7 +25,7 @@ export const MetricsArea = () => {
                         labels={['Naira', 'Dollar', 'Pounds', 'Euro']}
                         values={[20, 40, 70, 45]}
                     />
-                </Row>
+                </ChartsRowWrapper>
                 <br />
                 <Row>
                     <LineGraph

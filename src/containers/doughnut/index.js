@@ -1,6 +1,6 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
-import { Card } from '../../components/card';
+import { ChartsCard } from '../metricsarea/styled';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -24,8 +24,10 @@ export const PieChart = ({values}) => {
         ],
     };
     return (
-        <Card>
+        <ChartsCard
+            className="card-component"
+        >
             <Doughnut data={data} className='pie-chart-component'/>
-        </Card>
+        </ChartsCard>
     )
 }

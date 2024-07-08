@@ -12,6 +12,7 @@ function App() {
         <Route path='/dashboard' element={<MetricsArea />}
         />
         <Route path='/home' element={<Home />} />
+        {/* <Route path='/ministries' element={<MinistriesArea />} /> */}
         <Route path='/' element={<Auth />} />
       </Routes>
     </BrowserRouter>
