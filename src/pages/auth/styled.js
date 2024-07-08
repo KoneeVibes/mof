@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Row } from "../../components/flex";
+import { Row } from "../../components/flex/styled";
 
 export const AuthWrapper = styled("div")(() => ({
     height: "100vh",
