@@ -1,6 +1,7 @@
 import { BaseButton } from "../../components/buttons/styled";
 import { AuthWrapper, AuthRow } from "./styled";
 import authImg from "../../assets/authImg.svg";
+import { BaseInput, BaseInputWrapper } from "../../components/form/fields/input/styled";
 
 export const Auth = () => {
     return (
@@ -14,11 +15,11 @@ export const Auth = () => {
                     <p>Enter details to login.</p>
                     <form>
                         {/* login form hTML should begin below this line.  */}
-                        <input type="email" name="email" placeholder="Email" required /> <br/>
-                        <input type="password" name="password" placeholder="Password" required />
-                         <input type="checkbox"/>
-                         <label for="demoCheckbox"> Show</label><br/>
-                        <a href="/" class="forgot-password">Forgot Password?</a> <br/> 
+                        <BaseInputWrapper type="email" name="email" placeholder="Email" required />
+                        <BaseInputWrapper type="password" name="password" placeholder="Password" required width={"-webkit-fill-available"} />
+                        {/* <BaseInput type="checkbox" width={"-webkit-fill-available"} /> */}
+                        {/* <label for="demoCheckbox"> Show</label> */}
+                        <a href="/" class="forgot-password">Forgot Password?</a>
                         <BaseButton>LOG IN</BaseButton>
                     </form>
                 </div>
