@@ -16,12 +16,19 @@ export const AuthWrapper = styled("div")(() => ({
         }
     },
     ".auth-form-div": {
-        flex: 1
+        flex: 1,
+        padding: "4rem",
+        "form": {
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--flexGap)",
+        }
     },
 }))
 
 export const AuthRow = styled(Row)(() => {
     return {
-        height: "inherit"
+        height: "inherit",
+        gap: 0,
     }
 }) 
