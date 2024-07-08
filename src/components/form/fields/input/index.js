@@ -1,10 +1,10 @@
 import { SearchIcon } from "../../../../assets";
-import { BaseInput, InputFieldWrapper, SearchButtonWrapper } from "./style";
+import { BaseInputWrapper, InputFieldWrapper, SearchButtonWrapper } from "./styled";
 
 export const InputField = ({ placeholder }) => {
     return (
         <InputFieldWrapper width={"100%"}>
-            <BaseInput placeholder={placeholder} width={"100%"} margininlinestart={"0.5rem"} />
+            <BaseInputWrapper placeholder={placeholder} width={"100%"} margininlinestart={"0.5rem"} />
             <SearchButtonWrapper>
                 <SearchIcon />
             </SearchButtonWrapper>

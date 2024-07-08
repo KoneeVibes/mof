@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Row } from "../../../flex/styled";
 
-export const BaseInput = styled("input")`
+export const BaseInputWrapper = styled("input")`
     ${({ cardPadding = 'var(--cardPadding)', width, margininlinestart }) => {
         return {
             padding: `calc(${cardPadding}/2.5)`,
