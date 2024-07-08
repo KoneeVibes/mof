@@ -12,7 +12,7 @@ export const BaseButton = styled.button(
             width: "100%",
             paddingTop: "1.5rem",
             paddingBottom: "1.5rem",
-            textTransform: "lowercase",
+            textTransform: "uppercase",
             fontSize: "1rem",
         }
     }
