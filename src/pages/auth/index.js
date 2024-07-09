@@ -1,7 +1,7 @@
 import { BaseButton } from "../../components/buttons/styled";
 import { AuthWrapper, AuthRow } from "./styled";
 import authImg from "../../assets/authImg.svg";
-import { BaseInput, BaseInputWrapper } from "../../components/form/fields/input/styled";
+import { BaseInputWrapper } from "../../components/form/fields/input/styled";
 
 export const Auth = () => {
     return (
