@@ -1,3 +1,4 @@
+import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { BaseButton } from "../../components/buttons/styled";
 import { AuthWrapper, AuthRow } from "./styled";
@@ -6,8 +7,14 @@ import { BaseInputWrapper } from "../../components/form/fields/input/styled";
 
 export const Auth = () => {
     const navigate = useNavigate();
-    const authUser = () => {
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const authUser = (event) => {
+        event.preventDefault();
         navigate("/dashboard");
+    };
+
+    const togglepasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible);
     }
     return (
         <AuthWrapper>
@@ -21,10 +28,13 @@ export const Auth = () => {
                     <form onSubmit={authUser}>
                         {/* login form hTML should begin below this line. please look out for errors in the console. */}
                         <BaseInputWrapper type="email" name="email" placeholder="Email" required />
-                        <BaseInputWrapper type="password" name="password" placeholder="Password" required width={"-webkit-fill-available"} />
-                        {/* <BaseInput type="checkbox" width={"-webkit-fill-available"} /> */}
-                        {/* <label for="demoCheckbox"> Show</label> */}
-                        <a href="/" class="forgot-password">Forgot Password?</a>
+                        < div style = {{position: "relative", width: "-webkit-fill-available"}}>
+                        <BaseInputWrapper type={passwordVisible ? "text" : "password"}  name="password" placeholder="Password" required width={"-webkit-fill-available"} />
+                        <label className="showPassword">
+                            <input type="checkbox" checked={passwordVisible} onChange={togglepasswordVisibility} style={{display: "none", marginRight: "5px"}}/>
+                             SHOW</label>
+                        </div>
+                        <a href="/" class="forgotPassword">FORGOT PASSWORD?</a>
                         <BaseButton type="submit">LOG IN</BaseButton>
                     </form>
                 </div>

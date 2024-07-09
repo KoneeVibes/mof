@@ -18,12 +18,43 @@ export const AuthWrapper = styled("div")(() => ({
     ".auth-form-div": {
         flex: 1,
         padding: "4rem",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "flexStart",
         "form": {
             display: "flex",
             flexDirection: "column",
             gap: "var(--flexGap)",
-        }
+        },
     },
+    "h1": {
+        marginBottom: "1rem",
+        fontSize: "2rem",
+        color: "#059212",
+    },
+    "p": {
+        marginBottom: "2rem",
+        color: "#102C57",
+        fontWeight: "bold",
+    },
+    ".showPassword":{
+        display: "flex",
+        alignItems: "center",
+        position: 'absolute',
+        right: '10px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        cursor: 'pointer',
+        fontSize: '14px',
+        fontWeight: 'bold',
+        color: "#102C57",
+    },
+    ".forgotPassword":{
+        color: "#102C57",
+        textDecoration: "none",
+    },
+    
 }))
 
 export const AuthRow = styled(Row)(() => {
