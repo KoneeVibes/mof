@@ -4,7 +4,7 @@ import { Dashboard } from './pages/home';
 import { Auth } from './pages/auth';
 import { MetricsArea } from './containers/metricsarea';
 import { EntitiesArea } from './containers/entitiesarea';
-import { ProjectRegistrationArea } from './containers/projectregistration';
+import { ProjectRegistrationArea } from './containers/projectregistrationarea';
 
 function App() {
   return (
