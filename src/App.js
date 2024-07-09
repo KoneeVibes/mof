@@ -1,19 +1,20 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Home } from './pages/home';
+import { Dashboard } from './pages/home';
 import { Auth } from './pages/auth';
-// import { Dashboard } from './containers/dashboard';
 import { MetricsArea } from './containers/metricsarea';
+import { EntitiesArea } from './containers/entitiesarea';
+import { ProjectRegistrationArea } from './containers/projectregistration';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/dashboard' element={<MetricsArea />}
-        />
-        <Route path='/home' element={<Home />} />
-        {/* <Route path='/ministries' element={<MinistriesArea />} /> */}
         <Route path='/' element={<Auth />} />
+        <Route path='/home' element={<Dashboard />} /> {/* This should be the fallback route*/}
+        <Route path='/dashboard' element={<MetricsArea />} />
+        <Route path='/entities' element={<EntitiesArea />} />
+        <Route path='/registration/project' element={<ProjectRegistrationArea />} />
       </Routes>
     </BrowserRouter>
   );

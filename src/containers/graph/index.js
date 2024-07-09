@@ -9,7 +9,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { ChartsCard } from "../metricsarea/styled";
+import { ChartsCardWrapper } from "../metricsarea/styled";
 
 ChartJS.register(
     CategoryScale,
@@ -61,10 +61,10 @@ export const LineGraph = ({ title, label1, values1, label2, values2, label3, val
         ],
     };
     return (
-        <ChartsCard
+        <ChartsCardWrapper
             className="card-component"
         >
             <Line data={data} options={options} className="line-graph-component" />
-        </ChartsCard>
+        </ChartsCardWrapper>
     )
 }

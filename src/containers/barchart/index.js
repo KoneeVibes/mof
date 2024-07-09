@@ -8,7 +8,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { ChartsCard } from '../metricsarea/styled';
+import { ChartsCardWrapper } from '../metricsarea/styled';
 
 ChartJS.register(
     CategoryScale,
@@ -67,10 +67,10 @@ export const BarChart = ({ axis, title, labels, values, label }) => {
     };
 
     return (
-        < ChartsCard
+        < ChartsCardWrapper
             className="card-component"
         >
             <Bar data={data} options={options} className='bar-chart-component' />
-        </ChartsCard>
+        </ChartsCardWrapper>
     )
 }

@@ -22,7 +22,7 @@ export const ChartsRowWrapper = styled(Row)(() => {
     `
 })
 
-export const ChartsCard = styled(CardWrapper)(() => {
+export const ChartsCardWrapper = styled(CardWrapper)(() => {
     return `
         @media screen and (min-width: 425px){
             min-width: 18.75rem;

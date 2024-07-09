@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const TextAreaWrapper = styled("textarea")(() => {
     return`
-        // Style goes under here:
+        // Newton, style for the textarea component goes under here:
         
 
 
