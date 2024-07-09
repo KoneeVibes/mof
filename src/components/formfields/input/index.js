@@ -1,4 +1,4 @@
-import { SearchIcon } from "../../../../assets";
+import { SearchIcon } from "../../../assets";
 import { BaseInputWrapper, InputFieldWrapper, SearchButtonWrapper } from "./styled";
 
 export const InputField = ({ placeholder }) => {

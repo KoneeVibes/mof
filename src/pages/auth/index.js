@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { BaseButton } from "../../components/buttons/styled";
 import { AuthWrapper, AuthRow } from "./styled";
 import authImg from "../../assets/authImg.svg";
-import { BaseInputWrapper } from "../../components/form/fields/input/styled";
+import { BaseInputWrapper } from "../../components/formfields/input/styled";
 
 export const Auth = () => {
     const navigate = useNavigate();

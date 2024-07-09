@@ -7,6 +7,8 @@ import { PieChart } from '../doughnut';
 import { LineGraph } from '../graph';
 
 export const MetricsArea = () => {
+    //The idea is that this component will hold a generic dashboard that can be reused for mof, the ministries or parastatals
+    //Depending of say the authorization the endpoint will return data that will populate the dashboard.
     return (
         <Dashboard>
             <MetricsAreaWrapper>

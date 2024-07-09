@@ -1,7 +1,7 @@
 import { MoFLogo } from "../../../assets";
 import { Avatar } from "../../avatar";
 import { MenuButton } from "../../buttons/menubutton";
-import { InputField } from "../../form/fields/input";
+import { InputField } from "../../formfields/input";
 import { LeftSideTopNavWrapper, RightSideTopNavWrapper, TopNavWrapper } from "./styled";
 
 export const TopNav = () => {

@@ -1,10 +1,10 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
-import { ChartsCard } from '../metricsarea/styled';
+import { ChartsCardWrapper } from '../metricsarea/styled';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export const PieChart = ({values}) => {
+export const PieChart = ({ values }) => {
     const data = {
         labels: ['Completed', 'Not Completed'],
         datasets: [
@@ -24,10 +24,10 @@ export const PieChart = ({values}) => {
         ],
     };
     return (
-        <ChartsCard
+        <ChartsCardWrapper
             className="card-component"
         >
-            <Doughnut data={data} className='pie-chart-component'/>
-        </ChartsCard>
+            <Doughnut data={data} className='pie-chart-component' />
+        </ChartsCardWrapper>
     )
 }
