@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BaseButton } from "../../components/buttons/styled";
 import { AuthWrapper, AuthRow } from "./styled";
@@ -26,15 +26,24 @@ export const Auth = () => {
                     <h1>Welcome!</h1>
                     <p>Enter details to login.</p>
                     <form onSubmit={authUser}>
-                        {/* login form hTML should begin below this line. please look out for errors in the console. */}
                         <BaseInputWrapper type="email" name="email" placeholder="Email" required />
-                        < div style = {{position: "relative", width: "-webkit-fill-available"}}>
-                        <BaseInputWrapper type={passwordVisible ? "text" : "password"}  name="password" placeholder="Password" required width={"-webkit-fill-available"} />
-                        <label className="showPassword">
-                            <input type="checkbox" checked={passwordVisible} onChange={togglepasswordVisibility} style={{display: "none", marginRight: "5px"}}/>
-                             SHOW</label>
+                        < div style={{ position: "relative", width: "-webkit-fill-available" }}>
+                            <BaseInputWrapper
+                                type={passwordVisible ? "text" : "password"}
+                                name="password" placeholder="Password"
+                                required width={"-webkit-fill-available"}
+                            />
+                            <label className="showPassword">
+                                <input
+                                    type="checkbox"
+                                    checked={passwordVisible}
+                                    onChange={togglepasswordVisibility}
+                                    style={{ display: "none", marginRight: "5px" }}
+                                />
+                                SHOW
+                            </label>
                         </div>
-                        <a href="/" class="forgotPassword">FORGOT PASSWORD?</a>
+                        <a href="/" className="forgotPassword">FORGOT PASSWORD?</a>
                         <BaseButton type="submit">LOG IN</BaseButton>
                     </form>
                 </div>
