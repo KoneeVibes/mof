@@ -34,7 +34,7 @@ export const Auth = () => {
                             <input type="checkbox" checked={passwordVisible} onChange={togglepasswordVisibility} style={{display: "none", marginRight: "5px"}}/>
                              SHOW</label>
                         </div>
-                        <a href="/" class="forgotPassword">FORGOT PASSWORD?</a>
+                        <a href="/" className="forgotPassword">FORGOT PASSWORD?</a>
                         <BaseButton type="submit">LOG IN</BaseButton>
                     </form>
                 </div>
