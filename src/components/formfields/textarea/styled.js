@@ -6,7 +6,7 @@ export const TextAreaWrapper = styled("textarea")(() => {
         backround-color: EEEEEE;
         width: 100%;
         border: none;
-        min-height: 10rem;
+        min-height: 7rem;
         cursor: text;
         display: block;
     `
