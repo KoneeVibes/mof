@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const ProjectRegistrationAreaWrapper = styled.form(() => {
+export const ProjectRegistrationAreaWrapper = styled.div(() => {
     return `
         display: flex;
         flex-direction: column;

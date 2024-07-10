@@ -1,8 +1,10 @@
 import styled from "styled-components";
 
-export const EntitiesAreaWrapper = styled.div(() => {
+export const EntitiesAreaWrapper = styled.div(({ flexGap = "var(--flexGap)" }) => {
     return `
-        
+        display: flex;
+        flex-direction: column;
+        gap: ${flexGap}; 
     `
 })
 

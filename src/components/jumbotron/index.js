@@ -6,7 +6,7 @@ export const Jumbotron = () => {
         <JumbotronWrapper>
             <div className='entity-logo-div'>
                 {/* parastatal logo goes in here */}
-                <img src={entitiesPicture}></img>
+                <img src={entitiesPicture} alt='entity-logo'></img>
             </div>
             <div className='entities-picture'></div>
         </JumbotronWrapper>
