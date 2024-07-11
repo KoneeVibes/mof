@@ -1,16 +1,17 @@
 import styled from "styled-components";
-import { Card } from "../../components/card";
+import { CardWrapper } from "../../components/card/styled";
 
 export const ProjectDetailsAreaWrapper = styled.div(() => {
-    return`
+    return `
         display: flex;
         flex-direction: column;
         gap: var(--flexGap);
     `
 })
 
-export const ProjectDetailCardWrapper = styled(Card)(() => {
-    return{
+export const ProjectDetailCardWrapper = styled(CardWrapper)(() => {
+    return {
         //Generic styles for the cards come here.
+        backgroundColor: "blue",
     }
 })

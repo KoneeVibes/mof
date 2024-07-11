@@ -3,7 +3,7 @@ import { Dashboard } from "../dashboard";
 import { Row } from "../../components/flex/styled";
 import { Card } from "../../components/card";
 import { entities } from "../../data";
-import { ProjectDetailsAreaWrapper } from "./styled";
+import { ProjectDetailCardWrapper, ProjectDetailsAreaWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron";
 import { InitiativeIcon } from "../../assets";
 import { FundingSourceIcon } from "../../assets";
@@ -25,11 +25,11 @@ export const ProjectDetailsArea = () => {
                 <Row
                     tocolumn={1}
                 >
-                    <Card>
+                    <ProjectDetailCardWrapper>
                         <InitiativeIcon />
                         <h1>{getProject().name}</h1>
                         <p>{getProject().description}</p>
-                    </Card>
+                    </ProjectDetailCardWrapper>
                     <Card>
                         <FundingSourceIcon />
                         <h1>{getProject().FundingSource}</h1>
