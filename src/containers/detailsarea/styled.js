@@ -24,7 +24,10 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
             textAlign: "left",
             borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
             padding: cardPadding,
-        }
+        },
+        // "tbody tr td:nth-child(1)": {
+        //     textAlign: "left",
+        // },
     }
 })
 
