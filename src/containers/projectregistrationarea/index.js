@@ -17,6 +17,8 @@ export const ProjectRegistrationArea = () => {
                     <BaseInputWrapper type="text" name="text" required />
                     <label className="fundingAmount">Funding Amount</label>
                     <BaseInputWrapper type="number" name="number" required />
+                    <label className="projectTimeline">Project Timeline</label>
+                    <BaseInputWrapper type="number" name="number" required />
                     <label className="projectDescription">Project Description</label>
                     <TextAreaWrapper />
                     <label className="timelineMilestones">Timeline Milestones</label>

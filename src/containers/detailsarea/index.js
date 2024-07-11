@@ -3,10 +3,12 @@ import { Dashboard } from "../dashboard";
 import { Row } from "../../components/flex/styled";
 import { Card } from "../../components/card";
 import { entities } from "../../data";
-import { ProjectDetailsAreaWrapper } from "./styled";
+import { ProjectDetailCardWrapper, ProjectDetailsAreaWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron";
 import { InitiativeIcon } from "../../assets";
 import { FundingSourceIcon } from "../../assets";
+import { ContractorInformationIcon } from "../../assets";
+import {MilestonesIcon } from "../../assets";
 // import { Table } from "../../components/table";
 
 export const ProjectDetailsArea = () => {
@@ -25,24 +27,26 @@ export const ProjectDetailsArea = () => {
                 <Row
                     tocolumn={1}
                 >
-                    <Card>
+                    <ProjectDetailCardWrapper>
                         <InitiativeIcon />
                         <h1>{getProject().name}</h1>
                         <p>{getProject().description}</p>
-                    </Card>
-                    <Card>
+                    </ProjectDetailCardWrapper>
+                    <ProjectDetailCardWrapper>
                         <FundingSourceIcon />
                         <h1>{getProject().FundingSource}</h1>
-                    </Card>
+                    </ProjectDetailCardWrapper>
                 </Row>
                 <Row
                     tocolumn={1}
                 >
                     <Card>
-                        <h1>{getProject().name}</h1>
+                        <ContractorInformationIcon />
+                        <h1>{getProject().contractorInformation}</h1>
                     </Card>
                     <Card>
-                        <h1>{getProject().description}</h1>
+                        <MilestonesIcon />
+                        <h1>{getProject().Milestones}</h1>
                     </Card>
                 </Row>
                 {/* <Table /> */}

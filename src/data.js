@@ -47,6 +47,8 @@ export const entities = [
                 name: "Project1",
                 description: "The Renewable Energy Integration Initiative aims to transform the energy landscape by enhancing the integration of renewable energy sources into the national grid. This initiative includes the installation of solar panels on public buildings, the development of wind farms in coastal regions, and the upgrade of transmission infrastructure to support renewable energy distribution. By diversifying energy sources and reducing reliance on fossil fuels, the project seeks to achieve sustainable energy security and mitigate environmental impact.",
                 fundingSource: "",
+                contractorInformation: "",
+                Milestones: "",
                 budget: [
                     {
                         category: "Personnel",
