@@ -16,6 +16,7 @@ export const EntitiesTableWrapper = styled.div(({ cardPadding = "var(--cardPaddi
             backgroundColor: "#FFFFFF",
             borderRadius: "8px",
             borderCollapse: "collapse",
+            cursor: "pointer",
         },
         "th": {
             textAlign: "left",
@@ -28,7 +29,7 @@ export const EntitiesTableWrapper = styled.div(({ cardPadding = "var(--cardPaddi
             borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
             padding: cardPadding,
         },
-        ".parastatal": {
+        "tbody tr td:nth-child(2)": {
             textAlign: "left",
         },
     }
