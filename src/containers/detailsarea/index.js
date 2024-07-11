@@ -1,3 +1,4 @@
+import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 import { useParams } from "react-router-dom";
 import { Dashboard } from "../dashboard";
 import { Row } from "../../components/flex/styled";
@@ -9,6 +10,7 @@ import { FundingSourceIcon } from "../../assets";
 import { ContractorInformationIcon } from "../../assets";
 import { MilestonesIcon } from "../../assets";
 import { Table } from "../../components/table";
+import { ProjectDetailBaseButton } from "./styled";
 
 export const ProjectDetailsArea = () => {
     const { entityId, projectId } = useParams();
@@ -68,6 +70,15 @@ export const ProjectDetailsArea = () => {
                         rowItems={getProject().budget}
                     />
                 </div>
+                < Row 
+                    tocolumn ={1}
+                   >
+                    <ProjectDetailBaseButton>Accept</ProjectDetailBaseButton>
+                    <ProjectDetailBaseButton>Reject</ProjectDetailBaseButton>
+                   </Row>
+                
+                {/* <H2>Comment/Note</H2>
+                <TextAreaWrapper /> */}
             </ProjectDetailsAreaWrapper>
         </Dashboard>
     )
