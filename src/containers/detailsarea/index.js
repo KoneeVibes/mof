@@ -11,8 +11,8 @@ import { ContractorInformationIcon } from "../../assets";
 import { MilestonesIcon } from "../../assets";
 import { Table } from "../../components/table";
 import { ProjectDetailBaseButton } from "./styled";
-import { H1 } from "../../components/typography/styled";
-// import { Table } from "../../components/table";
+import { H1,H2 } from "../../components/typography/styled";
+import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 
 export const ProjectDetailsArea = () => {
     const { entityId, projectId } = useParams();
@@ -72,15 +72,16 @@ export const ProjectDetailsArea = () => {
                         rowItems={getProject().budget}
                     />
                 </div>
+                
+                <H2>Comment/Note</H2>
+                <TextAreaWrapper /> 
+
                 < Row 
                     tocolumn ={1}
                    >
                     <ProjectDetailBaseButton>Accept</ProjectDetailBaseButton>
                     <ProjectDetailBaseButton>Reject</ProjectDetailBaseButton>
-                   </Row>
-                
-                {/* <H2>Comment/Note</H2>
-                <TextAreaWrapper /> */}
+                </Row>
             </ProjectDetailsAreaWrapper>
         </Dashboard>
     )
