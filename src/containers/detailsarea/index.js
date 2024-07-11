@@ -32,7 +32,7 @@ export const ProjectDetailsArea = () => {
                         <h1>{getProject().name}</h1>
                         <p>{getProject().description}</p>
                     </ProjectDetailCardWrapper>
-                    <ProjectDetailCardWrapper>
+                    <Card>
                         <FundingSourceIcon />
                         <h1>{getProject().FundingSource}</h1>
                     </ProjectDetailCardWrapper>
