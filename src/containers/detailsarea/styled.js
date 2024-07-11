@@ -25,7 +25,7 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
             textAlign: "left",
             borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
             padding: cardPadding,
-        }
+        },
     }
 })
 
@@ -43,9 +43,8 @@ export const ProjectDetailCardWrapper = styled(CardWrapper)(({ cardPadding = "va
     }
 })
 
-export const ProjectDetailBaseButton = styled(BaseButton)(({})=>{
+export const ProjectDetailBaseButton = styled(BaseButton)(() => {
     return {
-         width: "20%",
+        width: "20%",
     }
-
 })

@@ -1,4 +1,4 @@
-import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
+// import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 import { useParams } from "react-router-dom";
 import { Dashboard } from "../dashboard";
 import { Row } from "../../components/flex/styled";
@@ -64,12 +64,6 @@ export const ProjectDetailsArea = () => {
                             )
                         })}
                     </ProjectDetailCardWrapper>
-                    <Card>
-                        <H1>{getProject().name}</H1>
-                    </Card>
-                    <Card>
-                        <H1>{getProject().description}</H1>
-                    </Card>
                 </Row>
                 <h2>Budget Breakdown</h2>
                 <div style={{ overflow: "auto" }}>
