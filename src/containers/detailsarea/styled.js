@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { CardWrapper } from "../../components/card/styled";
+import { BaseButton } from "../../components/buttons/styled";
 
 export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
     return {
@@ -43,4 +44,11 @@ export const ProjectDetailCardWrapper = styled(CardWrapper)(({ cardPadding = "va
             textDecoration: "underline",
         }
     }
+})
+
+export const ProjectDetailBaseButton = styled(BaseButton)(({})=>{
+    return {
+         width: "20%",
+    }
+
 })
