@@ -7,7 +7,7 @@ import { ProjectDetailCardWrapper, ProjectDetailsAreaWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron";
 import { InitiativeIcon } from "../../assets";
 import { FundingSourceIcon } from "../../assets";
-// import { Table } from "../../components/table";
+import { Table } from "../../components/table";
 
 export const ProjectDetailsArea = () => {
     const { entityId, projectId } = useParams();
@@ -45,7 +45,11 @@ export const ProjectDetailsArea = () => {
                         <h1>{getProject().description}</h1>
                     </Card>
                 </Row>
-                {/* <Table /> */}
+                <h2>Budget Breakdown</h2>
+                <Table
+                    rowHeads={["Category", "Description", "Amount"]}
+                    rowItems={getProject().budget}
+                />
             </ProjectDetailsAreaWrapper>
         </Dashboard>
     )
