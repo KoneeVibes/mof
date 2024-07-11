@@ -7,6 +7,9 @@ import { ProjectDetailCardWrapper, ProjectDetailsAreaWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron";
 import { InitiativeIcon } from "../../assets";
 import { FundingSourceIcon } from "../../assets";
+import { ContractorInformationIcon } from "../../assets";
+import {MilestonesIcon } from "../../assets";
+// import { Table } from "../../components/table";
 import { Table } from "../../components/table";
 
 export const ProjectDetailsArea = () => {
@@ -30,20 +33,24 @@ export const ProjectDetailsArea = () => {
                         <h1>{getProject().name}</h1>
                         <p>{getProject().description}</p>
                     </ProjectDetailCardWrapper>
-                    <Card>
+                    <ProjectDetailCardWrapper>
                         <FundingSourceIcon />
-                        <h1>{getProject().FundingSource}</h1>
-                    </Card>
+                        <h1>Funding Source and Amount </h1>
+                        <p>{getProject().FundingSource}</p>
+                    </ProjectDetailCardWrapper>
                 </Row>
                 <Row
                     tocolumn={1}
                 >
-                    <Card>
-                        <h1>{getProject().name}</h1>
-                    </Card>
-                    <Card>
-                        <h1>{getProject().description}</h1>
-                    </Card>
+                    <ProjectDetailCardWrapper>
+                        <ContractorInformationIcon />
+                        <p>{getProject().contractorInformation}</p>
+                    </ProjectDetailCardWrapper>
+                    <ProjectDetailCardWrapper>
+                        <MilestonesIcon />
+                        <h1>Timeline Milestones</h1>
+                        <p>{getProject().Milestones}</p>
+                    </ProjectDetailCardWrapper>
                 </Row>
                 <h2>Budget Breakdown</h2>
                 <Table
