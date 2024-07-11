@@ -7,6 +7,7 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
         flexDirection: "column",
         gap: "var(--flexGap)",
 
+
         "table": {
             width: "100%",
             backgroundColor: "#FFFFFF",
@@ -25,22 +26,19 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
             borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
             padding: cardPadding,
         },
-        // "tbody tr td:nth-child(1)": {
-        //     textAlign: "left",
-        // },
     }
 })
 
-export const ProjectDetailCardWrapper = styled(CardWrapper)(() => {
+export const ProjectDetailCardWrapper = styled(CardWrapper)(({ cardPadding = "var(--cardPadding)" }) => {
     return {
         //Generic styles for the cards come here.
         backgroundColor: "eeeeee",
-        padding: "5rem",
+        padding: cardPadding,
         textAlign: "justify",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
 
-        "h1":{
-            textDecoration: "underline",  
+        "h1": {
+            textDecoration: "underline",
         }
     }
 })

@@ -1,15 +1,13 @@
 import { useParams } from "react-router-dom";
 import { Dashboard } from "../dashboard";
 import { Row } from "../../components/flex/styled";
-import { Card } from "../../components/card";
 import { entities } from "../../data";
 import { ProjectDetailCardWrapper, ProjectDetailsAreaWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron";
 import { InitiativeIcon } from "../../assets";
 import { FundingSourceIcon } from "../../assets";
 import { ContractorInformationIcon } from "../../assets";
-import {MilestonesIcon } from "../../assets";
-// import { Table } from "../../components/table";
+import { MilestonesIcon } from "../../assets";
 import { Table } from "../../components/table";
 
 export const ProjectDetailsArea = () => {
@@ -36,7 +34,11 @@ export const ProjectDetailsArea = () => {
                     <ProjectDetailCardWrapper>
                         <FundingSourceIcon />
                         <h1>Funding Source and Amount </h1>
-                        <p>{getProject().FundingSource}</p>
+                        {getProject().fundingSource.map((source, key) => {
+                            return (
+                                <p key={key}>{source}</p>
+                            )
+                        })}
                     </ProjectDetailCardWrapper>
                 </Row>
                 <Row
@@ -44,19 +46,28 @@ export const ProjectDetailsArea = () => {
                 >
                     <ProjectDetailCardWrapper>
                         <ContractorInformationIcon />
-                        <p>{getProject().contractorInformation}</p>
+                        <p>Company Name: {getProject().contractorInformation.companyName}</p>
+                        <p>Company Email: {getProject().contractorInformation.companyEmail}</p>
+                        <p>Company Phone Number: {getProject().contractorInformation.companyPhoneNumber}</p>
+                        <p>Company Address: {getProject().contractorInformation.companyAddress}</p>
                     </ProjectDetailCardWrapper>
                     <ProjectDetailCardWrapper>
                         <MilestonesIcon />
                         <h1>Timeline Milestones</h1>
-                        <p>{getProject().Milestones}</p>
+                        {getProject().milestones.map((milestone, key) => {
+                            return (
+                                <p key={key}>{milestone}</p>
+                            )
+                        })}
                     </ProjectDetailCardWrapper>
                 </Row>
                 <h2>Budget Breakdown</h2>
-                <Table
-                    rowHeads={["Category", "Description", "Amount"]}
-                    rowItems={getProject().budget}
-                />
+                <div style={{ overflow: "auto" }}>
+                    <Table
+                        rowHeads={["Category", "Description", "Amount"]}
+                        rowItems={getProject().budget}
+                    />
+                </div>
             </ProjectDetailsAreaWrapper>
         </Dashboard>
     )
