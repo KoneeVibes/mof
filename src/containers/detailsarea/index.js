@@ -32,22 +32,24 @@ export const ProjectDetailsArea = () => {
                         <h1>{getProject().name}</h1>
                         <p>{getProject().description}</p>
                     </ProjectDetailCardWrapper>
-                    <Card>
+                    <ProjectDetailCardWrapper>
                         <FundingSourceIcon />
-                        <h1>{getProject().FundingSource}</h1>
+                        <h1>Funding Source and Amount </h1>
+                        <p>{getProject().FundingSource}</p>
                     </ProjectDetailCardWrapper>
                 </Row>
                 <Row
                     tocolumn={1}
                 >
-                    <Card>
+                    <ProjectDetailCardWrapper>
                         <ContractorInformationIcon />
-                        <h1>{getProject().contractorInformation}</h1>
-                    </Card>
-                    <Card>
+                        <p>{getProject().contractorInformation}</p>
+                    </ProjectDetailCardWrapper>
+                    <ProjectDetailCardWrapper>
                         <MilestonesIcon />
-                        <h1>{getProject().Milestones}</h1>
-                    </Card>
+                        <h1>Timeline Milestones</h1>
+                        <p>{getProject().Milestones}</p>
+                    </ProjectDetailCardWrapper>
                 </Row>
                 {/* <Table /> */}
             </ProjectDetailsAreaWrapper>

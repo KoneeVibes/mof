@@ -12,6 +12,13 @@ export const ProjectDetailsAreaWrapper = styled.div(() => {
 export const ProjectDetailCardWrapper = styled(CardWrapper)(() => {
     return {
         //Generic styles for the cards come here.
-        backgroundColor: "blue",
+        backgroundColor: "eeeeee",
+        padding: "5rem",
+        textAlign: "justify",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+
+        "h1":{
+            textDecoration: "underline",  
+        }
     }
 })
