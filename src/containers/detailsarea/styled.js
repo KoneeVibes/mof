@@ -7,7 +7,6 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
         flexDirection: "column",
         gap: "var(--flexGap)",
 
-
         "table": {
             width: "100%",
             backgroundColor: "#FFFFFF",
@@ -25,7 +24,7 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
             textAlign: "left",
             borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
             padding: cardPadding,
-        },
+        }
     }
 })
 
