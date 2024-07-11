@@ -33,7 +33,7 @@ export const AuthWrapper = styled("div")(() => ({
         fontSize: "2rem",
         color: "#059212",
     },
-    "p": {
+    "P": {
         marginBottom: "2rem",
         color: "#102C57",
         fontWeight: "bold",

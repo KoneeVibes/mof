@@ -5,6 +5,7 @@ import { Row } from '../../components/flex/styled';
 import { BarChart } from '../barchart';
 import { PieChart } from '../doughnut';
 import { LineGraph } from '../graph';
+import { H1 } from '../../components/typography/styled';
 
 export const MetricsArea = () => {
     //The idea is that this component will hold a generic dashboard that can be reused for mof, the ministries or parastatals
@@ -12,7 +13,7 @@ export const MetricsArea = () => {
     return (
         <Dashboard>
             <MetricsAreaWrapper>
-                <h1>DASHBOARD</h1>
+                <H1>DASHBOARD</H1>
                 <ChartsRowWrapper>
                     <PieChart
                         values={[80, 20]}

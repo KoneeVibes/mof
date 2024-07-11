@@ -1,5 +1,6 @@
 import { sideNavItems } from "../../../data";
 import { Avatar } from "../../avatar";
+import { P } from "../../typography/styled";
 import { SideNavItemsListWrapper, SideNavWrapper } from "./styled";
 
 export const SideNav = () => {
@@ -8,7 +9,7 @@ export const SideNav = () => {
             <SideNavItemsListWrapper>
                 {sideNavItems.map((sidenavitem, key) => {
                     return (
-                        <p key={key}>{sidenavitem.name}</p>
+                        <P key={key}>{sidenavitem.name}</P>
                     )
                 })}
                 <div className="avatar-div">

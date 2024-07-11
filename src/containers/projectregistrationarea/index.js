@@ -3,13 +3,14 @@ import { Dashboard } from "../dashboard";
 import { ProjectRegistrationAreaWrapper } from "./styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled"
 import { BaseButton } from "../../components/buttons/styled"
+import { H2, P } from "../../components/typography/styled";
 
 export const ProjectRegistrationArea = () => {
     return (
         <Dashboard>
             <ProjectRegistrationAreaWrapper>
-                <h2>PROJECT DETAILS</h2>
-                <p>PLEASE  ENTER THE PROJECT INFORMATION</p>
+                <H2>PROJECT DETAILS</H2>
+                <P>PLEASE  ENTER THE PROJECT INFORMATION</P>
                 <form>
                     <label className="projectName">Project Name</label>
                     <BaseInputWrapper type="text" name="text" required />

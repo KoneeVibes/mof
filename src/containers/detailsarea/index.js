@@ -7,6 +7,7 @@ import { ProjectDetailsAreaWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron";
 import { InitiativeIcon } from "../../assets";
 import { FundingSourceIcon } from "../../assets";
+import { H1 } from "../../components/typography/styled";
 // import { Table } from "../../components/table";
 
 export const ProjectDetailsArea = () => {
@@ -27,7 +28,7 @@ export const ProjectDetailsArea = () => {
                 >
                     <Card>
                         <InitiativeIcon />
-                        <h1>{getProject().name}</h1>
+                        <H1>{getProject().name}</H1>
                         <p>{getProject().description}</p>
                     </Card>
                     <Card>
@@ -42,7 +43,7 @@ export const ProjectDetailsArea = () => {
                         <h1>{getProject().name}</h1>
                     </Card>
                     <Card>
-                        <h1>{getProject().description}</h1>
+                        <H1>{getProject().description}</H1>
                     </Card>
                 </Row>
                 {/* <Table /> */}
