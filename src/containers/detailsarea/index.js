@@ -65,7 +65,7 @@ export const ProjectDetailsArea = () => {
                         })}
                     </ProjectDetailCardWrapper>
                     <Card>
-                        <h1>{getProject().name}</h1>
+                        <H1>{getProject().name}</H1>
                     </Card>
                     <Card>
                         <H1>{getProject().description}</H1>
