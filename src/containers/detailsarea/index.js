@@ -11,7 +11,7 @@ import { ContractorInformationIcon } from "../../assets";
 import { MilestonesIcon } from "../../assets";
 import { Table } from "../../components/table";
 import { ProjectDetailBaseButton } from "./styled";
-import { H1 } from "../../components/typography/styled";
+import { H1, H2, P } from "../../components/typography/styled";
 // import { Table } from "../../components/table";
 
 export const ProjectDetailsArea = () => {
@@ -33,14 +33,14 @@ export const ProjectDetailsArea = () => {
                     <ProjectDetailCardWrapper>
                         <InitiativeIcon />
                         <H1>{getProject().name}</H1>
-                        <p>{getProject().description}</p>
+                        <P>{getProject().description}</P>
                     </ProjectDetailCardWrapper>
                     <ProjectDetailCardWrapper>
                         <FundingSourceIcon />
-                        <h1>Funding Source and Amount </h1>
+                        <H1>Funding Source and Amount </H1>
                         {getProject().fundingSource.map((source, key) => {
                             return (
-                                <p key={key}>{source}</p>
+                                <P key={key}>{source}</P>
                             )
                         })}
                     </ProjectDetailCardWrapper>
@@ -50,22 +50,22 @@ export const ProjectDetailsArea = () => {
                 >
                     <ProjectDetailCardWrapper>
                         <ContractorInformationIcon />
-                        <p>Company Name: {getProject().contractorInformation.companyName}</p>
-                        <p>Company Email: {getProject().contractorInformation.companyEmail}</p>
-                        <p>Company Phone Number: {getProject().contractorInformation.companyPhoneNumber}</p>
-                        <p>Company Address: {getProject().contractorInformation.companyAddress}</p>
+                        <P>Company Name: {getProject().contractorInformation.companyName}</P>
+                        <P>Company Email: {getProject().contractorInformation.companyEmail}</P>
+                        <P>Company Phone Number: {getProject().contractorInformation.companyPhoneNumber}</P>
+                        <P>Company Address: {getProject().contractorInformation.companyAddress}</P>
                     </ProjectDetailCardWrapper>
                     <ProjectDetailCardWrapper>
                         <MilestonesIcon />
-                        <h1>Timeline Milestones</h1>
+                        <H1>Timeline Milestones</H1>
                         {getProject().milestones.map((milestone, key) => {
                             return (
-                                <p key={key}>{milestone}</p>
+                                <P key={key}>{milestone}</P>
                             )
                         })}
                     </ProjectDetailCardWrapper>
                 </Row>
-                <h2>Budget Breakdown</h2>
+                <H2>Budget Breakdown</H2>
                 <div style={{ overflow: "auto" }}>
                     <Table
                         rowHeads={["Category", "Description", "Amount"]}
