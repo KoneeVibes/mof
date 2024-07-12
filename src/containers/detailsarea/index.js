@@ -10,8 +10,9 @@ import { ContractorInformationIcon } from "../../assets";
 import { MilestonesIcon } from "../../assets";
 import { Table } from "../../components/table";
 import { ProjectDetailBaseButton } from "./styled";
-import { H1, H2 } from "../../components/typography/styled";
+import { H1, H2, } from "../../components/typography/styled";
 import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
+import { ProjectDetailButtonsWrapper } from "./styled";
 
 export const ProjectDetailsArea = () => {
     const { entityId, projectId } = useParams();
@@ -52,12 +53,12 @@ export const ProjectDetailsArea = () => {
                 <Row tocolumn={1}>
                     <ProjectDetailCardWrapper>
                         <InitiativeIcon />
-                        <H1>{project.name}</H1>
+                        <H2>{project.name}</H2>
                         <p>{project.description}</p>
                     </ProjectDetailCardWrapper>
                     <ProjectDetailCardWrapper>
                         <FundingSourceIcon />
-                        <h1>Funding Source and Amount </h1>
+                        <H2>Funding Source and Amount </H2>
                         {project.fundingSource.map((source, key) => (
                             <p key={key}>{source}</p>
                         ))}
@@ -66,6 +67,7 @@ export const ProjectDetailsArea = () => {
                 <Row tocolumn={1}>
                     <ProjectDetailCardWrapper>
                         <ContractorInformationIcon />
+                        <H2>Contractor Information</H2>
                         <p>Company Name: {project.contractorInformation.companyName}</p>
                         <p>Company Email: {project.contractorInformation.companyEmail}</p>
                         <p>Company Phone Number: {project.contractorInformation.companyPhoneNumber}</p>
@@ -73,7 +75,7 @@ export const ProjectDetailsArea = () => {
                     </ProjectDetailCardWrapper>
                     <ProjectDetailCardWrapper>
                         <MilestonesIcon />
-                        <h1>Timeline Milestones</h1>
+                        <H2>Timeline Milestones</H2>
                         {project.milestones.map((milestone, key) => (
                             <p key={key}>{milestone}</p>
                         ))}
@@ -85,10 +87,10 @@ export const ProjectDetailsArea = () => {
                 </div>
                 <H2>Comment/Note</H2>
                 <TextAreaWrapper />
-                <Row tocolumn={1}>
+                <ProjectDetailButtonsWrapper>
                     <ProjectDetailBaseButton>Accept</ProjectDetailBaseButton>
                     <ProjectDetailBaseButton>Reject</ProjectDetailBaseButton>
-                </Row>
+                </ProjectDetailButtonsWrapper>
             </ProjectDetailsAreaWrapper>
         </Dashboard>
     )
