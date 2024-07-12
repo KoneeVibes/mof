@@ -1,4 +1,3 @@
-// import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 import { useParams } from "react-router-dom";
 import { Dashboard } from "../dashboard";
 import { Row } from "../../components/flex/styled";
@@ -16,20 +15,41 @@ import { H1, H2, P } from "../../components/typography/styled";
 
 export const ProjectDetailsArea = () => {
     const { entityId, projectId } = useParams();
+
     const getProject = () => {
-        const entity = entities.find(entity => entity.entityName.replace(/\s+/g, '').toLowerCase() === entityId);
-        const project = entity.projects[projectId];
-        return project;
+        try {
+            const entity = entities[0].division.find(entity => entity.entityName.replace(/\s+/g, '').toLowerCase() === entityId);
+            if (!entity) throw new Error("Entity not found");
+
+            const project = entity.projects[projectId];
+            if (!project) throw new Error("Project not found");
+
+            return project;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    }
+
+    const project = getProject();
+
+    if (!project) {
+        return (
+            <Dashboard>
+                <ProjectDetailsAreaWrapper>
+                    <Jumbotron />
+                    <H1>Project not found</H1>
+                    <p>We couldn't find the project you were looking for. Please check the URL or try again later.</p>
+                </ProjectDetailsAreaWrapper>
+            </Dashboard>
+        );
     }
 
     return (
         <Dashboard>
             <ProjectDetailsAreaWrapper>
                 <Jumbotron />
-                {/* Your concern is below this line. Understand what is happening very well before you start coding */}
-                <Row
-                    tocolumn={1}
-                >
+                <Row tocolumn={1}>
                     <ProjectDetailCardWrapper>
                         <InitiativeIcon />
                         <H1>{getProject().name}</H1>
@@ -45,9 +65,7 @@ export const ProjectDetailsArea = () => {
                         })}
                     </ProjectDetailCardWrapper>
                 </Row>
-                <Row
-                    tocolumn={1}
-                >
+                <Row tocolumn={1}>
                     <ProjectDetailCardWrapper>
                         <ContractorInformationIcon />
                         <P>Company Name: {getProject().contractorInformation.companyName}</P>
@@ -66,21 +84,16 @@ export const ProjectDetailsArea = () => {
                     </ProjectDetailCardWrapper>
                 </Row>
                 <H2>Budget Breakdown</H2>
+                <H2>Budget Breakdown</H2>
                 <div style={{ overflow: "auto" }}>
-                    <Table
-                        rowHeads={["Category", "Description", "Amount"]}
-                        rowItems={getProject().budget}
-                    />
+                    <Table rowHeads={["Category", "Description", "Amount"]} rowItems={project.budget} />
                 </div>
-                < Row 
-                    tocolumn ={1}
-                   >
+                <H2>Comment/Note</H2>
+                <TextAreaWrapper />
+                <Row tocolumn={1}>
                     <ProjectDetailBaseButton>Accept</ProjectDetailBaseButton>
                     <ProjectDetailBaseButton>Reject</ProjectDetailBaseButton>
-                   </Row>
-                
-                {/* <H2>Comment/Note</H2>
-                <TextAreaWrapper /> */}
+                </Row>
             </ProjectDetailsAreaWrapper>
         </Dashboard>
     )

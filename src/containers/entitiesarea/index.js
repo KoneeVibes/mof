@@ -11,9 +11,10 @@ export const EntitiesArea = () => {
     const navigate = useNavigate();
     const rows = ["Id", "Parastatal", "Ongoing Project", "Completed Project", "Amount in N", "Amount in E", "Amount in Dollars", "Projects"];
     const navigateToProjectDetails = (project, entityId, projectId) => {
-        const parsedEntity = entities.find(entity => entity.id === entityId).entityName.replace(/\s+/g, '').toLowerCase();
+        const parsedEntity = entities[0].division.find(entity => entity.id === entityId).entityName.replace(/\s+/g, '').toLowerCase();
         return navigate(`/${parsedEntity}/${projectId}`);
     }
+
     return (
         <Dashboard>
             <EntitiesAreaWrapper>
@@ -21,7 +22,7 @@ export const EntitiesArea = () => {
                 <EntitiesTableWrapper>
                     <Table
                         rowHeads={rows}
-                        rowItems={entities}
+                        rowItems={entities[0].division}
                         onSelectProject={navigateToProjectDetails}
                     />
                 </EntitiesTableWrapper>
