@@ -84,7 +84,6 @@ export const ProjectDetailsArea = () => {
                     </ProjectDetailCardWrapper>
                 </Row>
                 <H2>Budget Breakdown</H2>
-                <H2>Budget Breakdown</H2>
                 <div style={{ overflow: "auto" }}>
                     <Table rowHeads={["Category", "Description", "Amount"]} rowItems={project.budget} />
                 </div>
