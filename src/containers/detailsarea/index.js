@@ -11,7 +11,7 @@ import { MilestonesIcon } from "../../assets";
 import { Table } from "../../components/table";
 import { ProjectDetailBaseButton } from "./styled";
 import { H1, H2, P } from "../../components/typography/styled";
-// import { Table } from "../../components/table";
+import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 
 export const ProjectDetailsArea = () => {
     const { entityId, projectId } = useParams();
@@ -89,7 +89,7 @@ export const ProjectDetailsArea = () => {
                     <Table rowHeads={["Category", "Description", "Amount"]} rowItems={project.budget} />
                 </div>
                 <H2>Comment/Note</H2>
-                <TextAreaWrapper />
+                <TextAreaWrapper/>
                 <Row tocolumn={1}>
                     <ProjectDetailBaseButton>Accept</ProjectDetailBaseButton>
                     <ProjectDetailBaseButton>Reject</ProjectDetailBaseButton>
