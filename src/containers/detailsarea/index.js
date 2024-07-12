@@ -90,7 +90,7 @@ export const ProjectDetailsArea = () => {
                 </div>
                 <H2>Comment/Note</H2>
                 <TextAreaWrapper/>
-                <Row tocolumn={1}>
+                <ProjectDetailButtonsWrapper>
                     <ProjectDetailBaseButton>Accept</ProjectDetailBaseButton>
                     <ProjectDetailBaseButton>Reject</ProjectDetailBaseButton>
                 </ProjectDetailButtonsWrapper>
