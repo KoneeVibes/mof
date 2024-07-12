@@ -51,5 +51,9 @@ export const SideNavItemsListWrapper = styled(Column)(
                 background-color: #059212;
             }
         }
+
+        li {
+            cursor: pointer;
+        }
     `
     });

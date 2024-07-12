@@ -13,7 +13,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Auth />} />
         <Route path='/dashboard' element={<MetricsArea />} />
-        <Route path='/entities' element={<EntitiesArea />} />
+        <Route path='/:entity' element={<EntitiesArea />} />
         <Route path='/registration/project' element={<ProjectRegistrationArea />} />
         <Route path='/:entityId/:projectId' element={<ProjectDetailsArea />} />
 
