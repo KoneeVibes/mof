@@ -10,7 +10,7 @@ import { ContractorInformationIcon } from "../../assets";
 import { MilestonesIcon } from "../../assets";
 import { Table } from "../../components/table";
 import { ProjectDetailBaseButton } from "./styled";
-import { H1, H2, } from "../../components/typography/styled";
+import { H1, H2, P } from "../../components/typography/styled";
 import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 import { ProjectDetailButtonsWrapper } from "./styled";
 
@@ -53,32 +53,35 @@ export const ProjectDetailsArea = () => {
                 <Row tocolumn={1}>
                     <ProjectDetailCardWrapper>
                         <InitiativeIcon />
-                        <H2>{project.name}</H2>
-                        <p>{project.description}</p>
+                        <H1>{getProject().name}</H1>
+                        <P>{getProject().description}</P>
                     </ProjectDetailCardWrapper>
                     <ProjectDetailCardWrapper>
                         <FundingSourceIcon />
-                        <H2>Funding Source and Amount </H2>
-                        {project.fundingSource.map((source, key) => (
-                            <p key={key}>{source}</p>
-                        ))}
+                        <H1>Funding Source and Amount </H1>
+                        {getProject().fundingSource.map((source, key) => {
+                            return (
+                                <P key={key}>{source}</P>
+                            )
+                        })}
                     </ProjectDetailCardWrapper>
                 </Row>
                 <Row tocolumn={1}>
                     <ProjectDetailCardWrapper>
                         <ContractorInformationIcon />
-                        <H2>Contractor Information</H2>
-                        <p>Company Name: {project.contractorInformation.companyName}</p>
-                        <p>Company Email: {project.contractorInformation.companyEmail}</p>
-                        <p>Company Phone Number: {project.contractorInformation.companyPhoneNumber}</p>
-                        <p>Company Address: {project.contractorInformation.companyAddress}</p>
+                        <P>Company Name: {getProject().contractorInformation.companyName}</P>
+                        <P>Company Email: {getProject().contractorInformation.companyEmail}</P>
+                        <P>Company Phone Number: {getProject().contractorInformation.companyPhoneNumber}</P>
+                        <P>Company Address: {getProject().contractorInformation.companyAddress}</P>
                     </ProjectDetailCardWrapper>
                     <ProjectDetailCardWrapper>
                         <MilestonesIcon />
-                        <H2>Timeline Milestones</H2>
-                        {project.milestones.map((milestone, key) => (
-                            <p key={key}>{milestone}</p>
-                        ))}
+                        <H1>Timeline Milestones</H1>
+                        {getProject().milestones.map((milestone, key) => {
+                            return (
+                                <P key={key}>{milestone}</P>
+                            )
+                        })}
                     </ProjectDetailCardWrapper>
                 </Row>
                 <H2>Budget Breakdown</H2>
@@ -86,8 +89,8 @@ export const ProjectDetailsArea = () => {
                     <Table rowHeads={["Category", "Description", "Amount"]} rowItems={project.budget} />
                 </div>
                 <H2>Comment/Note</H2>
-                <TextAreaWrapper />
-                <ProjectDetailButtonsWrapper>
+                <TextAreaWrapper/>
+                <Row tocolumn={1}>
                     <ProjectDetailBaseButton>Accept</ProjectDetailBaseButton>
                     <ProjectDetailBaseButton>Reject</ProjectDetailBaseButton>
                 </ProjectDetailButtonsWrapper>

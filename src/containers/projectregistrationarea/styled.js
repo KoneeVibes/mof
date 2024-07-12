@@ -12,5 +12,7 @@ export const ProjectRegistrationAreaWrapper = styled.div(() => {
             flex-direction: column;
             gap: var(--flexGap);
         }
+        
+        
     `
 })

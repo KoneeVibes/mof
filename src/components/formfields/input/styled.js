@@ -9,6 +9,9 @@ export const BaseInputWrapper = styled("input")`
             border: "none",
             outline: "none",
             width: width || "auto",
+            fontFamily: "AvenirNext",
+            fontSize: "14px",
+            fontWeight: "400"
         }
     }}
 `

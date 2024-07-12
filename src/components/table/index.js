@@ -1,3 +1,5 @@
+import { Td, Th } from "../typography/styled"
+
 export const Table = ({ rowHeads, rowItems, onSelectProject }) => {
     return (
         <table>
@@ -5,7 +7,7 @@ export const Table = ({ rowHeads, rowItems, onSelectProject }) => {
                 <tr>
                     {rowHeads.map((rowHead, k) => {
                         return (
-                            <th key={k}>{rowHead}</th>
+                            <Th key={k}>{rowHead}</Th>
                         )
                     })}
                 </tr>
@@ -17,7 +19,7 @@ export const Table = ({ rowHeads, rowItems, onSelectProject }) => {
                             key={k}
                         >
                             {Object.values(rowItem).map((value, i) => (
-                                <td key={i}>
+                                <Td key={i}>
                                     {Array.isArray(value) ? (
                                         <select onChange={(e) => onSelectProject(e.target.value, rowItem.id, e.target.selectedIndex - 1)}>
                                             <option>Select a project</option>
@@ -28,7 +30,7 @@ export const Table = ({ rowHeads, rowItems, onSelectProject }) => {
                                     ) : (
                                         value
                                     )}
-                                </td>
+                                </Td>
                             ))}
                         </tr>
                     )
