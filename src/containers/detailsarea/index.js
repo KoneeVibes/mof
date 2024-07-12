@@ -18,7 +18,7 @@ export const ProjectDetailsArea = () => {
 
     const getProject = () => {
         try {
-            const entity = entities.find(entity => entity.entityName.replace(/\s+/g, '').toLowerCase() === entityId);
+            const entity = entities[0].division.find(entity => entity.entityName.replace(/\s+/g, '').toLowerCase() === entityId);
             if (!entity) throw new Error("Entity not found");
 
             const project = entity.projects[projectId];
