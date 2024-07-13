@@ -54,6 +54,12 @@ export const SideNavItemsListWrapper = styled(Column)(
 
         li {
             cursor: pointer;
+            padding: 0 ${cardPadding};
+        }
+        
+        ul {
+            list-style-type: none;
+            padding-left: 1.9rem;
         }
     `
     });
