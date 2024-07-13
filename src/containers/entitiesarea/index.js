@@ -1,19 +1,38 @@
 import { Dashboard } from "../dashboard";
 import { EntitiesAreaWrapper, EntitiesTableWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron/index";
-import { entities } from "../../data";
 import { useNavigate } from "react-router-dom";
 import { Table } from "../../components/table";
+import { useEffect, useState } from "react";
+import { getProjectsPerOrganization } from "../../util/apis/projects";
+import { getOrganization } from "../../util/apis/organization";
+import Cookies from "universal-cookie";
 
 export const EntitiesArea = () => {
-    //The idea is that this component will hold a generic table that can be reused for ministries or parastatals
-    //Depending of say the authorization the endpoint will return data that will populate the table
+    const cookies = new Cookies();
+    const cookie = cookies.getAll();
+
     const navigate = useNavigate();
-    const rows = ["Id", "Parastatal", "Ongoing Project", "Completed Project", "Amount in N", "Amount in E", "Amount in Dollars", "Projects"];
-    const navigateToProjectDetails = (project, entityId, projectId) => {
-        const parsedEntity = entities[0].division.find(entity => entity.id === entityId).entityName.replace(/\s+/g, '').toLowerCase();
-        return navigate(`/${parsedEntity}/${projectId}`);
-    }
+    const [projectsPerOrganization, setProjectsPerOrganization] = useState([]);
+    const [subOrganizations, setSubOrganizations] = useState([]);
+
+    const token = cookie.TOKEN;
+    //refactor to use USER.organizationId instead.
+    const organizationId = cookie.USER.userId;
+    const columns = ["Id", "Parastatal", "Ongoing Project", "Completed Project", "Amount in ₦", "Amount in £", "Amount in $", "Projects"];
+
+    useEffect(() => {
+        getProjectsPerOrganization(token, organizationId).then((projectList) => setProjectsPerOrganization(projectList));
+    }, [token, organizationId]);
+
+    useEffect(() => {
+        getOrganization(token, organizationId).then((organization) => setSubOrganizations(organization.subOrganizations));
+    }, [token, organizationId]);
+
+    const navigateToProjectDetails = (project, projectId) => {
+        //if there is an error here, check the properties of project
+        navigate(`/${project}/${projectId}`);
+    };
 
     return (
         <Dashboard>
@@ -21,12 +40,13 @@ export const EntitiesArea = () => {
                 <Jumbotron />
                 <EntitiesTableWrapper>
                     <Table
-                        rowHeads={rows}
-                        rowItems={entities[0].division}
-                        onSelectProject={navigateToProjectDetails}
+                        columnTitles={columns}
+                        options={projectsPerOrganization}
+                        rowItems={subOrganizations}
+                        onSelectOption={navigateToProjectDetails}
                     />
                 </EntitiesTableWrapper>
             </EntitiesAreaWrapper>
         </Dashboard>
-    )
-}
+    );
+};

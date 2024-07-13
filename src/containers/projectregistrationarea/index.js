@@ -6,12 +6,17 @@ import { BaseButton } from "../../components/buttons/styled"
 import { H2, P } from "../../components/typography/styled";
 
 export const ProjectRegistrationArea = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        return console.log(e.target)
+    }
+
     return (
         <Dashboard>
             <ProjectRegistrationAreaWrapper>
                 <H2>PROJECT DETAILS</H2>
                 <P>PLEASE  ENTER THE PROJECT INFORMATION</P>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <label className="projectName">Project Name</label>
                     <BaseInputWrapper type="text" name="text" required />
                     <label className="fundingSource">Funding Source</label>
