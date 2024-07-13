@@ -1,11 +1,11 @@
 import { Td, Th } from "../typography/styled"
 
-export const Table = ({ rowHeads, rowItems, onSelectProject }) => {
+export const Table = ({ columnTitles, onSelectOption, options, rowItems }) => {
     return (
         <table>
             <thead>
                 <tr>
-                    {rowHeads.map((rowHead, k) => {
+                    {columnTitles.map((rowHead, k) => {
                         return (
                             <Th key={k}>{rowHead}</Th>
                         )
@@ -13,29 +13,26 @@ export const Table = ({ rowHeads, rowItems, onSelectProject }) => {
                 </tr>
             </thead>
             <tbody>
-                {rowItems.map((rowItem, k) => {
-                    return (
-                        <tr
-                            key={k}
-                        >
-                            {Object.values(rowItem).map((value, i) => (
-                                <Td key={i}>
-                                    {Array.isArray(value) ? (
-                                        <select onChange={(e) => onSelectProject(e.target.value, rowItem.id, e.target.selectedIndex - 1)}>
-                                            <option>Select a project</option>
-                                            {value.map((project, j) => (
-                                                <option key={j} value={project.name}>{project.name}</option>
-                                            ))}
-                                        </select>
-                                    ) : (
-                                        value
-                                    )}
-                                </Td>
-                            ))}
-                        </tr>
-                    )
-                })}
+                {rowItems.map((subOrganization, k) => (
+                    <tr key={k}>
+                        {Object.values(subOrganization).map((value, i) => (
+                            <Td key={i}>
+                                {value}
+                            </Td>
+                        ))}
+                        {options && (
+                            <Td>
+                                <select onChange={(e) => onSelectOption(e.target.value, e.target.selectedIndex - 1)}>
+                                    <option>Select a project</option>
+                                    {options.map((project, j) => (
+                                        <option key={j} value={project.title}>{project.title}</option>
+                                    ))}
+                                </select>
+                            </Td>
+                        )}
+                    </tr>
+                ))}
             </tbody>
         </table>
-    )
-}
+    );
+};
