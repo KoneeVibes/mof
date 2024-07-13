@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { sideNavItems, entities } from "../../../data";
 import { Avatar } from "../../avatar";
-import { P } from "../../typography/styled";
+import { Li, P } from "../../typography/styled";
 import { SideNavItemsListWrapper, SideNavWrapper } from "./styled";
 
 export const SideNav = () => {
@@ -22,12 +22,12 @@ export const SideNav = () => {
                                 <ul>
                                     {entities.map((entity, k) => {
                                         return (
-                                            <li
+                                            <Li
                                                 key={k}
                                                 onClick={() => navigateToEntityTable(entity.ministry)}
                                             >
                                                 {entity.ministry}
-                                            </li>
+                                            </Li>
                                         )
                                     })}
                                 </ul>

@@ -11,7 +11,7 @@ export const BaseInputWrapper = styled("input")`
             width: width || "auto",
             fontFamily: "AvenirNext",
             fontSize: "14px",
-            fontWeight: "400"
+            fontWeight: "500"
         }
     }}
 `
