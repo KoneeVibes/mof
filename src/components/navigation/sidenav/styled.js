@@ -23,6 +23,7 @@ export const SideNavWrapper = styled("div")`
                 background-color: #FFFFFF;
                 z-index: 1;
                 width: 100%;
+                
 
                 .avatar-div{
                     padding: ${cardPadding};
