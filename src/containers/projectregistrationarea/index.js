@@ -3,7 +3,7 @@ import { Dashboard } from "../dashboard";
 import { ProjectRegistrationAreaWrapper } from "./styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled"
 import { BaseButton } from "../../components/buttons/styled"
-import { H2, H3, Label } from "../../components/typography/styled";
+import { H2, Label, P } from "../../components/typography/styled";
 
 export const ProjectRegistrationArea = () => {
     const handleSubmit = (e) => {
@@ -15,7 +15,7 @@ export const ProjectRegistrationArea = () => {
         <Dashboard>
             <ProjectRegistrationAreaWrapper>
                 <H2>PROJECT DETAILS</H2>
-                <H3>PLEASE  ENTER THE PROJECT INFORMATION</H3>
+                <P>PLEASE  ENTER THE PROJECT INFORMATION</P>
                 <form onSubmit={handleSubmit}>
                     <Label className="projectName">Project Name</Label>
                     <BaseInputWrapper type="text" name="text" required />

@@ -1,6 +1,6 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const authUser = async (authDetails) => {
+export const authenticateUser = async (authDetails) => {
     try {
         const response = await fetch(`${BASE_ENDPOINT}/api/accounts/sign-in`, {
             method: 'POST',

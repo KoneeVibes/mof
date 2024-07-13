@@ -5,6 +5,8 @@ import { AuthWrapper, AuthRow } from "./styled";
 import authImg from "../../assets/authImg.svg";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { A, H1, Label, P } from "../../components/typography/styled";
+import Cookies from "universal-cookie";
+import { authenticateUser } from "../../util/apis/auth";
 
 export const Auth = () => {
     const cookies = new Cookies();
