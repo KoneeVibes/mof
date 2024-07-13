@@ -1,6 +1,7 @@
+import React from "react";
 import { Td, Th } from "../typography/styled"
 
-export const Table = ({ columnTitles, onSelectOption, options, rowItems }) => {
+export const Table = ({ columnTitles, onSelectOption, options, rowItems, isBudgetTable }) => {
     return (
         <table>
             <thead>
@@ -15,11 +16,22 @@ export const Table = ({ columnTitles, onSelectOption, options, rowItems }) => {
             <tbody>
                 {rowItems.map((subOrganization, k) => (
                     <tr key={k}>
-                        {Object.values(subOrganization).map((value, i) => (
-                            <Td key={i}>
-                                {value}
-                            </Td>
-                        ))}
+                        {(isBudgetTable) ? (
+                            Object.values(subOrganization).map((value, i) => (
+                                <Td key={i}>
+                                    {value}
+                                </Td>
+                            ))
+                        ) : (
+                            <React.Fragment>
+                                <Td>{subOrganization.name}</Td>
+                                <Td>{/* */}</Td>
+                                <Td>{/* */}</Td>
+                                <Td>{/* */}</Td>
+                                <Td>{/* */}</Td>
+                                <Td>{/* */}</Td>
+                            </React.Fragment>
+                        )}
                         {options && (
                             <Td>
                                 <select onChange={(e) => onSelectOption(e.target.value, e.target.selectedIndex - 1)}>

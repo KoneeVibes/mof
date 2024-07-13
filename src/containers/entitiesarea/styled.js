@@ -29,7 +29,7 @@ export const EntitiesTableWrapper = styled.div(({ cardPadding = "var(--cardPaddi
             borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
             padding: cardPadding,
         },
-        "tbody tr td:nth-child(2)": {
+        "tbody tr td:nth-child(1)": {
             textAlign: "left",
         },
     }
