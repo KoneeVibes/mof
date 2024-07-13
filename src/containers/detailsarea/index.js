@@ -11,6 +11,7 @@ import { Table } from "../../components/table";
 import { ProjectDetailBaseButton } from "./styled";
 import { H1, H2, H3, P } from "../../components/typography/styled";
 import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
+import { ProjectDetailButtonsWrapper } from "./styled";
 import { useEffect, useState } from "react";
 import { getProject } from "../../util/apis/project";
 
@@ -78,11 +79,11 @@ export const ProjectDetailsArea = () => {
                     />
                 </div>
                 <H2>Comment/Note</H2>
-                <TextAreaWrapper />
-                <Row tocolumn={1}>
+                <TextAreaWrapper/>
+                <ProjectDetailButtonsWrapper>
                     <ProjectDetailBaseButton>Accept</ProjectDetailBaseButton>
                     <ProjectDetailBaseButton>Reject</ProjectDetailBaseButton>
-                </Row>
+                </ProjectDetailButtonsWrapper>
             </ProjectDetailsAreaWrapper>
         </Dashboard>
     )

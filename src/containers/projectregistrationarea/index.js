@@ -3,7 +3,7 @@ import { Dashboard } from "../dashboard";
 import { ProjectRegistrationAreaWrapper } from "./styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled"
 import { BaseButton } from "../../components/buttons/styled"
-import { H2, P } from "../../components/typography/styled";
+import { H2, H3, Label } from "../../components/typography/styled";
 
 export const ProjectRegistrationArea = () => {
     const handleSubmit = (e) => {
@@ -15,21 +15,21 @@ export const ProjectRegistrationArea = () => {
         <Dashboard>
             <ProjectRegistrationAreaWrapper>
                 <H2>PROJECT DETAILS</H2>
-                <P>PLEASE  ENTER THE PROJECT INFORMATION</P>
+                <H3>PLEASE  ENTER THE PROJECT INFORMATION</H3>
                 <form onSubmit={handleSubmit}>
-                    <label className="projectName">Project Name</label>
+                    <Label className="projectName">Project Name</Label>
                     <BaseInputWrapper type="text" name="text" required />
-                    <label className="fundingSource">Funding Source</label>
+                    <Label className="fundingSource">Funding Source</Label>
                     <BaseInputWrapper type="text" name="text" required />
-                    <label className="fundingAmount">Funding Amount</label>
+                    <Label className="fundingAmount">Funding Amount</Label>
                     <BaseInputWrapper type="number" name="number" required />
-                    <label className="projectTimeline">Project Timeline</label>
+                    <Label className="projectTimeline">Project Timeline</Label>
                     <BaseInputWrapper type="number" name="number" required />
-                    <label className="projectDescription">Project Description</label>
+                    <Label className="projectDescription">Project Description</Label>
                     <TextAreaWrapper />
-                    <label className="timelineMilestones">Timeline Milestones</label>
+                    <Label className="timelineMilestones">Timeline Milestones</Label>
                     <TextAreaWrapper />
-                    <label className="budgetInformation">Budget Information</label>
+                    <Label className="budgetInformation">Budget Information</Label>
                     <TextAreaWrapper />
                     <BaseButton type="submit">Continue</BaseButton>
                 </form>

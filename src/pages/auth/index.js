@@ -4,9 +4,7 @@ import { BaseButton } from "../../components/buttons/styled";
 import { AuthWrapper, AuthRow } from "./styled";
 import authImg from "../../assets/authImg.svg";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
-import { H1, P } from "../../components/typography/styled";
-import { authUser as authenticateUser } from "../../util/apis/auth";
-import Cookies from "universal-cookie";
+import { A, H1, Label, P } from "../../components/typography/styled";
 
 export const Auth = () => {
     const cookies = new Cookies();
@@ -83,7 +81,7 @@ export const Auth = () => {
                                 onChange={handleChange}
                                 width={"-webkit-fill-available"}
                             />
-                            <label className="showPassword">
+                            <Label className="showPassword">
                                 <input
                                     type="checkbox"
                                     checked={passwordVisible}
@@ -91,9 +89,9 @@ export const Auth = () => {
                                     style={{ display: "none", marginRight: "5px" }}
                                 />
                                 SHOW
-                            </label>
+                            </Label>
                         </div>
-                        <a href="/" className="forgotPassword">FORGOT PASSWORD?</a>
+                        <A href="/" className="forgotPassword">FORGOT PASSWORD?</A>
                         <BaseButton type="submit">LOG IN</BaseButton>
                     </form>
                     {error && <P style={{ color: 'red' }}>{error}</P>}

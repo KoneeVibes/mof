@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { CardWrapper } from "../../components/card/styled";
 import { BaseButton } from "../../components/buttons/styled";
+import { Row } from "../../components/flex/styled";
 
 export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
     return {
@@ -32,7 +33,7 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
 export const ProjectDetailCardWrapper = styled(CardWrapper)(({ cardPadding = "var(--cardPadding)" }) => {
     return {
         //Generic styles for the cards come here.
-        backgroundColor: "eeeeee",
+        backgroundColor: "#eeeeee",
         padding: cardPadding,
         textAlign: "justify",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
@@ -43,8 +44,20 @@ export const ProjectDetailCardWrapper = styled(CardWrapper)(({ cardPadding = "va
     }
 })
 
-export const ProjectDetailBaseButton = styled(BaseButton)(() => {
+export const ProjectDetailBaseButton = styled(BaseButton)(({ cardPadding = "var(--cardPadding)" }) => {
     return {
-        width: "20%",
+        width: "fit-content",
+        padding: `calc(${cardPadding}/2) calc(${cardPadding})`,
+        
+    }
+})
+
+export const ProjectDetailButtonsWrapper =  styled(Row)(({ flexGap = "var(--flexGap)"}) => { 
+    return {
+        "@media screen and (max-width: 425px)": {
+            flexDirection: "column",
+            gap: `calc(${flexGap}/2)`,
+        },
+        
     }
 })
