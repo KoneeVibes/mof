@@ -57,6 +57,7 @@ export const ProjectDetailsArea = () => {
                 <Row tocolumn={1}>
                     <ProjectDetailCardWrapper>
                         <ContractorInformationIcon />
+                        <H3>Contractor Information</H3>
                         <P>Company Name: {project.contractor.name}</P>
                         <P>Company Email: {project.contractor.email}</P>
                         <P>Company Phone Number: {project.contractor.companyPhoneNumber}</P>
