@@ -11,12 +11,6 @@ export const EntityRegistrationAreaWrapper = styled.div(() => {
             display: flex;
             flex-direction: column;
             gap: var(--flexGap);
-            text-transform: capitalize;
-        }
-
-        BaseButton{
-        margin-top: 4rem;
-        text-transform: capitalize;
         }
     `
 })
