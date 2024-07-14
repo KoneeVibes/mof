@@ -6,6 +6,7 @@ import { MetricsArea } from './containers/metricsarea';
 import { EntitiesArea } from './containers/entitiesarea';
 import { ProjectRegistrationArea } from './containers/projectregistrationarea';
 import { ProjectDetailsArea } from './containers/detailsarea';
+import { EntityRegistrationArea } from './containers/entityregistrationarea';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path='/dashboard' element={<MetricsArea />} />
         <Route path='/:entity' element={<EntitiesArea />} />
         <Route path='/registration/project' element={<ProjectRegistrationArea />} />
+        <Route path='/registration/entity' element={<EntityRegistrationArea/>} />
         <Route path='/:entityId/:projectId' element={<ProjectDetailsArea />} />
 
         {/* Fallback route*/}
