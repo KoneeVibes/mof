@@ -77,6 +77,7 @@ export const ProjectDetailsArea = () => {
                     <Table
                         columnTitles={columns}
                         rowItems={project.budget}
+                        isBudgetTable={1}
                     />
                 </div>
                 <H2>Comment/Note</H2>
