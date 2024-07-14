@@ -4,8 +4,8 @@ import { Jumbotron } from "../../components/jumbotron/index";
 import { useNavigate } from "react-router-dom";
 import { Table } from "../../components/table";
 import { useEffect, useState } from "react";
-import { getProjectsPerOrganization } from "../../util/apis/projects";
-import { getOrganization } from "../../util/apis/organization";
+import { getProjectsPerOrganization } from "../../util/apis/getProjects";
+import { getOrganization } from "../../util/apis/getOrganization";
 import Cookies from "universal-cookie";
 
 export const EntitiesArea = () => {

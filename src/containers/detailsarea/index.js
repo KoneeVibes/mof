@@ -13,7 +13,7 @@ import { H1, H2, H3, P } from "../../components/typography/styled";
 import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 import { ProjectDetailButtonsWrapper } from "./styled";
 import { useEffect, useState } from "react";
-import { getProject } from "../../util/apis/project";
+import { getProject } from "../../util/apis/getProject";
 
 export const ProjectDetailsArea = () => {
     const { projectId } = useParams();
