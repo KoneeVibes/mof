@@ -17,9 +17,8 @@ export const EntitiesArea = () => {
     const [subOrganizations, setSubOrganizations] = useState([]);
 
     const token = cookie.TOKEN;
-    //refactor to use USER.organizationId instead.
-    const organizationId = cookie.USER.userId;
-    const columns = ["Id", "Parastatal", "Ongoing Project", "Completed Project", "Amount in ₦", "Amount in £", "Amount in $", "Projects"];
+    const organizationId = cookie.USER.organizationId;
+    const columns = ["Parastatal", "Ongoing Project", "Completed Project", "Amount in ₦", "Amount in £", "Amount in $", "Projects"];
 
     useEffect(() => {
         getProjectsPerOrganization(token, organizationId).then((projectList) => setProjectsPerOrganization(projectList));

@@ -18,13 +18,13 @@ export const ProjectRegistrationArea = () => {
                 <P>PLEASE  ENTER THE PROJECT INFORMATION</P>
                 <form onSubmit={handleSubmit}>
                     <Label className="projectName">Project Name</Label>
-                    <BaseInputWrapper type="text" name="text" required />
+                    <BaseInputWrapper type="text" name="projectName" required />
                     <Label className="fundingSource">Funding Source</Label>
-                    <BaseInputWrapper type="text" name="text" required />
+                    <BaseInputWrapper type="text" name="fundingSource" required />
                     <Label className="fundingAmount">Funding Amount</Label>
-                    <BaseInputWrapper type="number" name="number" required />
+                    <BaseInputWrapper type="number" name="fundingAmount" required />
                     <Label className="projectTimeline">Project Timeline</Label>
-                    <BaseInputWrapper type="number" name="number" required />
+                    <BaseInputWrapper type="number" name="projectTimeline" required />
                     <Label className="projectDescription">Project Description</Label>
                     <TextAreaWrapper />
                     <Label className="timelineMilestones">Timeline Milestones</Label>

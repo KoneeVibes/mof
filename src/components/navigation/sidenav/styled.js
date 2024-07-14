@@ -23,6 +23,7 @@ export const SideNavWrapper = styled("div")`
                 background-color: #FFFFFF;
                 z-index: 1;
                 width: 100%;
+                
 
                 .avatar-div{
                     padding: ${cardPadding};
@@ -54,6 +55,12 @@ export const SideNavItemsListWrapper = styled(Column)(
 
         li {
             cursor: pointer;
+            padding: 0 ${cardPadding};
+        }
+        
+        ul {
+            list-style-type: none;
+            padding-left: 1.9rem;
         }
     `
     });
