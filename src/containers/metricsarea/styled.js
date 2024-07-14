@@ -39,7 +39,7 @@ export const ChartsCardWrapper = styled(CardWrapper)(() => {
 
 export const NewProjectCardWrapper = styled(CardWrapper)(() => {
     return `
-        padding: calc(var(--cardPadding)/2);
+        padding: var(--cardPadding);
         display: flex;
         flex-direction: column;
         justify-content: space-between;

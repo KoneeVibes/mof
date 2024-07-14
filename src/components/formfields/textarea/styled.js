@@ -9,5 +9,6 @@ export const TextAreaWrapper = styled("textarea")(() => {
         min-height: 7rem;
         cursor: text;
         display: block;
+        padding: calc(var(--cardPadding) / 2.5);
     `
 })

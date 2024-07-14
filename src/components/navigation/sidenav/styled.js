@@ -51,6 +51,7 @@ export const SideNavItemsListWrapper = styled(Column)(
         p {
             padding: ${cardPadding};
             margin-block: 0;
+            cursor: pointer;
             &:hover {
                 background-color: #059212;
             }

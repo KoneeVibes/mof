@@ -28,7 +28,7 @@ export const MetricsArea = () => {
                             <br />
                             <BaseButton
                                 width={"-webkit-fill-available"}
-                                onClick={() => navigate("/")}
+                                onClick={() => navigate("/registration/project")}
                             >
                                 Add new project
                             </BaseButton>
