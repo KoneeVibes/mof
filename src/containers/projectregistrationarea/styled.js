@@ -15,16 +15,13 @@ export const ProjectRegistrationAreaWrapper = styled.div(() => {
             flex-direction: column;
             gap: var(--flexGap);
         }
-        
-        
     `
 })
 
  export const ProjectRegistrationBaseInput = styled(BaseInputWrapper)(({ cardPadding = "var(--cardPadding)" }) => {
      return {
-         width: "100%",
+         width: "-webkit-fill-available",
          padding: `calc(${cardPadding}/2) calc(${cardPadding})`,
-        
      }
  })
 
@@ -34,6 +31,9 @@ export const ProjectRegistrationAreaWrapper = styled.div(() => {
              flexDirection: "column",
              gap: `calc(${flexGap}/2)`,
          },
+         "@media screen and (max-width: 1280px)": {
+            flexWrap: "wrap",
+         }
         
      }
  })
@@ -44,6 +44,5 @@ export const ProjectRegistrationBaseButton = styled(BaseButton)(({ cardPadding =
         padding: `calc(${cardPadding}/2) calc(${cardPadding})`,
         borderRadius:"25px",
         cursor: 'pointer',
-        
     }
 })

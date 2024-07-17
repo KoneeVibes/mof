@@ -6,7 +6,7 @@ import authImg from "../../assets/authImg.svg";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { A, H1, Label, P } from "../../components/typography/styled";
 import Cookies from "universal-cookie";
-import { authenticateUser } from "../../util/apis/auth";
+import { authenticateUser } from "../../util/apis/authUser";
 
 export const Auth = () => {
     const cookies = new Cookies();

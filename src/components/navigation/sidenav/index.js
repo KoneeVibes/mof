@@ -14,33 +14,35 @@ export const SideNav = () => {
     return (
         <SideNavWrapper>
             <SideNavItemsListWrapper>
-                {sideNavItems.map((sidenavitem, key) => {
-                    return (
-                        (key === 1) ? (
-                            <div key={key}>
-                                <P>{sidenavitem.name}</P>
-                                <ul>
-                                    {entities.map((entity, k) => {
-                                        return (
-                                            <Li
-                                                key={k}
-                                                onClick={() => navigateToEntityTable(entity.ministry)}
-                                            >
-                                                {entity.ministry}
-                                            </Li>
-                                        )
-                                    })}
-                                </ul>
-                            </div>
-                        ) : (
-                            <P
-                                key={key}
-                                onClick={(key === 0) ? () => navigate(sidenavitem.url) : null}
-                            >
-                                {sidenavitem.name}</P>
+                <div>
+                    {sideNavItems.map((sidenavitem, key) => {
+                        return (
+                            (key === 1) ? (
+                                <div key={key}>
+                                    <P>{sidenavitem.name}</P>
+                                    <ul>
+                                        {entities.map((entity, k) => {
+                                            return (
+                                                <Li
+                                                    key={k}
+                                                    onClick={() => navigateToEntityTable(entity.ministry)}
+                                                >
+                                                    {entity.ministry}
+                                                </Li>
+                                            )
+                                        })}
+                                    </ul>
+                                </div>
+                            ) : (
+                                <P
+                                    key={key}
+                                    onClick={(key === 0) ? () => navigate(sidenavitem.url) : null}
+                                >
+                                    {sidenavitem.name}</P>
+                            )
                         )
-                    )
-                })}
+                    })}
+                </div>
                 <div className="avatar-div">
                     <Avatar location={"side-nav"} />
                 </div>

@@ -46,8 +46,12 @@ export const SideNavItemsListWrapper = styled(Column)(
     ({ cardPadding = 'var(--cardPadding)' }) => {
         return `
         gap: 0;
+        justify-content: space-between;
+        height: -webkit-fill-available;
         p {
             padding: ${cardPadding};
+            margin-block: 0;
+            cursor: pointer;
             &:hover {
                 background-color: #059212;
             }

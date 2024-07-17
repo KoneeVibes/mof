@@ -3,26 +3,45 @@ import { Dashboard } from "../dashboard";
 import { Row } from "../../components/flex/styled";
 import { ProjectDetailCardWrapper, ProjectDetailsAreaWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron";
-import { InitiativeIcon } from "../../assets";
-import { FundingSourceIcon } from "../../assets";
-import { ContractorInformationIcon } from "../../assets";
-import { MilestonesIcon } from "../../assets";
+import { InitiativeIcon, FundingSourceIcon, ContractorInformationIcon, MilestonesIcon } from "../../assets";
 import { Table } from "../../components/table";
 import { ProjectDetailBaseButton } from "./styled";
 import { H1, H2, H3, P } from "../../components/typography/styled";
 import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 import { ProjectDetailButtonsWrapper } from "./styled";
 import { useEffect, useState } from "react";
-import { getProject } from "../../util/apis/project";
+import { getProject } from "../../util/apis/getProject";
+import Cookies from "universal-cookie";
 
 export const ProjectDetailsArea = () => {
-    const { projectId } = useParams();
+    const cookies = new Cookies();
+    const cookie = cookies.getAll();
+    const token = cookie.TOKEN;
     const columns = ["Category", "Description", "Amount"];
-    const [project, setProject] = useState({});
+
+    const { projectId } = useParams();
+    const [project, setProject] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getProject(projectId).then((project) => setProject(project));
-    }, [projectId]);
+        getProject(token, projectId).then((project) => {
+            setProject(project);
+            setLoading(false);
+        }).catch(() => {
+            setLoading(false);
+        });
+    }, [projectId, token]);
+
+    if (loading) {
+        return (
+            <Dashboard>
+                <ProjectDetailsAreaWrapper>
+                    <Jumbotron />
+                    <H1>Loading...</H1>
+                </ProjectDetailsAreaWrapper>
+            </Dashboard>
+        );
+    }
 
     if (!project) {
         return (
@@ -43,14 +62,14 @@ export const ProjectDetailsArea = () => {
                 <Row tocolumn={1}>
                     <ProjectDetailCardWrapper>
                         <InitiativeIcon />
-                        <H1>{project.projectTitle}</H1>
-                        <P>{project.description}</P>
+                        <H3>{project?.projectTitle}</H3>
+                        <P>{project?.description}</P>
                     </ProjectDetailCardWrapper>
                     <ProjectDetailCardWrapper>
                         <FundingSourceIcon />
-                        <H3>Funding Source and Amount </H3>
-                        {project.fundingSources.map((source, key) => (
-                            <P key={key}>{source}</P>
+                        <H3>Funding Source and Amount</H3>
+                        {project?.fundingSources?.map((source, key) => (
+                            <P key={key}>{source.amount}</P>
                         ))}
                     </ProjectDetailCardWrapper>
                 </Row>
@@ -58,35 +77,34 @@ export const ProjectDetailsArea = () => {
                     <ProjectDetailCardWrapper>
                         <ContractorInformationIcon />
                         <H3>Contractor Information</H3>
-                        <P>Company Name: {project.contractor.name}</P>
-                        <P>Company Email: {project.contractor.email}</P>
-                        <P>Company Phone Number: {project.contractor.companyPhoneNumber}</P>
-                        <P>Company Address: {project.contractor.companyAddress}</P>
+                        <P>Company Name: {project?.contractor?.name}</P>
+                        <P>Company Email: {project?.contractor?.email}</P>
+                        <P>Company Phone Number: {project?.contractor?.companyPhoneNumber}</P>
+                        <P>Company Address: {project?.contractor?.companyAddress}</P>
                     </ProjectDetailCardWrapper>
                     <ProjectDetailCardWrapper>
                         <MilestonesIcon />
                         <H3>Timeline Milestones</H3>
-                        {project.timelineMilestones.map((milestone, key) => (
-                            <P key={key}>Q what? {milestone.text}</P>
+                        {project?.timelineMilestones?.map((milestone, key) => (
+                            <P key={key}>{milestone.text}</P>
                         ))}
                     </ProjectDetailCardWrapper>
                 </Row>
                 <H2>Budget Breakdown</H2>
-                {/* should clean up this inline style later */}
                 <div style={{ overflow: "auto" }}>
                     <Table
                         columnTitles={columns}
-                        rowItems={project.budget}
+                        rowItems={project?.budget || []}
                         isBudgetTable={1}
                     />
                 </div>
                 <H2>Comment/Note</H2>
-                <TextAreaWrapper/>
+                <TextAreaWrapper />
                 <ProjectDetailButtonsWrapper>
                     <ProjectDetailBaseButton>Accept</ProjectDetailBaseButton>
                     <ProjectDetailBaseButton>Reject</ProjectDetailBaseButton>
                 </ProjectDetailButtonsWrapper>
             </ProjectDetailsAreaWrapper>
         </Dashboard>
-    )
-}
+    );
+};

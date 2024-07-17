@@ -1,9 +1,15 @@
 import styled from "styled-components";
-import { Row } from "../../components/flex/styled";
+import { Column, Row } from "../../components/flex/styled";
 import { CardWrapper } from "../../components/card/styled";
 
-export const MetricsAreaWrapper = styled.div(() => {
-    return`
+export const MetricsAreaWrapper = styled(Column)(() => {
+    return `
+        // gap: 0;
+
+        h1{
+            margin-block: 0;
+        }
+
         .card-component .bar-chart-component,
         .card-component .pie-chart-component,
         .card-component .line-graph-component {
@@ -14,7 +20,7 @@ export const MetricsAreaWrapper = styled.div(() => {
 })
 
 export const ChartsRowWrapper = styled(Row)(() => {
-    return`
+    return `
         flex-wrap: wrap;
         @media screen and (max-width: 425px){
             flex-direction: column;
@@ -24,6 +30,19 @@ export const ChartsRowWrapper = styled(Row)(() => {
 
 export const ChartsCardWrapper = styled(CardWrapper)(() => {
     return `
+        @media screen and (min-width: 425px){
+            min-width: 18.75rem;
+            padding: calc(var(--cardPadding)/2);
+        }
+    `
+})
+
+export const NewProjectCardWrapper = styled(CardWrapper)(() => {
+    return `
+        padding: var(--cardPadding);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         @media screen and (min-width: 425px){
             min-width: 18.75rem;
         }

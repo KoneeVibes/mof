@@ -4,8 +4,8 @@ import { Jumbotron } from "../../components/jumbotron/index";
 import { useNavigate } from "react-router-dom";
 import { Table } from "../../components/table";
 import { useEffect, useState } from "react";
-import { getProjectsPerOrganization } from "../../util/apis/projects";
-import { getOrganization } from "../../util/apis/organization";
+import { getProjectsPerOrganization } from "../../util/apis/getProjectsPerOrganization";
+import { getOrganization } from "../../util/apis/getOrganization";
 import Cookies from "universal-cookie";
 
 export const EntitiesArea = () => {
@@ -21,16 +21,25 @@ export const EntitiesArea = () => {
     const columns = ["Parastatal", "Ongoing Project", "Completed Project", "Amount in ₦", "Amount in £", "Amount in $", "Projects"];
 
     useEffect(() => {
-        getProjectsPerOrganization(token, organizationId).then((projectList) => setProjectsPerOrganization(projectList));
+        getOrganization(token, organizationId)
+            .then((organization) => {
+                setSubOrganizations(organization.subOrganizations);
+                organization.subOrganizations.forEach(subOrganization => {
+                    getProjectsPerOrganization(token, subOrganization.id).then((projectList) => {
+                        setProjectsPerOrganization(prev => ({
+                            ...prev,
+                            [subOrganization.id]: projectList
+                        }));
+                    });
+                });
+            });
     }, [token, organizationId]);
 
-    useEffect(() => {
-        getOrganization(token, organizationId).then((organization) => setSubOrganizations(organization.subOrganizations));
-    }, [token, organizationId]);
-
-    const navigateToProjectDetails = (project, projectId) => {
-        //if there is an error here, check the properties of project
-        navigate(`/${project}/${projectId}`);
+    const navigateToProjectDetails = (project, subOrganizationId) => {
+        const selectedProject = projectsPerOrganization[subOrganizationId].find(p => p.title === project);
+        if (selectedProject) {
+            navigate(`/${selectedProject.title.replace(/\s+/g, '').toLowerCase()}/${selectedProject.projectId}`);
+        }
     };
 
     return (
