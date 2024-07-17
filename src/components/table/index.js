@@ -34,9 +34,11 @@ export const Table = ({ columnTitles, onSelectOption, options, rowItems, isBudge
                         )}
                         {options && (
                             <Td>
-                                <select onChange={(e) => onSelectOption(e.target.value, e.target.selectedIndex - 1)}>
+                                <select
+                                    onChange={(e) => onSelectOption(e.target.value, subOrganization.id)}
+                                >
                                     <option>Select a project</option>
-                                    {options.map((project, j) => (
+                                    {options[subOrganization.id]?.map((project, j) => (
                                         <option key={j} value={project.title}>{project.title}</option>
                                     ))}
                                 </select>

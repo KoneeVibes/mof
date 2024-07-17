@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 import { Dashboard } from "../dashboard";
 import {
@@ -13,6 +13,9 @@ import { addProject } from "../../util/apis/addProject";
 import { BaseButton } from "../../components/buttons/styled";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
+import { SelectFieldWrapper } from "../../components/formfields/select/styled";
+import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
+import { getCurrencies } from "../../util/apis/getCurrencies";
 
 export const ProjectRegistrationArea = () => {
     const cookies = new Cookies();
@@ -21,6 +24,8 @@ export const ProjectRegistrationArea = () => {
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+    const [organizations, setOrganizations] = useState([]);
+    const [currencies, setCurrencies] = useState([]);
 
     //set formDetails initial value and show data type
     const [formDetails, setFormDetails] = useState({
@@ -46,6 +51,14 @@ export const ProjectRegistrationArea = () => {
             accountType: ""
         }
     });
+
+    useEffect(() => {
+        getAllOrganizations(token).then((listOfOrganizations) => setOrganizations(listOfOrganizations));
+    }, [token]);
+
+    useEffect(() => {
+        getCurrencies(token).then((data) => setCurrencies(data));
+    }, [token]);
 
     // controller added to input fields to handle change
     // depending on if the field name is delimited
@@ -113,7 +126,6 @@ export const ProjectRegistrationArea = () => {
     // handle form submission by sending form details to backend.
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formDetails);
         try {
             const response = await addProject(token, formDetails);
             if (response.status === "Success") {
@@ -148,13 +160,20 @@ export const ProjectRegistrationArea = () => {
                         onChange={handleChange}
                     />
                     <Label htmlFor="organization">Organization</Label>
-                    <BaseInputWrapper
-                        type="text"
+                    <SelectFieldWrapper
                         name="organization"
-                        required
                         value={formDetails.organization}
                         onChange={handleChange}
-                    />
+                    >
+                        <option value="">Select your Organisation</option>
+                        {organizations.flatMap(organization =>
+                            organization.subOrganizations.filter(subOrganization => subOrganization.orgType === "Parastatal")
+                        ).map((subOrganization, key) => (
+                            <option key={key} value={subOrganization.name}>
+                                {subOrganization.name}
+                            </option>
+                        ))}
+                    </SelectFieldWrapper>
                     <Label htmlFor="fundingSources">Funding Sources</Label>
                     {formDetails.fundingSources.map((source, index) => (
                         <ProjectRegistrationBaseInputWrapper key={index}>
@@ -174,14 +193,19 @@ export const ProjectRegistrationArea = () => {
                                 value={source.amount}
                                 onChange={(e) => handleNestedChange('fundingSources', index, e)}
                             />
-                            <ProjectRegistrationBaseInput
-                                type="text"
+                            <SelectFieldWrapper
                                 name="currency"
-                                placeholder="Currency"
                                 required
                                 value={source.currency}
                                 onChange={(e) => handleNestedChange('fundingSources', index, e)}
-                            />
+                            >
+                                <option value="">Select a currency</option>
+                                {currencies.map((currency, key) => (
+                                    <option key={key} value={currency.name}>
+                                        {currency.name}
+                                    </option>
+                                ))}
+                            </SelectFieldWrapper>
                             <ProjectRegistrationBaseButton type="button" onClick={() => handleRemoveEntry('fundingSources', index)}>-</ProjectRegistrationBaseButton>
                         </ProjectRegistrationBaseInputWrapper>
                     ))}
@@ -223,7 +247,7 @@ export const ProjectRegistrationArea = () => {
                             <ProjectRegistrationBaseInput
                                 type="text"
                                 name="name"
-                                placeholder="Name"
+                                placeholder="Description"
                                 required
                                 value={budgetItem.name}
                                 onChange={(e) => handleNestedChange('budget', index, e)}
@@ -244,14 +268,19 @@ export const ProjectRegistrationArea = () => {
                                 value={budgetItem.amount}
                                 onChange={(e) => handleNestedChange('budget', index, e)}
                             />
-                            <ProjectRegistrationBaseInput
-                                type="text"
+                            <SelectFieldWrapper
                                 name="currency"
-                                placeholder="Currency"
                                 required
                                 value={budgetItem.currency}
                                 onChange={(e) => handleNestedChange('budget', index, e)}
-                            />
+                            >
+                                <option value="">Select a currency</option>
+                                {currencies.map((currency, key) => (
+                                    <option key={key} value={currency.name}>
+                                        {currency.name}
+                                    </option>
+                                ))}
+                            </SelectFieldWrapper>
                             <ProjectRegistrationBaseButton type="button" onClick={() => handleRemoveEntry('budget', index)}>-</ProjectRegistrationBaseButton>
                         </ProjectRegistrationBaseInputWrapper>
                     ))}
@@ -325,14 +354,6 @@ export const ProjectRegistrationArea = () => {
                         placeholder="Registration Date"
                         required
                         value={formDetails.contractorDetails.registrationDate}
-                        onChange={handleChange}
-                    />
-                    <BaseInputWrapper
-                        type="text"
-                        name="contractorDetails.registrationNo"
-                        placeholder="Registration Number"
-                        required
-                        value={formDetails.contractorDetails.registrationNo}
                         onChange={handleChange}
                     />
                     <BaseInputWrapper

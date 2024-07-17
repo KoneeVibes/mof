@@ -12,7 +12,7 @@ export const sideNavItems = [
 
 export const entities = [
     {
-        ministry: "Ministry of Health",
+        ministry: "Ministry of Finance",
         division: [
             {
                 id: 0,

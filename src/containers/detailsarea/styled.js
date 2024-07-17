@@ -33,7 +33,7 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
 export const ProjectDetailCardWrapper = styled(CardWrapper)(({ cardPadding = "var(--cardPadding)" }) => {
     return {
         //Generic styles for the cards come here.
-        backgroundColor: "#eeeeee",
+        // backgroundColor: "#eeeeee",
         padding: cardPadding,
         textAlign: "justify",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",

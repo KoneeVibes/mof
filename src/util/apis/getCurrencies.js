@@ -1,20 +1,19 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const addOrganization = async (token, newOrganizationDetails) => {
+export const getCurrencies = async (token) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/organization`, {
-            method: 'POST',
+        const response = await fetch(`${BASE_ENDPOINT}/api/currencies`, {
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(newOrganizationDetails)
+                'Content-Type': 'application/json'
+            }
         });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const res = await response.json();
-        return res;
+        return res.data;
     } catch (error) {
         console.error('API fetch error:', error);
         throw error;
