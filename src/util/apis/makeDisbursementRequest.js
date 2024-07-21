@@ -1,14 +1,14 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const addProject = async (token, newProjectDetails) => {
+export const makeDisbursementRequest = async (token, requestDetails) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/projects`, {
+        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements/requests`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify(newProjectDetails)
+            body: JSON.stringify(requestDetails),
         });
         const res = await response.json();
         if (!response.ok) {
@@ -17,7 +17,7 @@ export const addProject = async (token, newProjectDetails) => {
         }
         return res;
     } catch (error) {
-        console.error('API fetch error:', error);
+        console.error('API fetch error:', error.message);
         throw error;
     }
 };

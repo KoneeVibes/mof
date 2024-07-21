@@ -9,10 +9,11 @@ export const authenticateUser = async (authDetails) => {
             },
             body: JSON.stringify(authDetails)
         });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
         const res = await response.json();
+        if (!response.ok) {
+            console.error('Error:', res);
+            throw new Error(res.message);
+        }
         return res;
     } catch (error) {
         console.error('API fetch error:', error);

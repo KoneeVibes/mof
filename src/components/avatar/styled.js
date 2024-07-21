@@ -5,6 +5,7 @@ export const AvatarWrapper = styled(Row)(({ location }) => {
     return `
         align-items: center;
         justify-content: space-between;
+        cursor: pointer;
 
         @media screen and (min-width: 0px) and (max-width: 768px){
             display: ${(location === "top-nav") ? "none" : "flex"};

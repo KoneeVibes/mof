@@ -9,7 +9,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { ChartsCardWrapper } from "../metricsarea/styled";
+import { ChartsCardWrapper } from "../../containers/metricsarea/styled";
 
 ChartJS.register(
     CategoryScale,
@@ -33,6 +33,11 @@ export const LineGraph = ({ title, label1, values1, label2, values2, label3, val
                 text: title,
             },
         },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
     };
 
     const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];

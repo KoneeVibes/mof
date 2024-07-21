@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const EntityRegistrationAreaWrapper = styled.div(() => {
+export const DisbursementnRequestAreaWrapper = styled.div(() => {
     return `
         display: flex;
         flex-direction: column;

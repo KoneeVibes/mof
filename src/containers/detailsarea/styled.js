@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { CardWrapper } from "../../components/card/styled";
 import { BaseButton } from "../../components/buttons/styled";
-import { Row } from "../../components/flex/styled";
 
 export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
     return {
@@ -32,14 +31,16 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
 
 export const ProjectDetailCardWrapper = styled(CardWrapper)(({ cardPadding = "var(--cardPadding)" }) => {
     return {
-        //Generic styles for the cards come here.
-        // backgroundColor: "#eeeeee",
         padding: cardPadding,
         textAlign: "justify",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
 
         "h1": {
             textDecoration: "underline",
+        },
+
+        "p": {
+            fontSize: "16px"
         }
     }
 })
@@ -48,16 +49,6 @@ export const ProjectDetailBaseButton = styled(BaseButton)(({ cardPadding = "var(
     return {
         width: "fit-content",
         padding: `calc(${cardPadding}/2) calc(${cardPadding})`,
-        
-    }
-})
 
-export const ProjectDetailButtonsWrapper =  styled(Row)(({ flexGap = "var(--flexGap)"}) => { 
-    return {
-        "@media screen and (max-width: 425px)": {
-            flexDirection: "column",
-            gap: `calc(${flexGap}/2)`,
-        },
-        
     }
 })

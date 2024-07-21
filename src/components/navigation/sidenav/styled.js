@@ -52,19 +52,26 @@ export const SideNavItemsListWrapper = styled(Column)(
             padding: ${cardPadding};
             margin-block: 0;
             cursor: pointer;
+        }
+
+        .entity {
             &:hover {
-                background-color: #059212;
+                border-left: 6px solid;
+                border-left-color: #059212;
+                background-color: #afedb5;
             }
         }
 
         li {
             cursor: pointer;
             padding: 0 ${cardPadding};
+            margin-block: 0.5rem;
         }
         
         ul {
-            list-style-type: none;
-            padding-left: 1.9rem;
+            // list-style-type: none;
+            margin-left: 1.9rem;
+            margin-block: 0;
         }
     `
     });
