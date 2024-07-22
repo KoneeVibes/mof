@@ -14,118 +14,85 @@ import { BaseButton } from "../../components/buttons/styled";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
-import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import { getCurrencies } from "../../util/apis/getCurrencies";
 
 export const ProjectRegistrationArea = () => {
     const cookies = new Cookies();
-    const cookie = cookies.getAll();
-    const token = cookie.TOKEN;
+    const token = cookies.get("TOKEN");
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
-    const [organizations, setOrganizations] = useState([]);
     const [currencies, setCurrencies] = useState([]);
 
-    //set formDetails initial value and show data type
     const [formDetails, setFormDetails] = useState({
         projectTitle: "",
         description: "",
-        organization: "",
-        fundingSources: [{ funderName: "", amount: 0, currency: "" }],
-        milestones: [{ text: "", startDate: "", endDate: "" }],
-        budget: [{ name: "", category: "", amount: 0, currency: "" }],
-        contractorDetails: {
-            name: "",
-            address: "",
-            phoneNumber: "",
-            email: "",
-            companyName: "",
-            companyAddress: "",
-            companyPhoneNumber: "",
-            companyEmail: "",
-            registrationDate: "",
-            registrationNo: "",
-            bankName: "",
-            accountNumber: "",
-            accountType: ""
-        }
+        fundingSources: [{ funderName: "", amount: 0, currencyName: "" }],
+        milestones: [{ text: "" }],
+        allocations: [{ amount: 0, currencyName: "" }],
+        projectMembers: [{ email: "" }],
     });
 
     useEffect(() => {
-        getAllOrganizations(token).then((listOfOrganizations) => setOrganizations(listOfOrganizations));
+        getCurrencies(token)
+            .then((data) => setCurrencies(data))
+            .catch((err) => {
+                console.error("Failed to fetch currencies:", err);
+                setError("Failed to fetch currencies. Please try again later.");
+            });
     }, [token]);
 
-    useEffect(() => {
-        getCurrencies(token).then((data) => setCurrencies(data));
-    }, [token]);
-
-    // controller added to input fields to handle change
-    // depending on if the field name is delimited
     const handleChange = (event) => {
         const { name, value } = event.target;
-        const [section, field] = name.split('.');
-        if (field) {
+        setFormDetails((prevDetails) => ({
+            ...prevDetails,
+            [name]: value,
+        }));
+    };
+
+    const handleNestedChange = (section, index, event) => {
+        const { name, value } = event.target;
+        const updatedSection = formDetails[section].map((entry, i) =>
+            i === index ? { ...entry, [name]: value } : entry
+        );
+
+        setFormDetails((prevDetails) => ({
+            ...prevDetails,
+            [section]: updatedSection,
+        }));
+    };
+
+    const handleAddNewEntry = (section) => {
+        const newItem =
+            section === "fundingSources"
+                ? { funderName: "", amount: 0, currencyName: "" }
+                : section === "allocations"
+                    ? { amount: 0, currencyName: "" }
+                    : section === "projectMembers"
+                        ? { email: "" }
+                        : section === "milestones"
+                            ? { text: "" }
+                            : null;
+
+        if (newItem) {
             setFormDetails((prevDetails) => ({
                 ...prevDetails,
-                [section]: {
-                    ...prevDetails[section],
-                    [field]: value
-                }
-            }));
-        } else {
-            setFormDetails((prevDetails) => ({
-                ...prevDetails,
-                [name]: value
+                [section]: [...prevDetails[section], newItem],
             }));
         }
     };
 
-    // controller to handle change in nested input fields of the form 
-    // (eg. fundingSources: {}[])
-    const handleNestedChange = (section, index, event) => {
-        const { name, value } = event.target;
-        // Here, we want to get the section that this field is nested in
-        // using the section argument that is passed in the jsx and using
-        // the entry index that is also passed in jsx, we update 
-        // that specific entry with latest changes in concerned input field.
-        const updatedSection = formDetails[section].map((entry, i) => (
-            i === index ? { ...entry, [name]: value } : entry
-        ));
-
-        // Here, we update form details with updated section from above
-        setFormDetails((prevDetails) => ({
-            ...prevDetails,
-            [section]: updatedSection
-        }));
-    };
-
-    // function to add new entry fields to a section
-    const handleAddNewEntry = (section) => {
-        const newItem = section === 'fundingSources'
-            ? { funderName: "", amount: 0, currency: "" }
-            : section === 'milestones'
-                ? { text: "", startDate: "", endDate: "" }
-                : { name: "", category: "", amount: 0, currency: "" };
-
-        setFormDetails((prevDetails) => ({
-            ...prevDetails,
-            [section]: [...prevDetails[section], newItem]
-        }));
-    };
-
-    // function to remove entry fields from a section
     const handleRemoveEntry = (section, index) => {
         const updatedSection = formDetails[section].filter((_, i) => i !== index);
         setFormDetails((prevDetails) => ({
             ...prevDetails,
-            [section]: updatedSection
+            [section]: updatedSection,
         }));
     };
 
-    // handle form submission by sending form details to backend.
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(formDetails);
         try {
             const response = await addProject(token, formDetails);
             if (response.status === "Success") {
@@ -147,6 +114,7 @@ export const ProjectRegistrationArea = () => {
                 <form onSubmit={handleSubmit}>
                     <Label htmlFor="projectTitle">Project Title</Label>
                     <BaseInputWrapper
+                        as="input"
                         type="text"
                         name="projectTitle"
                         required
@@ -155,26 +123,13 @@ export const ProjectRegistrationArea = () => {
                     />
                     <Label htmlFor="description">Description</Label>
                     <TextAreaWrapper
+                        as="textarea"
                         name="description"
                         value={formDetails.description}
                         onChange={handleChange}
                     />
-                    <Label htmlFor="organization">Organization</Label>
-                    <SelectFieldWrapper
-                        name="organization"
-                        value={formDetails.organization}
-                        onChange={handleChange}
-                    >
-                        <option value="">Select your Organisation</option>
-                        {organizations.flatMap(organization =>
-                            organization.subOrganizations.filter(subOrganization => subOrganization.orgType === "Parastatal")
-                        ).map((subOrganization, key) => (
-                            <option key={key} value={subOrganization.name}>
-                                {subOrganization.name}
-                            </option>
-                        ))}
-                    </SelectFieldWrapper>
-                    <Label htmlFor="fundingSources">Funding Sources</Label>
+
+                    <Label>Funding Sources</Label>
                     {formDetails.fundingSources.map((source, index) => (
                         <ProjectRegistrationBaseInputWrapper key={index}>
                             <ProjectRegistrationBaseInput
@@ -183,7 +138,7 @@ export const ProjectRegistrationArea = () => {
                                 placeholder="Funder Name"
                                 required
                                 value={source.funderName}
-                                onChange={(e) => handleNestedChange('fundingSources', index, e)}
+                                onChange={(e) => handleNestedChange("fundingSources", index, e)}
                             />
                             <ProjectRegistrationBaseInput
                                 type="number"
@@ -191,13 +146,14 @@ export const ProjectRegistrationArea = () => {
                                 placeholder="Amount"
                                 required
                                 value={source.amount}
-                                onChange={(e) => handleNestedChange('fundingSources', index, e)}
+                                onChange={(e) => handleNestedChange("fundingSources", index, e)}
                             />
                             <SelectFieldWrapper
-                                name="currency"
+                                as="select"
+                                name="currencyName"
                                 required
-                                value={source.currency}
-                                onChange={(e) => handleNestedChange('fundingSources', index, e)}
+                                value={source.currencyName}
+                                onChange={(e) => handleNestedChange("fundingSources", index, e)}
                             >
                                 <option value="">Select a currency</option>
                                 {currencies.map((currency, key) => (
@@ -206,73 +162,58 @@ export const ProjectRegistrationArea = () => {
                                     </option>
                                 ))}
                             </SelectFieldWrapper>
-                            <ProjectRegistrationBaseButton type="button" onClick={() => handleRemoveEntry('fundingSources', index)}>-</ProjectRegistrationBaseButton>
+                            <ProjectRegistrationBaseButton
+                                type="button"
+                                onClick={() => handleRemoveEntry("fundingSources", index)}
+                            >
+                                -
+                            </ProjectRegistrationBaseButton>
                         </ProjectRegistrationBaseInputWrapper>
                     ))}
-                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry('fundingSources')}>Add New Entry</ProjectRegistrationBaseButton>
-                    <Label htmlFor="milestones">Timeline Milestones</Label>
+                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry("fundingSources")}>
+                        Add New Entry
+                    </ProjectRegistrationBaseButton>
+
+                    <Label>Milestones</Label>
                     {formDetails.milestones.map((milestone, index) => (
                         <ProjectRegistrationBaseInputWrapper key={index}>
                             <ProjectRegistrationBaseInput
                                 type="text"
                                 name="text"
-                                placeholder="Milestone"
+                                placeholder="State Milestone"
                                 required
                                 value={milestone.text}
-                                onChange={(e) => handleNestedChange('milestones', index, e)}
+                                onChange={(e) => handleNestedChange("milestones", index, e)}
                             />
-                            <ProjectRegistrationBaseInput
-                                type="date"
-                                name="startDate"
-                                placeholder="Start Date"
-                                required
-                                value={milestone.startDate}
-                                onChange={(e) => handleNestedChange('milestones', index, e)}
-                            />
-                            <ProjectRegistrationBaseInput
-                                type="date"
-                                name="endDate"
-                                placeholder="End Date"
-                                required
-                                value={milestone.endDate}
-                                onChange={(e) => handleNestedChange('milestones', index, e)}
-                            />
-                            <ProjectRegistrationBaseButton type="button" onClick={() => handleRemoveEntry('milestones', index)}>-</ProjectRegistrationBaseButton>
+                            <ProjectRegistrationBaseButton
+                                type="button"
+                                onClick={() => handleRemoveEntry("milestones", index)}
+                            >
+                                -
+                            </ProjectRegistrationBaseButton>
                         </ProjectRegistrationBaseInputWrapper>
                     ))}
-                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry('milestones')}>Add New Entry</ProjectRegistrationBaseButton>
-                    <Label htmlFor="budget">Budget Information</Label>
-                    {formDetails.budget.map((budgetItem, index) => (
+                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry("milestones")}>
+                        Add New Entry
+                    </ProjectRegistrationBaseButton>
+
+                    <Label>Allocations</Label>
+                    {formDetails.allocations.map((allocation, index) => (
                         <ProjectRegistrationBaseInputWrapper key={index}>
-                            <ProjectRegistrationBaseInput
-                                type="text"
-                                name="name"
-                                placeholder="Description"
-                                required
-                                value={budgetItem.name}
-                                onChange={(e) => handleNestedChange('budget', index, e)}
-                            />
-                            <ProjectRegistrationBaseInput
-                                type="text"
-                                name="category"
-                                placeholder="Category"
-                                required
-                                value={budgetItem.category}
-                                onChange={(e) => handleNestedChange('budget', index, e)}
-                            />
                             <ProjectRegistrationBaseInput
                                 type="number"
                                 name="amount"
                                 placeholder="Amount"
                                 required
-                                value={budgetItem.amount}
-                                onChange={(e) => handleNestedChange('budget', index, e)}
+                                value={allocation.amount}
+                                onChange={(e) => handleNestedChange("allocations", index, e)}
                             />
                             <SelectFieldWrapper
-                                name="currency"
+                                as="select"
+                                name="currencyName"
                                 required
-                                value={budgetItem.currency}
-                                onChange={(e) => handleNestedChange('budget', index, e)}
+                                value={allocation.currencyName}
+                                onChange={(e) => handleNestedChange("allocations", index, e)}
                             >
                                 <option value="">Select a currency</option>
                                 {currencies.map((currency, key) => (
@@ -281,108 +222,43 @@ export const ProjectRegistrationArea = () => {
                                     </option>
                                 ))}
                             </SelectFieldWrapper>
-                            <ProjectRegistrationBaseButton type="button" onClick={() => handleRemoveEntry('budget', index)}>-</ProjectRegistrationBaseButton>
+                            <ProjectRegistrationBaseButton
+                                type="button"
+                                onClick={() => handleRemoveEntry("allocations", index)}
+                            >
+                                -
+                            </ProjectRegistrationBaseButton>
                         </ProjectRegistrationBaseInputWrapper>
                     ))}
-                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry('budget')}>Add New Entry</ProjectRegistrationBaseButton>
-                    <Label htmlFor="contractorDetails.name">Contractor Details</Label>
-                    <BaseInputWrapper
-                        type="text"
-                        name="contractorDetails.name"
-                        placeholder="Name"
-                        required
-                        value={formDetails.contractorDetails.name}
-                        onChange={handleChange}
-                    />
-                    <BaseInputWrapper
-                        type="text"
-                        name="contractorDetails.address"
-                        placeholder="Address"
-                        required
-                        value={formDetails.contractorDetails.address}
-                        onChange={handleChange}
-                    />
-                    <BaseInputWrapper
-                        type="tel"
-                        name="contractorDetails.phoneNumber"
-                        placeholder="Phone Number"
-                        required
-                        value={formDetails.contractorDetails.phoneNumber}
-                        onChange={handleChange}
-                    />
-                    <BaseInputWrapper
-                        type="email"
-                        name="contractorDetails.email"
-                        placeholder="Email"
-                        required
-                        value={formDetails.contractorDetails.email}
-                        onChange={handleChange}
-                    />
-                    <BaseInputWrapper
-                        type="text"
-                        name="contractorDetails.companyName"
-                        placeholder="Company Name"
-                        required
-                        value={formDetails.contractorDetails.companyName}
-                        onChange={handleChange}
-                    />
-                    <TextAreaWrapper
-                        name="contractorDetails.companyAddress"
-                        placeholder="Company Address"
-                        value={formDetails.contractorDetails.companyAddress}
-                        onChange={handleChange}
-                    />
-                    <BaseInputWrapper
-                        type="tel"
-                        name="contractorDetails.companyPhoneNumber"
-                        placeholder="Company Phone Number"
-                        required
-                        value={formDetails.contractorDetails.companyPhoneNumber}
-                        onChange={handleChange}
-                    />
-                    <BaseInputWrapper
-                        type="email"
-                        name="contractorDetails.companyEmail"
-                        placeholder="Company Email"
-                        required
-                        value={formDetails.contractorDetails.companyEmail}
-                        onChange={handleChange}
-                    />
-                    <BaseInputWrapper
-                        type="date"
-                        name="contractorDetails.registrationDate"
-                        placeholder="Registration Date"
-                        required
-                        value={formDetails.contractorDetails.registrationDate}
-                        onChange={handleChange}
-                    />
-                    <BaseInputWrapper
-                        type="text"
-                        name="contractorDetails.bankName"
-                        placeholder="Bank Name"
-                        required
-                        value={formDetails.contractorDetails.bankName}
-                        onChange={handleChange}
-                    />
-                    <BaseInputWrapper
-                        type="text"
-                        name="contractorDetails.accountNumber"
-                        placeholder="Account Number"
-                        required
-                        value={formDetails.contractorDetails.accountNumber}
-                        onChange={handleChange}
-                    />
-                    <BaseInputWrapper
-                        type="text"
-                        name="contractorDetails.accountType"
-                        placeholder="Account Type"
-                        required
-                        value={formDetails.contractorDetails.accountType}
-                        onChange={handleChange}
-                    />
+                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry("allocations")}>
+                        Add New Entry
+                    </ProjectRegistrationBaseButton>
+
+                    <Label>Project Members</Label>
+                    {formDetails.projectMembers.map((member, index) => (
+                        <ProjectRegistrationBaseInputWrapper key={index}>
+                            <ProjectRegistrationBaseInput
+                                type="email"
+                                name="email"
+                                placeholder="Enter User Email"
+                                value={member.email}
+                                onChange={(e) => handleNestedChange("projectMembers", index, e)}
+                            />
+                            <ProjectRegistrationBaseButton
+                                type="button"
+                                onClick={() => handleRemoveEntry("projectMembers", index)}
+                            >
+                                -
+                            </ProjectRegistrationBaseButton>
+                        </ProjectRegistrationBaseInputWrapper>
+                    ))}
+                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry("projectMembers")}>
+                        Add New Entry
+                    </ProjectRegistrationBaseButton>
+
                     <BaseButton type="submit">Continue</BaseButton>
                 </form>
-                {error && <P style={{ color: 'red' }}>{error}</P>}
+                {error && <P style={{ color: "red" }}>{error}</P>}
             </ProjectRegistrationAreaWrapper>
         </Dashboard>
     );

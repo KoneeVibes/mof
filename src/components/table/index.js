@@ -1,49 +1,32 @@
 import React from "react";
-import { Td, Th } from "../typography/styled"
+import { Td, Th } from "../typography/styled";
 
-export const Table = ({ columnTitles, onSelectOption, options, rowItems, isBudgetTable }) => {
+export const Table = ({ columnTitles, onSelectOption, rowItems, uniqueCurrencies, location }) => {
     return (
         <table>
             <thead>
                 <tr>
-                    {columnTitles.map((rowHead, k) => {
-                        return (
-                            <Th key={k}>{rowHead}</Th>
-                        )
-                    })}
+                    {columnTitles?.map((columnTitle, index) => (
+                        <Th key={index}>{columnTitle}</Th>
+                    ))}
                 </tr>
             </thead>
             <tbody>
-                {rowItems.map((subOrganization, k) => (
-                    <tr key={k}>
-                        {(isBudgetTable) ? (
-                            Object.values(subOrganization).map((value, i) => (
-                                <Td key={i}>
-                                    {value}
-                                </Td>
-                            ))
-                        ) : (
-                            <React.Fragment>
-                                <Td>{subOrganization.name}</Td>
-                                <Td>{/* */}</Td>
-                                <Td>{/* */}</Td>
-                                <Td>{/* */}</Td>
-                                <Td>{/* */}</Td>
-                                <Td>{/* */}</Td>
-                            </React.Fragment>
-                        )}
-                        {options && (
-                            <Td>
-                                <select
-                                    onChange={(e) => onSelectOption(e.target.value, subOrganization.id)}
-                                >
-                                    <option>Select a project</option>
-                                    {options[subOrganization.id]?.map((project, j) => (
-                                        <option key={j} value={project.title}>{project.title}</option>
-                                    ))}
-                                </select>
-                            </Td>
-                        )}
+                {rowItems?.map((rowItem, rowIndex) => (
+                    <tr
+                        key={rowIndex}
+                        onClick={(event) => onSelectOption(rowItem.organization, rowItem.projectId, event)}
+                    >
+                        <Td>{rowItem.title || rowItem.dateRequested || ''}</Td>
+                        <Td>{rowItem.organization || rowItem.requester || ''}</Td>
+                        {(location === "detailsArea") && (uniqueCurrencies?.map((_, index) => {
+                            return <Td key={index}>{rowItem.amount}</Td>;
+                        }))}
+                        {(location === "projectsTableArea") && (uniqueCurrencies?.map((currency, index) => {
+                            const funding = rowItem.fundings.find(f => f.currencyName === currency);
+                            return <Td key={index}>{funding ? funding.amount : ''}</Td>;
+                        }))}
+                        <Td>{rowItem.status || rowItem.approvalStatus || ''}</Td>
                     </tr>
                 ))}
             </tbody>

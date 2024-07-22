@@ -4,8 +4,6 @@ import { CardWrapper } from "../../components/card/styled";
 
 export const MetricsAreaWrapper = styled(Column)(() => {
     return `
-        // gap: 0;
-
         h1{
             margin-block: 0;
         }
@@ -31,7 +29,7 @@ export const ChartsRowWrapper = styled(Row)(() => {
 export const ChartsCardWrapper = styled(CardWrapper)(() => {
     return `
         @media screen and (min-width: 425px){
-            min-width: 18.75rem;
+            min-width: 22rem;
             padding: calc(var(--cardPadding)/2);
         }
     `
@@ -44,7 +42,7 @@ export const NewProjectCardWrapper = styled(CardWrapper)(() => {
         flex-direction: column;
         justify-content: space-between;
         @media screen and (min-width: 425px){
-            min-width: 18.75rem;
+            min-width: 22rem;
         }
     `
 })

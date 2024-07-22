@@ -21,6 +21,7 @@ export const H3 = styled.h3(() => {
         font-family: Work Sans;
         font-weight: 600;
         font-size: 18px; 
+        text-align: left;
     `
 })
 
@@ -29,6 +30,7 @@ export const P = styled.p(() => {
         font-family: Avenir-Next;
         font-weight: 400;
         font-size: 20px;
+        text-align: left;
     `
 })
 export const A = styled.a(() => {
@@ -66,5 +68,6 @@ export const Li = styled.li(() => {
         font-family: Work Sans;
         font-size: 16px;
         font-weight: 400;
+        text-align: left;
     `
 })

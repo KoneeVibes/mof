@@ -26,7 +26,7 @@ export const EntitiesTableWrapper = styled.div(({ cardPadding = "var(--cardPaddi
             minWidth: "150px",
         },
         "td": {
-            textAlign: "center",
+            textAlign: "left",
             borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
             padding: cardPadding,
             minWidth: "150px",
