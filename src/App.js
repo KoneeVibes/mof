@@ -23,9 +23,9 @@ function App() {
         <Route path='/:entity/:projectId/request' element={<DisbursementRequestArea />} />
         <Route path='/registration/project' element={<ProjectRegistrationArea />} />
         {/* Route to add a user to a project */}
-        <Route path='/registration/:projectId/user' element={<UserRegistrationArea />} />
+        <Route path='/registration/:projectId/add/user' element={<UserRegistrationArea />} />
         {/* Route to onboard a new user - Pending */}
-        <Route path='/registration/:subAdminId/user' element={<UserOnboardingArea />} />
+        <Route path='/registration/:subAdminId/onboard/user' element={<UserOnboardingArea />} />
         {/* Route to onboard a subadmin */}
         <Route path='/registration/:superAdminId/subadmin' element={<SubAdminOnboardingArea />} />
         {/* Route to onboard an organization */}
