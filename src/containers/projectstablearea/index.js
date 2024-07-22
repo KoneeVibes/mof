@@ -6,7 +6,6 @@ import { Table } from "../../components/table";
 import { useEffect, useState } from "react";
 import { getProjectsPerOrganization } from "../../util/apis/getProjectsPerOrganization";
 import Cookies from "universal-cookie";
-import { retrieveHeaders } from "../../config/retrieveHeaders";
 
 export const ProjectsTableArea = () => {
     const cookies = new Cookies();
@@ -15,7 +14,8 @@ export const ProjectsTableArea = () => {
     const navigate = useNavigate();
     const { entity, entityId } = useParams();
     const [projects, setProjects] = useState([]);
-    const [columns, setColumns] = useState(["Project Title", "MDA"]);
+    const [columns, setColumns] = useState(["Project Title", "MDA", "Status"]);
+    const [uniqueCurrencies, setUniqueCurrencies] = useState([]);
 
     const token = cookie.TOKEN;
     const { roles, organization, organizationId } = cookie.USER || {};
@@ -23,29 +23,23 @@ export const ProjectsTableArea = () => {
     useEffect(() => {
         if (token && entityId) {
             getProjectsPerOrganization(token, entityId)
-                .then((projects) => {
+                .then((response) => {
+                    setProjects(response);
+
                     const fundingSources = projects.flatMap(project => project.fundings);
-                    const currencyNames = retrieveHeaders(fundingSources, "currencyName");
+                    const currencyNames = [...new Set(fundingSources.map(funding => funding.currencyName))];
+                    setUniqueCurrencies(currencyNames);
 
-                    setProjects(projects);
-
-                    // Add unique currency columns to the existing columns
-                    const uniqueCurrencies = [...new Set(currencyNames)].map(currency => `Allocation in ${currency}`);
-                    setColumns((prev) => {
-                        const newColumns = ["Project Title", "MDA", ...uniqueCurrencies, "Status"];
-                        return newColumns;
-                    });
+                    const newColumns = ["Project Title", "MDA", ...currencyNames.map(currency => `Allocation in ${currency}`), "Status"];
+                    setColumns(newColumns);
                 })
                 .catch((err) => console.error("Failed to fetch projects:", err));
         }
-    }, [token, entityId]);
+    }, [token, entityId, projects]);
 
-    // Ensure that subadmins cannot view project tables of other organizations 
-    // asides theirs.
     useEffect(() => {
         if (!roles?.includes("SuperAdmin") && (entity !== organization.replace(/\s+/g, '').toLowerCase() || entityId !== organizationId)) {
             console.error("Error, unauthorized viewership");
-            // Optionally navigate to an unauthorized page or display a message
         }
     }, [roles, entity, organization, entityId, organizationId]);
 
@@ -62,6 +56,8 @@ export const ProjectsTableArea = () => {
                         columnTitles={columns}
                         rowItems={projects}
                         onSelectOption={navigateToProjectDetails}
+                        uniqueCurrencies={uniqueCurrencies}
+                        location={"projectsTableArea"}
                     />
                 </EntitiesTableWrapper>
             </EntitiesAreaWrapper>

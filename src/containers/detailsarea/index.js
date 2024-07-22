@@ -145,8 +145,10 @@ export const ProjectDetailsArea = () => {
                 <H2>Disbursements</H2>
                 <div style={{ overflow: "auto" }}>
                     <Table
+                        location={"detailsArea"}
                         columnTitles={columns}
                         rowItems={requests}
+                        uniqueCurrencies={currencies}
                         onSelectOption={(x, y, event) => event.preventDefault()}
                     />
                 </div>
