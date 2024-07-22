@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 export const Avatar = ({ location }) => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
-    const { email, roles } = cookie.USER || {};
+    const { email, roles, userId } = cookie.USER || {};
 
     const navigate = useNavigate();
     const { isavatarmodalopen, setIsAvatarModalOpen } = useContext(Context);
@@ -18,6 +18,19 @@ export const Avatar = ({ location }) => {
     const handleRedirect = (e, id) => {
         e.preventDefault();
         console.log(id);
+        switch (id) {
+            case "onboardSubAdmin":
+                navigate(`/registration/${userId}/subadmin`);
+                break;
+            case "onboardUser":
+                navigate(`/registration/${userId}/user`);
+                break;
+            case "onboardOrganization":
+                navigate(`/registration/${userId}/entity`);
+                break;
+            default:
+                break;
+        }
     }
 
     const handleLogout = (e) => {

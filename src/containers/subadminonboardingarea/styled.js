@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const UserRegistrationAreaWrapper = styled("div")(() => {
+export const SubAdminOnboardingAreaWrapper = styled.div(() => {
     return `
         display: flex;
         flex-direction: column;

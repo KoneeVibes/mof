@@ -1,6 +1,6 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const addUserToProject = async (token, userDetails) => {
+export const onboardSubAdmin = async (token, userDetails) => {
     try {
         const response = await fetch(`${BASE_ENDPOINT}/api/accounts/sub-admin/sign-up`, {
             method: 'POST',

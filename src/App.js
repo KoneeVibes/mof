@@ -7,8 +7,11 @@ import { ProjectsTableArea } from './containers/projectstablearea';
 import { ProjectRegistrationArea } from './containers/projectregistrationarea';
 import { ProjectDetailsArea } from './containers/detailsarea';
 import { EntityRegistrationArea } from './containers/entityregistrationarea';
-import { UserRegistrationArea } from './containers/userregistrationarea';
+import { SubAdminOnboardingArea } from './containers/subadminonboardingarea';
 import { DisbursementRequestArea } from './containers/disbursementrequestarea';
+import { UserRegistrationArea } from './containers/userregistrationarea';
+import { UserOnboardingArea } from './containers/useronboardingarea';
+import { OrganizationOnboardingArea } from './containers/organizationonboardingarea';
 
 function App() {
   return (
@@ -20,7 +23,14 @@ function App() {
         <Route path='/:entity/:projectId' element={<ProjectDetailsArea />} />
         <Route path='/:entity/:projectId/request' element={<DisbursementRequestArea />} />
         <Route path='/registration/project' element={<ProjectRegistrationArea />} />
+        {/* Route to add a user to a project */}
         <Route path='/registration/:projectId/user' element={<UserRegistrationArea />} />
+        {/* Route to onboard a new user */}
+        <Route path='/registration/:subAdminId/user' element={<UserOnboardingArea />} />
+        {/* Route to onboard a subadmin */}
+        <Route path='/registration/:superAdminId/subadmin' element={<SubAdminOnboardingArea />} />
+        {/* Route to onboard an organization */}
+        <Route path='/registration/:superAdminId/entity' element={<OrganizationOnboardingArea />} />
         <Route path='/registration/entity' element={<EntityRegistrationArea />} />
 
         {/* Fallback route*/}
