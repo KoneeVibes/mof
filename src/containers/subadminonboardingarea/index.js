@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import { BaseButton } from "../../components/buttons/styled";
+import { DotLoader } from "react-spinners";
 
 export const SubAdminOnboardingArea = () => {
     const cookies = new Cookies();
@@ -19,6 +20,7 @@ export const SubAdminOnboardingArea = () => {
     const navigate = useNavigate();
     const { projectId } = useParams();
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [organizations, setOrganizations] = useState([]);
     const [formDetails, setFormDetails] = useState({
         email: "",
@@ -35,9 +37,11 @@ export const SubAdminOnboardingArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await onboardSubAdmin(token, formDetails);
             if (response.status === "Success") {
+                setLoading(false);
                 navigate(`/${organization.replace(/\s+/g, '').toLowerCase()}/${projectId}`);
             } else {
                 setError("Submission failed. Please check your inputs and try again.");
@@ -84,7 +88,14 @@ export const SubAdminOnboardingArea = () => {
                             </option>
                         ))}
                     </SelectFieldWrapper>
-                    <BaseButton as="button" type="submit">Continue</BaseButton>
+                    <BaseButton as="button" type="submit">
+                    {loading ?
+                            <DotLoader
+                                size={20}
+                                color="white"
+                                className="dotLoader"
+                            /> : "Continue"}
+                    </BaseButton>
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
             </SubAdminOnboardingAreaWrapper>
