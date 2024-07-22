@@ -8,6 +8,7 @@ import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { onboardUser } from "../../util/apis/onboardUser";
+import { BaseButton } from "../../components/buttons/styled";
 
 export const UserOnboardingArea = () => {
     const cookies = new Cookies();
@@ -81,6 +82,7 @@ export const UserOnboardingArea = () => {
                             </option>
                         ))}
                     </SelectFieldWrapper>
+                    <BaseButton type="submit">Continue</BaseButton>
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
             </UserOnboardingAreaWrapper>
