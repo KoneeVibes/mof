@@ -99,16 +99,18 @@ export const ProjectDetailsArea = () => {
             <ProjectDetailsAreaWrapper>
                 <Jumbotron />
                 <Row tocolumn={1}>
-                    <NewProjectCardWrapper>
-                        <H2>New User</H2>
-                        <br />
-                        <BaseButton
-                            width={"-webkit-fill-available"}
-                            onClick={() => navigate(`/registration/${projectId}/user`)}
-                        >
-                            Add new user
-                        </BaseButton>
-                    </NewProjectCardWrapper>
+                    {cookie.USER.roles.includes("SubAdmin") && (
+                        <NewProjectCardWrapper>
+                            <H2>New User</H2>
+                            <br />
+                            <BaseButton
+                                width={"-webkit-fill-available"}
+                                onClick={() => navigate(`/registration/${projectId}/user`)}
+                            >
+                                Add new user to Project
+                            </BaseButton>
+                        </NewProjectCardWrapper>
+                    )}
                     <ProjectDetailCardWrapper>
                         <InitiativeIcon />
                         <H3>{project?.projectTitle}</H3>
@@ -148,11 +150,13 @@ export const ProjectDetailsArea = () => {
                         onSelectOption={(x, y, event) => event.preventDefault()}
                     />
                 </div>
-                <ProjectDetailBaseButton
-                    onClick={() => navigate(`/${entity}/${projectId}/request`)}
-                >
-                    Make a Request
-                </ProjectDetailBaseButton>
+                {!cookie.USER.roles.includes("SuperAdmin") && (
+                    <ProjectDetailBaseButton
+                        onClick={() => navigate(`/${entity}/${projectId}/request`)}
+                    >
+                        Make a Request
+                    </ProjectDetailBaseButton>
+                )}
             </ProjectDetailsAreaWrapper>
         </Dashboard>
     );

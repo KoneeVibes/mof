@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const TextAreaWrapper = styled("textarea")(() => {
     return `
         border-radius: 10px;
-        // background-color: #EEEEEE;
+        // background-color: EEEE;
         width: -webkit-fill-available;
         border: none;
         min-height: 7rem;

@@ -41,7 +41,7 @@ export const MetricsArea = () => {
             <MetricsAreaWrapper>
                 <H1>DASHBOARD</H1>
                 <ChartsRowWrapper>
-                    {!cookie.USER.roles.includes("SuperAdmin") && (
+                    {cookie.USER.roles.includes("SubAdmin") && (
                         <NewProjectCardWrapper>
                             <H2>New Project</H2>
                             <br />
