@@ -9,6 +9,7 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { onboardUser } from "../../util/apis/onboardUser";
 import { BaseButton } from "../../components/buttons/styled";
+import { DotLoader } from "react-spinners";
 
 export const UserOnboardingArea = () => {
     const cookies = new Cookies();
@@ -17,6 +18,7 @@ export const UserOnboardingArea = () => {
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [organizations, setOrganizations] = useState([]);
     const [formDetails, setFormDetails] = useState({
         email: "",
@@ -33,9 +35,11 @@ export const UserOnboardingArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await onboardUser(token, formDetails);
             if (response.status === "Success") {
+                setLoading(false);
                 navigate("/dashboard")
             } else {
                 setError("Submission failed. Please check your inputs and try again.");
@@ -82,7 +86,14 @@ export const UserOnboardingArea = () => {
                             </option>
                         ))}
                     </SelectFieldWrapper>
-                    <BaseButton type="submit">Continue</BaseButton>
+                    <BaseButton type="submit">
+                    {loading ?
+                            <DotLoader
+                                size={20}
+                                color="white"
+                                className="dotLoader"
+                            /> : "Continue"}
+                    </BaseButton>
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
             </UserOnboardingAreaWrapper>
