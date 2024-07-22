@@ -13,6 +13,7 @@ export const BaseButton = styled.button(
             padding: "1.5rem",
             textTransform: "uppercase",
             fontSize: "1rem",
+            cursor: "pointer",
         }
     }
 )
