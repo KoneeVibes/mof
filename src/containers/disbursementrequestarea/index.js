@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { getCurrencies } from "../../util/apis/getCurrencies";
 import Cookies from "universal-cookie";
 import { makeDisbursementRequest } from "../../util/apis/makeDisbursementRequest";
+import { DotLoader } from "react-spinners";
 
 export const DisbursementRequestArea = () => {
     const cookies = new Cookies();
@@ -19,6 +20,7 @@ export const DisbursementRequestArea = () => {
     const { projectId } = useParams();
     const [currencies, setCurrencies] = useState([]);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [formDetails, setFormDetails] = useState({
         projectId: projectId,
         purpose: "",
@@ -36,9 +38,11 @@ export const DisbursementRequestArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await makeDisbursementRequest(TOKEN, formDetails);
             if (response.status === "Success") {
+                setLoading(false);
                 navigate(-1);
             } else {
                 setError("Submission failed. Please check your inputs and try again.");
@@ -87,7 +91,7 @@ export const DisbursementRequestArea = () => {
                     <SelectFieldWrapper
                         as="select"
                         name="currencyName"
-                        required
+                        // required
                         value={formDetails.currencyName}
                         onChange={handleChange}
                     >
@@ -98,7 +102,14 @@ export const DisbursementRequestArea = () => {
                             </option>
                         ))}
                     </SelectFieldWrapper>
-                    <BaseButton as="button" type="submit">Continue</BaseButton>
+                    <BaseButton as="button" type="submit">
+                        {loading ?
+                            <DotLoader
+                                size={20}
+                                color="white"
+                                className="dotLoader"
+                            /> : "Continue"}
+                    </BaseButton>
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
             </DisbursementnRequestAreaWrapper>

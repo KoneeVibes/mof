@@ -1,5 +1,5 @@
 import { Dashboard } from "../dashboard";
-import { EntityRegistrationAreaWrapper } from "./styled";
+import { EntityOnboardingAreaWrapper } from "./styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { H2, Label, P } from "../../components/typography/styled";
 import { BaseButton } from "../../components/buttons/styled";
@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 
-export const EntityRegistrationArea = () => {
+export const EntityOnboardingArea = () => {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
     const orgTypes = ["Ministry", "Parastatal"];
@@ -53,11 +53,10 @@ export const EntityRegistrationArea = () => {
 
     return (
         <Dashboard>
-            <EntityRegistrationAreaWrapper>
-                <H2>PROJECT DETAILS</H2>
-                <P>PLEASE ENTER THE PROJECT INFORMATION</P>
+            <EntityOnboardingAreaWrapper>
+                <H2>NEW MDA DETAILS</H2>
                 <form onSubmit={handleSubmit}>
-                    <Label>Name of Organisation:</Label>
+                    <Label>Name of MDA:</Label>
                     <BaseInputWrapper
                         type="text"
                         name="name"
@@ -95,7 +94,7 @@ export const EntityRegistrationArea = () => {
                     <BaseButton type="submit">Continue</BaseButton>
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
-            </EntityRegistrationAreaWrapper>
+            </EntityOnboardingAreaWrapper>
         </Dashboard>
     );
 };
