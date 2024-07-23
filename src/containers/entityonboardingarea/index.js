@@ -9,6 +9,7 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
+import { flattenOrganizations } from "../../config/flattenOrganizations";
 
 export const EntityOnboardingArea = () => {
     const cookies = new Cookies();
@@ -33,7 +34,14 @@ export const EntityOnboardingArea = () => {
     };
 
     useEffect(() => {
-        getAllOrganizations(token).then((listOfOrganizations) => setOrganizations(listOfOrganizations));
+        if (token) {
+            getAllOrganizations(token).then((listOfOrganizations) => {
+                const collapsedList = flattenOrganizations(listOfOrganizations);
+                setOrganizations(collapsedList);
+            }).catch((error) => {
+                console.error("Failed to fetch organizations:", error);
+            });
+        }
     }, [token]);
 
     const handleSubmit = async (e) => {

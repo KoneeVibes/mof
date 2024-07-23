@@ -19,9 +19,16 @@ export const Table = ({ columnTitles, onSelectOption, rowItems, uniqueCurrencies
                     >
                         <Td>{rowItem.title || rowItem.dateRequested || ''}</Td>
                         <Td>{rowItem.organization || rowItem.requester || ''}</Td>
-                        {(location === "detailsArea") && (uniqueCurrencies?.map((_, index) => {
-                            return <Td key={index}>{rowItem.amount}</Td>;
-                        }))}
+                        {
+                            (location === "detailsArea") && (
+                                <React.Fragment>
+                                    <Td>{rowItem.purpose}</Td>
+                                    {uniqueCurrencies.length > 1 ? uniqueCurrencies.map((_, index) => (
+                                        <Td key={index}>{rowItem.currencySymbol}{rowItem.amount}</Td>
+                                    )) : <Td>{rowItem.currencySymbol}{rowItem.amount}</Td>}
+                                </React.Fragment>
+                            )
+                        }
                         {(location === "projectsTableArea") && (uniqueCurrencies?.map((currency, index) => {
                             const funding = rowItem.fundings.find(f => f.currencyName === currency);
                             return <Td key={index}>{funding ? funding.amount : ''}</Td>;

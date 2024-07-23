@@ -15,14 +15,19 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { getCurrencies } from "../../util/apis/getCurrencies";
+import { getOrganizationMembers } from "../../util/apis/getOrganizationMembers";
 
 export const ProjectRegistrationArea = () => {
     const cookies = new Cookies();
+    const cookie = cookies.getAll();
     const token = cookies.get("TOKEN");
+    const { organizationId } = cookie.USER;
+    console.log(organizationId);
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [currencies, setCurrencies] = useState([]);
+    const [members, setMembers] = useState([]);
 
     const [formDetails, setFormDetails] = useState({
         projectTitle: "",
@@ -41,6 +46,15 @@ export const ProjectRegistrationArea = () => {
                 setError("Failed to fetch currencies. Please try again later.");
             });
     }, [token]);
+
+    useEffect(() => {
+        getOrganizationMembers(token, organizationId)
+            .then((data) => setMembers(data))
+            .catch((err) => {
+                console.error("Failed to fetch currencies:", err);
+                setError("Failed to fetch currencies. Please try again later.");
+            });
+    }, [organizationId, token]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -92,7 +106,6 @@ export const ProjectRegistrationArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formDetails);
         try {
             const response = await addProject(token, formDetails);
             if (response.status === "Success") {
@@ -237,13 +250,20 @@ export const ProjectRegistrationArea = () => {
                     <Label>Project Members</Label>
                     {formDetails.projectMembers.map((member, index) => (
                         <ProjectRegistrationBaseInputWrapper key={index}>
-                            <ProjectRegistrationBaseInput
-                                type="email"
+                            <SelectFieldWrapper
+                                as="select"
                                 name="email"
-                                placeholder="Enter User Email"
+                                required
                                 value={member.email}
                                 onChange={(e) => handleNestedChange("projectMembers", index, e)}
-                            />
+                            >
+                                <option value="">Select a member of your MDA</option>
+                                {members.map((member, key) => (
+                                    <option key={key} value={member.email}>
+                                        {member.email}
+                                    </option>
+                                ))}
+                            </SelectFieldWrapper>
                             <ProjectRegistrationBaseButton
                                 type="button"
                                 onClick={() => handleRemoveEntry("projectMembers", index)}

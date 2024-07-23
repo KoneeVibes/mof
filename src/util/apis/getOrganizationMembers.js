@@ -1,8 +1,9 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const getDisbursementRequests = async (token, projectId) => {
+export const getOrganizationMembers = async (token, organizationId) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements/requests/project/${projectId ? `${projectId}` : ''}`, {
+        const endpoint = `${BASE_ENDPOINT}/api/accounts/${organizationId}`;
+        const response = await fetch(endpoint, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -19,4 +20,4 @@ export const getDisbursementRequests = async (token, projectId) => {
         console.error('API fetch error:', error);
         throw error;
     }
-};
+}
