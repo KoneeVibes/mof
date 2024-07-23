@@ -1,10 +1,16 @@
+import { useNavigate } from "react-router-dom";
 import { MoFLogo } from "../../../assets";
 import { Avatar } from "../../avatar";
 import { MenuButton } from "../../buttons/menubutton";
-import { InputField } from "../../form/fields/input";
+import { InputField } from "../../formfields/input";
 import { LeftSideTopNavWrapper, RightSideTopNavWrapper, TopNavWrapper } from "./styled";
 
 export const TopNav = () => {
+    const navigate = useNavigate();
+    const navigateToDashboard = () => {
+        return navigate('/dashboard');
+    }
+
     return (
         <TopNavWrapper
             alignitems={"center"}
@@ -14,7 +20,7 @@ export const TopNav = () => {
                 alignitems={"center"}
                 justifycontent={"space-between"}
             >
-                <div>
+                <div onClick={navigateToDashboard}>
                     <MoFLogo />
                 </div>
                 <div className="input-field-div">

@@ -23,6 +23,7 @@ export const SideNavWrapper = styled("div")`
                 background-color: #FFFFFF;
                 z-index: 1;
                 width: 100%;
+                
 
                 .avatar-div{
                     padding: ${cardPadding};
@@ -45,11 +46,32 @@ export const SideNavItemsListWrapper = styled(Column)(
     ({ cardPadding = 'var(--cardPadding)' }) => {
         return `
         gap: 0;
+        justify-content: space-between;
+        height: -webkit-fill-available;
         p {
             padding: ${cardPadding};
+            margin-block: 0;
+            cursor: pointer;
+        }
+
+        .entity {
             &:hover {
-                background-color: #059212;
+                border-left: 6px solid;
+                border-left-color: #059212;
+                background-color: #afedb5;
             }
+        }
+
+        li {
+            cursor: pointer;
+            padding: 0 ${cardPadding};
+            margin-block: 0.5rem;
+        }
+        
+        ul {
+            // list-style-type: none;
+            margin-left: 1.9rem;
+            margin-block: 0;
         }
     `
     });
