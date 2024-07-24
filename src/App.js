@@ -11,6 +11,7 @@ import { DisbursementRequestArea } from './containers/disbursementrequestarea';
 import { UserRegistrationArea } from './containers/userregistrationarea';
 import { UserOnboardingArea } from './containers/useronboardingarea';
 import { EntityOnboardingArea } from './containers/entityonboardingarea';
+import { DisbursementsApprovalArea } from './containers/disbursementsapprovalsarea';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path='/:entity/:projectId' element={<ProjectDetailsArea />} />
         <Route path='/:entity/:projectId/request' element={<DisbursementRequestArea />} />
         <Route path='/registration/project' element={<ProjectRegistrationArea />} />
+        <Route path='/:superAdminId/approvals' element={<DisbursementsApprovalArea />} />
         {/* Route to add a user to a project */}
         <Route path='/registration/:projectId/add/user' element={<UserRegistrationArea />} />
         {/* Route to onboard a new user - Pending */}
