@@ -9,6 +9,7 @@ import { Row } from "../../flex/styled";
 import { getProjectsPerOrganization } from "../../../util/apis/getProjectsPerOrganization";
 import { Context } from "../../../context";
 import { getAllOrganizations } from "../../../util/apis/getAllOrganizations";
+import dropdown from "../../../assets/dropdowndownload.png";
 
 export const SideNav = () => {
     const cookies = new Cookies();
@@ -109,7 +110,7 @@ export const SideNav = () => {
             <SideNavItemsListWrapper>
                 <div>
                     {sideNavItems?.length > 0 && (
-                        <P onClick={() => navigate(sideNavItems[0].url)}>
+                        <P className="dashboard" onClick={() => navigate(sideNavItems[0].url)}>
                             {sideNavItems[0].name}
                         </P>
                     )}
@@ -131,6 +132,13 @@ export const SideNav = () => {
                                     {entity}
                                 </P>
                                 {/* Mirabel, add a drop down symbol here */}
+                                
+                                
+                                <div className="dropdown">
+      
+                               <img src={dropdown} alt="dropdowndownload" />
+      
+                                    </div>
                             </Row>
                             {/* Here, we just conditionally show projects based on which OrgType is clicked (for super
                             admin) or all projects (for a single-organization-authorized subadmin or user) */}

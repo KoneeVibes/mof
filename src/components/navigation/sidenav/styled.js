@@ -60,7 +60,16 @@ export const SideNavItemsListWrapper = styled(Column)(
                 border-left-color: #059212;
                 background-color: #afedb5;
             }
-        }
+    }
+        .dashboard{
+         &:hover {
+         border-left: 6px solid;
+         border-left-color: #059212;
+         background-color: #afedb5;
+         }
+    }
+
+
 
         li {
             cursor: pointer;
@@ -73,5 +82,11 @@ export const SideNavItemsListWrapper = styled(Column)(
             margin-left: 1.9rem;
             margin-block: 0;
         }
+
+            .dropdown {
+            width: 10px;
+            height: 10px;
+            }
+
     `
     });
