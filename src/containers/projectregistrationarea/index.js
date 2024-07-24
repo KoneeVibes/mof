@@ -16,6 +16,7 @@ import Cookies from "universal-cookie";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { getCurrencies } from "../../util/apis/getCurrencies";
 import { DotLoader } from "react-spinners";
+import {getOrganizationMembers} from "../../util/apis/getOrganizationMembers";
 
 export const ProjectRegistrationArea = () => {
     const cookies = new Cookies();

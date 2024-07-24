@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { DotLoader } from "react-spinners";
+import {flattenOrganizations} from "../../config/flattenOrganizations";
 
 export const EntityOnboardingArea = () => {
     const cookies = new Cookies();
