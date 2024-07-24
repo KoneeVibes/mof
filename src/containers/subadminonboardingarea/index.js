@@ -5,19 +5,18 @@ import { Dashboard } from "../dashboard";
 import { SubAdminOnboardingAreaWrapper } from "./styled";
 import { onboardSubAdmin } from "../../util/apis/onboardSubAdmin";
 import Cookies from "universal-cookie";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import { BaseButton } from "../../components/buttons/styled";
+import { flattenOrganizations } from "../../config/flattenOrganizations";
 
 export const SubAdminOnboardingArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
     const token = cookie.TOKEN;
-    const { organization } = cookie.USER;
 
     const navigate = useNavigate();
-    const { projectId } = useParams();
     const [error, setError] = useState(null);
     const [organizations, setOrganizations] = useState([]);
     const [formDetails, setFormDetails] = useState({
@@ -38,7 +37,7 @@ export const SubAdminOnboardingArea = () => {
         try {
             const response = await onboardSubAdmin(token, formDetails);
             if (response.status === "Success") {
-                navigate(`/${organization.replace(/\s+/g, '').toLowerCase()}/${projectId}`);
+                navigate("/dashboard");
             } else {
                 setError("Submission failed. Please check your inputs and try again.");
             }
@@ -49,10 +48,16 @@ export const SubAdminOnboardingArea = () => {
     };
 
     useEffect(() => {
-        getAllOrganizations(token)
-            .then((listOfOrganizations) => setOrganizations(listOfOrganizations))
-            .catch((err) => console.error("Failed to fetch organizations:", err));
+        if (token) {
+            getAllOrganizations(token).then((listOfOrganizations) => {
+                const collapsedList = flattenOrganizations(listOfOrganizations);
+                setOrganizations(collapsedList);
+            }).catch((error) => {
+                console.error("Failed to fetch organizations:", error);
+            });
+        }
     }, [token]);
+
 
     return (
         <Dashboard>
@@ -77,7 +82,7 @@ export const SubAdminOnboardingArea = () => {
                         value={formDetails.organization}
                         onChange={handleChange}
                     >
-                        <option value="">Select user organization</option>
+                        <option value="">Select subadmin organization</option>
                         {organizations.map((organization, key) => (
                             <option key={key} value={organization.name}>
                                 {organization.name}

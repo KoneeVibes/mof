@@ -1,5 +1,5 @@
 import { Dashboard } from "../dashboard";
-import { EntityRegistrationAreaWrapper } from "./styled";
+import { EntityOnboardingAreaWrapper } from "./styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { H2, Label, P } from "../../components/typography/styled";
 import { BaseButton } from "../../components/buttons/styled";
@@ -9,11 +9,12 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
+import { flattenOrganizations } from "../../config/flattenOrganizations";
 
-export const EntityRegistrationArea = () => {
+export const EntityOnboardingArea = () => {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
-    const orgTypes = ["Ministry", "Parastatal"];
+    const orgTypes = ["Ministry", "Parastatal", "Agency"];
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -33,7 +34,14 @@ export const EntityRegistrationArea = () => {
     };
 
     useEffect(() => {
-        getAllOrganizations(token).then((listOfOrganizations) => setOrganizations(listOfOrganizations));
+        if (token) {
+            getAllOrganizations(token).then((listOfOrganizations) => {
+                const collapsedList = flattenOrganizations(listOfOrganizations);
+                setOrganizations(collapsedList);
+            }).catch((error) => {
+                console.error("Failed to fetch organizations:", error);
+            });
+        }
     }, [token]);
 
     const handleSubmit = async (e) => {
@@ -53,11 +61,10 @@ export const EntityRegistrationArea = () => {
 
     return (
         <Dashboard>
-            <EntityRegistrationAreaWrapper>
-                <H2>PROJECT DETAILS</H2>
-                <P>PLEASE ENTER THE PROJECT INFORMATION</P>
+            <EntityOnboardingAreaWrapper>
+                <H2>NEW MDA DETAILS</H2>
                 <form onSubmit={handleSubmit}>
-                    <Label>Name of Organisation:</Label>
+                    <Label>Name of MDA:</Label>
                     <BaseInputWrapper
                         type="text"
                         name="name"
@@ -95,7 +102,7 @@ export const EntityRegistrationArea = () => {
                     <BaseButton type="submit">Continue</BaseButton>
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
-            </EntityRegistrationAreaWrapper>
+            </EntityOnboardingAreaWrapper>
         </Dashboard>
     );
 };

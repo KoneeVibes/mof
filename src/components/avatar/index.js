@@ -23,7 +23,7 @@ export const Avatar = ({ location }) => {
                 navigate(`/registration/${userId}/subadmin`);
                 break;
             case "onboardUser":
-                navigate(`/registration/${userId}/user`);
+                navigate(`/registration/${userId}/onboard/user`);
                 break;
             case "onboardOrganization":
                 navigate(`/registration/${userId}/entity`);

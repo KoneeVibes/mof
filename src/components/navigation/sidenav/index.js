@@ -32,14 +32,17 @@ export const SideNav = () => {
     const [activeEntity, setActiveEntity] = useState(null);
     const [organizations, setOrganizations] = useState([]);
 
-    const { roles, orgType, organizationId, organization } = cookie.USER || {};
+    const { roles, orgType, organizationId, organization, userId } = cookie.USER || {};
     const entities = roles?.includes("SuperAdmin") ? Object.keys(listOfProjectPerOrganization) : ["Projects"];
 
-    const navigateFromSideBar = (organization, id) => {
+    const navigateFromSideBar = (organization, id, e) => {
         setIsMenuOpen(false);
-        const parsedOrganization = organization.replace(/\s+/g, '').toLowerCase();
+        const parsedOrganization = organization?.replace(/\s+/g, '').toLowerCase();
         if (!roles?.includes("SuperAdmin")) {
             return navigate(`/${parsedOrganization}/${id}`);
+        }
+        if (e.currentTarget.getAttribute("data-nav-key") === "Disbursement Requests") {
+            return navigate(`/${userId}/approvals`);
         }
         return navigate(`/${parsedOrganization}/${id}/projects`);
     }
@@ -148,7 +151,7 @@ export const SideNav = () => {
                                         organizations?.map((organization, k) => (
                                             <Li
                                                 key={k}
-                                                onClick={() => navigateFromSideBar(organization.name, organization.id)}
+                                                onClick={(e) => navigateFromSideBar(organization.name, organization.id, e)}
                                             >
                                                 {organization.name}
                                             </Li>
@@ -157,7 +160,7 @@ export const SideNav = () => {
                                         organizationProjects?.map((project, k) => (
                                             <Li
                                                 key={k}
-                                                onClick={() => navigateFromSideBar(project.organization, project.projectId)}
+                                                onClick={(e) => navigateFromSideBar(project.organization, project.projectId, e)}
                                             >
                                                 {project.title}
                                             </Li>
@@ -167,6 +170,14 @@ export const SideNav = () => {
                             )}
                         </div>
                     ))}
+                    {cookie.USER.roles.includes("SuperAdmin") && (
+                        <P
+                            data-nav-key="Disbursement Requests"
+                            onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
+                        >
+                            Disbursement Requests
+                        </P>
+                    )}
                 </div>
                 <div className="avatar-div">
                     <Avatar location={"side-nav"} />

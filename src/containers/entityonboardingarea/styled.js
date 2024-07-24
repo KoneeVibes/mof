@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const OrganizationOnboardingAreaWrapper = styled("div")(() => {
+export const EntityOnboardingAreaWrapper = styled.div(() => {
     return `
         display: flex;
         flex-direction: column;

@@ -1,14 +1,14 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const onboardSubAdmin = async (token, subAdminDetails) => {
+export const onboardUser = async (token, userDetails) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/accounts/sub-admin/sign-up`, {
+        const response = await fetch(`${BASE_ENDPOINT}/api/accounts/individual/sign-up`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify(subAdminDetails),
+            body: JSON.stringify(userDetails),
         });
         const res = await response.json();
         if (!response.ok) {
