@@ -14,7 +14,7 @@ import { DotLoader } from "react-spinners";
 export const EntityOnboardingArea = () => {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
-    const orgTypes = ["Ministry", "Parastatal"];
+    const orgTypes = ["Ministry", "Parastatal", "Agency"];
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -35,7 +35,14 @@ export const EntityOnboardingArea = () => {
     };
 
     useEffect(() => {
-        getAllOrganizations(token).then((listOfOrganizations) => setOrganizations(listOfOrganizations));
+        if (token) {
+            getAllOrganizations(token).then((listOfOrganizations) => {
+                const collapsedList = flattenOrganizations(listOfOrganizations);
+                setOrganizations(collapsedList);
+            }).catch((error) => {
+                console.error("Failed to fetch organizations:", error);
+            });
+        }
     }, [token]);
 
     const handleSubmit = async (e) => {

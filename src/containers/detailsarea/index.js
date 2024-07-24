@@ -13,13 +13,15 @@ import Cookies from "universal-cookie";
 import { BaseButton } from "../../components/buttons/styled";
 import { NewProjectCardWrapper } from "../metricsarea/styled";
 import { PieChart } from "../../components/doughnut/index";
-import { getDisbursementRequestsPerProject } from "../../util/apis/getDisbursementRequests";
+import { getDisbursementRequests } from "../../util/apis/getDisbursementRequests";
 
 export const ProjectDetailsArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
     const token = cookie.TOKEN;
-    const [columns, setColumns] = useState(["Date Requested", "Requester", "Status"]);
+    // eslint-disable-next-line no-unused-vars
+    const [columns, setColumns] = useState(["Date Requested", "Requester", "Purpose", "Amount", "Status"]);
+    // eslint-disable-next-line no-unused-vars
     const [currencies, setCurrencies] = useState([]);
     const [allocationAmounts, setAllocationsAmounts] = useState([]);
     const [requests, setRequests] = useState([]);
@@ -52,14 +54,16 @@ export const ProjectDetailsArea = () => {
                 });
                 setProject(project);
                 setAllocationsAmounts(summedAllocations.map(summedAllocation => summedAllocation.totalAmount));
-                setCurrencies(Object.keys(groupedAllocations));
+                // The set of commented code below will be useful if we multi-currency disbursements will be the
+                // direction in the future
 
-                const uniqueCurrencies = [...new Set(Object.keys(groupedAllocations))].map(currency => `Request in ${currency}`);
+                // setCurrencies(Object.keys(groupedAllocations));
+                // const uniqueCurrencies = [...new Set(Object.keys(groupedAllocations))].map(currency => `Amount in ${currency}`);
+                // setColumns((_) => {
+                //     const newColumns = ["Date Requested", "Requester", "Purpose", ...uniqueCurrencies, "Status"];
+                //     return newColumns;
+                // });
 
-                setColumns((_) => {
-                    const newColumns = ["Date Requested", "Requester", ...uniqueCurrencies, "Status"];
-                    return newColumns;
-                });
                 setLoading(false);
             }).catch(() => {
                 setLoading(false);
@@ -67,8 +71,7 @@ export const ProjectDetailsArea = () => {
     }, [projectId, token]);
 
     useEffect(() => {
-        // get disbursements for a project not overall disbursements
-        getDisbursementRequestsPerProject(token).then((requests) => setRequests(requests))
+        getDisbursementRequests(token, projectId).then((requests) => setRequests(requests))
     })
 
     if (loading) {
