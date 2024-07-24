@@ -37,12 +37,15 @@ export const SideNav = () => {
     const navigateFromSideBar = (organization, id, e) => {
         setIsMenuOpen(false);
         const parsedOrganization = organization?.replace(/\s+/g, '').toLowerCase();
-        if (!roles?.includes("SuperAdmin")) {
-            return navigate(`/${parsedOrganization}/${id}`);
-        }
+        // handle click of disbursement requests
         if (e.currentTarget.getAttribute("data-nav-key") === "Disbursement Requests") {
             return navigate(`/${userId}/approvals`);
         }
+        // handle click of any of the projects
+        if (!roles?.includes("SuperAdmin")) {
+            return navigate(`/${parsedOrganization}/${id}`);
+        }
+        // handle click of an organization
         return navigate(`/${parsedOrganization}/${id}/projects`);
     }
 

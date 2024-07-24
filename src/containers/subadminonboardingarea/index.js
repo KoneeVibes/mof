@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { H2, Label, P } from "../../components/typography/styled";
 import { Dashboard } from "../dashboard";
 import { SubAdminOnboardingAreaWrapper } from "./styled";
@@ -10,15 +9,18 @@ import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import { BaseButton } from "../../components/buttons/styled";
 import { flattenOrganizations } from "../../config/flattenOrganizations";
+import { getOrganizationMembers } from "../../util/apis/getOrganizationMembers";
 
 export const SubAdminOnboardingArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
     const token = cookie.TOKEN;
+    const { organizationId } = cookie.USER || {};
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [organizations, setOrganizations] = useState([]);
+    const [members, setMembers] = useState([]);
     const [formDetails, setFormDetails] = useState({
         email: "",
         organization: ""
@@ -58,22 +60,36 @@ export const SubAdminOnboardingArea = () => {
         }
     }, [token]);
 
+    useEffect(() => {
+        getOrganizationMembers(token, organizationId)
+            .then((data) => setMembers(data))
+            .catch((err) => {
+                console.error("Failed to fetch currencies:", err);
+                setError("Failed to fetch currencies. Please try again later.");
+            });
+    }, [organizationId, token]);
+
 
     return (
         <Dashboard>
             <SubAdminOnboardingAreaWrapper>
                 <H2>SUB-ADMIN DETAILS</H2>
                 <form onSubmit={handleSubmit}>
-                    <Label>Enter Email</Label>
-                    <BaseInputWrapper
-                        as="input"
-                        type="email"
+                    <Label>Select Email</Label>
+                    <SelectFieldWrapper
+                        as="select"
                         name="email"
-                        placeholder="Email"
                         required
                         value={formDetails.email}
                         onChange={handleChange}
-                    />
+                    >
+                        <option value="">Select a member of your MDA</option>
+                        {members.map((member, key) => (
+                            <option key={key} value={member.email}>
+                                {member.email}
+                            </option>
+                        ))}
+                    </SelectFieldWrapper>
                     <Label>Select Organization:</Label>
                     <SelectFieldWrapper
                         as="select"

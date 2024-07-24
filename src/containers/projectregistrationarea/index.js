@@ -22,7 +22,6 @@ export const ProjectRegistrationArea = () => {
     const cookie = cookies.getAll();
     const token = cookies.get("TOKEN");
     const { organizationId } = cookie.USER;
-    console.log(organizationId);
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
