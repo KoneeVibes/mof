@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { onboardUser } from "../../util/apis/onboardUser";
 import { BaseButton } from "../../components/buttons/styled";
 import { DotLoader } from "react-spinners";
+import { flattenOrganizations } from "../../config/flattenOrganizations";
 
 export const UserOnboardingArea = () => {
     const cookies = new Cookies();
@@ -51,9 +52,14 @@ export const UserOnboardingArea = () => {
     };
 
     useEffect(() => {
-        getAllOrganizations(token)
-            .then((listOfOrganizations) => setOrganizations(listOfOrganizations))
-            .catch((err) => console.error("Failed to fetch organizations:", err));
+        if (token) {
+            getAllOrganizations(token).then((listOfOrganizations) => {
+                const collapsedList = flattenOrganizations(listOfOrganizations);
+                setOrganizations(collapsedList);
+            }).catch((error) => {
+                console.error("Failed to fetch organizations:", error);
+            });
+        }
     }, [token]);
 
     return (

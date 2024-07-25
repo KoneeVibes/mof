@@ -54,7 +54,7 @@ export const SideNavItemsListWrapper = styled(Column)(
             cursor: pointer;
         }
 
-        .entity {
+        .navItem {
             &:hover {
                 border-left: 6px solid;
                 border-left-color: #059212;

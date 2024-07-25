@@ -115,14 +115,14 @@ export const SideNav = () => {
             <SideNavItemsListWrapper>
                 <div>
                     {sideNavItems?.length > 0 && (
-                        <P onClick={() => navigate(sideNavItems[0].url)}>
+                        <P className="navItem" onClick={() => navigate(sideNavItems[0].url)}>
                             {sideNavItems[0].name}
                         </P>
                     )}
                     {entities?.map((entity, key) => (
                         <div key={key}>
                             <Row
-                                className="entity"
+                                className="navItem"
                                 //Here, we want to update the organization-key attribute with the indexed
                                 //entity (in the case of superadmin) and with orgType in the case of a subadmin
                                 data-organization-key={roles?.includes("SuperAdmin") ? entity : orgType}
@@ -165,8 +165,9 @@ export const SideNav = () => {
                             )}
                         </div>
                     ))}
-                    {cookie.USER.roles.includes("SuperAdmin") && (
+                    {cookie.USER.roles.includes("SubAdmin") && (
                         <P
+                            className="navItem"
                             data-nav-key="Disbursement Requests"
                             onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
                         >

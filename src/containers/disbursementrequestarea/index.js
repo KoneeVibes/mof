@@ -4,7 +4,7 @@ import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { H2, Label, P } from "../../components/typography/styled";
 import { Dashboard } from "../dashboard";
-import { DisbursementnRequestAreaWrapper } from "./style";
+import { DisbursementRequestAreaWrapper } from "./style";
 import { useEffect, useState } from "react";
 import { getCurrencies } from "../../util/apis/getCurrencies";
 import Cookies from "universal-cookie";
@@ -64,7 +64,7 @@ export const DisbursementRequestArea = () => {
 
     return (
         <Dashboard>
-            <DisbursementnRequestAreaWrapper>
+            <DisbursementRequestAreaWrapper>
                 <H2>DISBURSEMENT REQUEST</H2>
                 <form onSubmit={handleSubmit}>
                     <Label>Disbursement Purpose</Label>
@@ -112,7 +112,7 @@ export const DisbursementRequestArea = () => {
                     </BaseButton>
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
-            </DisbursementnRequestAreaWrapper>
+            </DisbursementRequestAreaWrapper>
         </Dashboard>
     )
 }
