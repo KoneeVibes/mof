@@ -21,7 +21,7 @@ ChartJS.register(
     Legend
 );
 
-export const LineGraph = ({ title, labels, values }) => {
+export const LineGraph = ({ title, labels, datasets }) => {
     const options = {
         responsive: true,
         plugins: {
@@ -42,14 +42,7 @@ export const LineGraph = ({ title, labels, values }) => {
 
     const data = {
         labels: labels,
-        datasets: [
-            {
-                label: "Disbursement Requests",
-                data: values,
-                borderColor: '#059212',
-                backgroundColor: '#059212',
-            },
-        ],
+        datasets: datasets
     };
     return (
         <ChartsCardWrapper

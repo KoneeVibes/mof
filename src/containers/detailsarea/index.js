@@ -10,9 +10,9 @@ import { H1, H2, H3, Li, P } from "../../components/typography/styled";
 import { useEffect, useState } from "react";
 import { getProject } from "../../util/apis/getProject";
 import Cookies from "universal-cookie";
-import { BaseButton } from "../../components/buttons/styled";
-import { NewProjectCardWrapper } from "../metricsarea/styled";
-import { getDisbursementRequests } from "../../util/apis/getDisbursementRequests";
+// import { BaseButton } from "../../components/buttons/styled";
+// import { NewProjectCardWrapper } from "../metricsarea/styled";
+import { getDisbursements } from "../../util/apis/getDisbursements";
 import { BarChart } from "../../components/barchart";
 
 export const ProjectDetailsArea = () => {
@@ -20,7 +20,7 @@ export const ProjectDetailsArea = () => {
     const cookie = cookies.getAll();
     const token = cookie.TOKEN;
     // eslint-disable-next-line no-unused-vars
-    const [columns, setColumns] = useState(["Date Requested", "Requester", "Purpose", "Amount", "Status"]);
+    const [columns, setColumns] = useState(["Date Disbursed", "Posted By", "Purpose", "Amount", "Status"]);
     // eslint-disable-next-line no-unused-vars
     const [currencies, setCurrencies] = useState([]);
     const [requests, setRequests] = useState([]);
@@ -41,7 +41,7 @@ export const ProjectDetailsArea = () => {
     }, [projectId, token]);
 
     useEffect(() => {
-        getDisbursementRequests(token, projectId).then((requests) => setRequests(requests))
+        getDisbursements(token, projectId).then((requests) => setRequests(requests))
     })
 
     if (loading) {
@@ -70,9 +70,9 @@ export const ProjectDetailsArea = () => {
     return (
         <Dashboard>
             <ProjectDetailsAreaWrapper>
-                <Jumbotron />
+                <Jumbotron entity={project?.organization} />
                 <Row tocolumn={1}>
-                    {cookie.USER.roles.includes("SubAdmin") && (
+                    {/* {cookie.USER.role === "SubAdmin" && (
                         <NewProjectCardWrapper>
                             <H2>New User</H2>
                             <br />
@@ -83,7 +83,7 @@ export const ProjectDetailsArea = () => {
                                 Add new user to Project
                             </BaseButton>
                         </NewProjectCardWrapper>
-                    )}
+                    )} */}
                     <ProjectDetailCardWrapper>
                         <InitiativeIcon />
                         <H3>{project?.projectTitle}</H3>
@@ -99,8 +99,11 @@ export const ProjectDetailsArea = () => {
                         <H3>Funding Source and Amount</H3>
                         <ul>
                             {project?.fundingSources?.map((source, key) => (
-                                <Li key={key}>{source.funder}: <span>{source.currencySymbol}{source.amount}</span></Li>
+                                <Li key={key}>{source.funder}: <span>{source.currencySymbol}{new Intl.NumberFormat().format(source.amount)}</span></Li>
                             ))}
+                            {/* {project?.allocations?.map((allocation, key) => (
+                                <Li key={key}><span>{allocation.currencySymbol}{new Intl.NumberFormat().format(allocation.amountAllocated)}</span></Li>
+                            ))} */}
                         </ul>
                     </ProjectDetailCardWrapper>
                     <BarChart
@@ -134,7 +137,7 @@ export const ProjectDetailsArea = () => {
                         })()}
                     />
                 </Row>
-                <H2>Disbursement Requests</H2>
+                <H2>Disbursements</H2>
                 <div style={{ overflow: "auto" }}>
                     <Table
                         location={"detailsArea"}
@@ -144,11 +147,11 @@ export const ProjectDetailsArea = () => {
                         onSelectOption={(x, y, event) => event.preventDefault()}
                     />
                 </div>
-                {!cookie.USER.roles.includes("SuperAdmin") && (
+                {(cookie.USER.role === "Individual") && (
                     <ProjectDetailBaseButton
                         onClick={() => navigate(`/${entity}/${projectId}/request`)}
                     >
-                        Make a Request
+                        Post a disbursement
                     </ProjectDetailBaseButton>
                 )}
             </ProjectDetailsAreaWrapper>

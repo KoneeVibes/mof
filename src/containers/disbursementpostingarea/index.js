@@ -65,7 +65,7 @@ export const DisbursementRequestArea = () => {
     return (
         <Dashboard>
             <DisbursementRequestAreaWrapper>
-                <H2>DISBURSEMENT REQUEST</H2>
+                <H2>DISBURSEMENT POSTING</H2>
                 <form onSubmit={handleSubmit}>
                     <Label>Disbursement Purpose</Label>
                     <BaseInputWrapper

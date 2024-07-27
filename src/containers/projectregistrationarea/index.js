@@ -16,7 +16,7 @@ import Cookies from "universal-cookie";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { getCurrencies } from "../../util/apis/getCurrencies";
 import { DotLoader } from "react-spinners";
-import {getOrganizationMembers} from "../../util/apis/getOrganizationMembers";
+import { getOrganizationMembers } from "../../util/apis/getOrganizationMembers";
 
 export const ProjectRegistrationArea = () => {
     const cookies = new Cookies();
@@ -34,8 +34,6 @@ export const ProjectRegistrationArea = () => {
         projectTitle: "",
         description: "",
         fundingSources: [{ funderName: "", amount: 0, currencyName: "" }],
-        milestones: [{ text: "" }],
-        allocations: [{ amount: 0, currencyName: "" }],
         projectMembers: [{ email: "" }],
     });
 
@@ -108,7 +106,6 @@ export const ProjectRegistrationArea = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        console.log(formDetails);
         try {
             const response = await addProject(token, formDetails);
             if (response.status === "Success") {
@@ -191,66 +188,6 @@ export const ProjectRegistrationArea = () => {
                         Add New Entry
                     </ProjectRegistrationBaseButton>
 
-                    <Label>Milestones</Label>
-                    {formDetails.milestones.map((milestone, index) => (
-                        <ProjectRegistrationBaseInputWrapper key={index}>
-                            <ProjectRegistrationBaseInput
-                                type="text"
-                                name="text"
-                                placeholder="State Milestone"
-                                required
-                                value={milestone.text}
-                                onChange={(e) => handleNestedChange("milestones", index, e)}
-                            />
-                            <ProjectRegistrationBaseButton
-                                type="button"
-                                onClick={() => handleRemoveEntry("milestones", index)}
-                            >
-                                -
-                            </ProjectRegistrationBaseButton>
-                        </ProjectRegistrationBaseInputWrapper>
-                    ))}
-                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry("milestones")}>
-                        Add New Entry
-                    </ProjectRegistrationBaseButton>
-
-                    <Label>Allocations</Label>
-                    {formDetails.allocations.map((allocation, index) => (
-                        <ProjectRegistrationBaseInputWrapper key={index}>
-                            <ProjectRegistrationBaseInput
-                                type="number"
-                                name="amount"
-                                placeholder="Amount"
-                                required
-                                value={allocation.amount}
-                                onChange={(e) => handleNestedChange("allocations", index, e)}
-                            />
-                            <SelectFieldWrapper
-                                as="select"
-                                name="currencyName"
-                                required
-                                value={allocation.currencyName}
-                                onChange={(e) => handleNestedChange("allocations", index, e)}
-                            >
-                                <option value="">Select a currency</option>
-                                {currencies.map((currency, key) => (
-                                    <option key={key} value={currency.name}>
-                                        {currency.name}
-                                    </option>
-                                ))}
-                            </SelectFieldWrapper>
-                            <ProjectRegistrationBaseButton
-                                type="button"
-                                onClick={() => handleRemoveEntry("allocations", index)}
-                            >
-                                -
-                            </ProjectRegistrationBaseButton>
-                        </ProjectRegistrationBaseInputWrapper>
-                    ))}
-                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry("allocations")}>
-                        Add New Entry
-                    </ProjectRegistrationBaseButton>
-
                     <Label>Project Members</Label>
                     {formDetails.projectMembers.map((member, index) => (
                         <ProjectRegistrationBaseInputWrapper key={index}>
@@ -281,7 +218,7 @@ export const ProjectRegistrationArea = () => {
                     </ProjectRegistrationBaseButton>
 
                     <BaseButton type="submit">
-                    {loading ?
+                        {loading ?
                             <DotLoader
                                 size={20}
                                 color="white"

@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { Dashboard } from "../dashboard";
-import { ChartsRowWrapper, MetricsAreaWrapper, NewProjectCardWrapper } from "./styled";
+import { ChartsRowWrapper, MetricsAreaWrapper } from "./styled";
 import { Row } from '../../components/flex/styled';
 import { BarChart } from '../../components/barchart/index';
 import { PieChart } from '../../components/doughnut/index';
 import { LineGraph } from '../../components/graph/index';
-import { H1, H2 } from '../../components/typography/styled';
+import { H1 } from '../../components/typography/styled';
 import Cookies from 'universal-cookie';
-import { BaseButton } from '../../components/buttons/styled';
-import { useNavigate } from 'react-router-dom';
 import { getDashboardMetrics } from "../../util/apis/getDashboardMetrics";
-import { shuffleArray } from '../../config/shuffleArray';
-import { sortArrayByMonth } from '../../config/sortArrayByMonth';
+import { SelectFieldWrapper } from '../../components/formfields/select/styled';
 
 export const MetricsArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
     const token = cookie.TOKEN;
-    let orgId;
+    const orgTypes = ["Ministry", "Parastatal", "Agency"];
+    const [selectedOrg, setSelectedOrg] = useState(orgTypes[0]);
+    let orgId = cookie.USER.role === "SuperAdmin" ? "" : cookie.USER.organizationId;
 
-    if (!cookie.USER.roles.includes("SuperAdmin")) {
-        orgId = cookie.USER.organizationId;
+    const [dashboardOverview, setDashboardOverview] = useState(null);
+
+    const onSelectofOrgType = (e) => {
+        const { value } = e.target;
+        setSelectedOrg(value);
     }
-
-    const navigate = useNavigate();
-    const [dashboardOverview, setDashboardOverview] = useState();
 
     useEffect(() => {
         getDashboardMetrics(token, orgId)
@@ -32,8 +31,7 @@ export const MetricsArea = () => {
                 setDashboardOverview(data);
             })
             .catch((err) => {
-                // should probably deal with error better here
-                console.log(err);
+                console.error('Failed to fetch dashboard metrics:', err);
             })
     }, [orgId, token]);
 
@@ -42,18 +40,6 @@ export const MetricsArea = () => {
             <MetricsAreaWrapper>
                 <H1>DASHBOARD</H1>
                 <ChartsRowWrapper>
-                    {cookie.USER.roles.includes("SubAdmin") && (
-                        <NewProjectCardWrapper>
-                            <H2>New Project</H2>
-                            <br />
-                            <BaseButton
-                                width={"-webkit-fill-available"}
-                                onClick={() => navigate("/registration/project")}
-                            >
-                                Add new project
-                            </BaseButton>
-                        </NewProjectCardWrapper>
-                    )}
                     <PieChart
                         title={"Project Metrics"}
                         values={[dashboardOverview?.projectsMetrics.completed, dashboardOverview?.projectsMetrics.uncompleted]}
@@ -83,81 +69,124 @@ export const MetricsArea = () => {
                     />
                 </ChartsRowWrapper>
                 <Row>
-                    {cookie?.USER?.roles.includes("SuperAdmin") ? (
-                        <BarChart
-                            axis={"x"}
-                            title={"Allocation Metrics"}
-                            labels={
-                                dashboardOverview?.orgsAllocationMetrics
-                                    ?.filter(metric => metric.totalAllocations.some(allocation => allocation.amountAllocated > 0)) // Prioritize non-zero allocations
-                                    ?.concat(shuffleArray(dashboardOverview?.orgsAllocationMetrics
-                                        ?.filter(metric => !metric.totalAllocations.some(allocation => allocation.amountAllocated > 0)))) // Add randomized zero allocations if needed
-                                    ?.slice(0, 5) // Limit to 5 items
-                                    ?.map(metric => metric.organizationName) // Extract labels
-                            }
-                            datasets={
-                                (() => {
-                                    // Get unique currency names from all totalAllocations
-                                    const limitedMetrics = dashboardOverview?.orgsAllocationMetrics
-                                        ?.filter(metric => metric.totalAllocations.some(allocation => allocation.amountAllocated > 0)) // Prioritize non-zero allocations
-                                        ?.concat(shuffleArray(dashboardOverview?.orgsAllocationMetrics
-                                            ?.filter(metric => !metric.totalAllocations.some(allocation => allocation.amountAllocated > 0)))) // Add randomized zero allocations if needed
-                                        ?.slice(0, 5); // Limit to 5 items
-
-                                    const currencies = Array.from(new Set(
-                                        limitedMetrics?.flatMap(metric =>
-                                            metric.totalAllocations.map(allocation => allocation.currencyName)
-                                        )
-                                    ));
-
-                                    // Define colors for each currency
+                    {(cookie?.USER?.role === "SuperAdmin") ? (
+                        <React.Fragment>
+                            <SelectFieldWrapper
+                                name="orgType"
+                                value={selectedOrg}
+                                onChange={onSelectofOrgType}
+                                style={{ position: "absolute", width: "auto" }}
+                            >
+                                {orgTypes.map((orgType, key) => (
+                                    <option key={key} value={orgType}>
+                                        {orgType}
+                                    </option>
+                                ))}
+                            </SelectFieldWrapper>
+                            <LineGraph
+                                title={"Allocation Per Organization"}
+                                // filter by the selected OrgType before mapping
+                                labels={dashboardOverview?.orgsAllocationMetrics?.filter((metric) => metric.organizationType === selectedOrg).map((allocationMetric) => allocationMetric.organizationName) || []}
+                                datasets={(() => {
+                                    const currencyNames = [...new Set(
+                                        dashboardOverview?.orgsAllocationMetrics?.flatMap(organization =>
+                                            organization.totalAllocations.map(allocation => allocation.currencyName)
+                                        ) || []
+                                    )];
                                     const colors = ["#059212", "#E9ECF1", "#FFA500", "#0000FF", "#FF0000"];
-
-                                    return currencies.map((currency, index) => ({
-                                        label: currency,
-                                        data: limitedMetrics?.map(org => {
-                                            const allocation = org.totalAllocations.find(a => a.currencyName === currency);
-                                            return allocation ? allocation.amountAllocated : 0;
-                                        }),
-                                        backgroundColor: colors[index % colors.length]
-                                    }));
-                                })()
-                            }
-                        />
+                                    return currencyNames.map((currencyName, index) => {
+                                        return {
+                                            label: currencyName,
+                                            // filter by the selected OrgType before mapping
+                                            data: dashboardOverview?.orgsAllocationMetrics.filter((organization) => organization.organizationType === selectedOrg).map((allocationMetric) => {
+                                                const totalAllocation = allocationMetric.totalAllocations.find((totalAllocations) => totalAllocations.currencyName === currencyName);
+                                                return totalAllocation ? totalAllocation.amountAllocated : 0;
+                                            }),
+                                            borderColor: colors[index % colors.length],
+                                            backgroundColor: colors[index % colors.length],
+                                        };
+                                    });
+                                })()}
+                            />
+                        </React.Fragment>
                     ) : (
-                        <BarChart
-                            axis="x"
-                            title="Allocation Metrics"
-                            labels={dashboardOverview?.projectsAllocationMetrics?.map(project => project.projectTitle)?.slice(0, 5) || []}
+                        <LineGraph
+                            title={"Allocation Per Project"}
+                            labels={dashboardOverview?.projectsAllocationMetrics?.map(project => project.projectTitle) || []}
                             datasets={(() => {
                                 const currencyNames = [...new Set(
                                     dashboardOverview?.projectsAllocationMetrics?.flatMap(project =>
                                         project.totalAllocations.map(allocation => allocation.currencyName)
                                     ) || []
                                 )];
-                                const datasets = currencyNames.map((currency, index) => {
-                                    const data = dashboardOverview?.projectsAllocationMetrics?.map(project => {
-                                        const allocation = project.totalAllocations.find(allocation => allocation.currencyName === currency);
-                                        return allocation ? allocation.amountAllocated : 0;
-                                    })?.slice(0, 5) || [];
-                                    const colors = ["#059212", "#E9ECF1", "#FFA500", "#0000FF", "#FF0000"];
+                                const colors = ["#059212", "#E9ECF1", "#FFA500", "#0000FF", "#FF0000"];
+                                return currencyNames.map((currencyName, index) => {
                                     return {
-                                        label: currency,
-                                        data: data,
+                                        label: currencyName,
+                                        data: dashboardOverview?.projectsAllocationMetrics.map((project) => {
+                                            const totalAllocation = project.totalAllocations.find((totalAllocations) => totalAllocations.currencyName === currencyName);
+                                            return totalAllocation ? totalAllocation.amountAllocated : 0;
+                                        }),
+                                        borderColor: colors[index % colors.length],
                                         backgroundColor: colors[index % colors.length],
-                                    };
-                                });
-                                return datasets
+                                    }
+                                })
                             })()}
                         />
                     )}
                 </Row>
                 <Row>
-                    <LineGraph
-                        title={"Disbursement Request Metrics"}
-                        labels={sortArrayByMonth(dashboardOverview?.requestsMetrics).labels}
-                        values={sortArrayByMonth(dashboardOverview?.requestsMetrics).values}
-                    />
+                    {(cookie?.USER?.role === "SuperAdmin") ? (
+                        <LineGraph
+                            title={"Disbursements Per Organization"}
+                            // filter by the selected OrgType before mapping
+                            labels={dashboardOverview?.orgsDisbursementMetrics?.filter((metric) => metric.organizationType === selectedOrg).map((disbursementMetric) => disbursementMetric.organizationName) || []}
+                            datasets={(() => {
+                                const currencyNames = [...new Set(
+                                    dashboardOverview?.orgsDisbursementMetrics?.flatMap(organization =>
+                                        organization.disbursements.map(disbursement => disbursement.currencyName)
+                                    ) || []
+                                )];
+                                const colors = ["#059212", "#E9ECF1", "#FFA500", "#0000FF", "#FF0000"];
+                                return currencyNames.map((currencyName, index) => {
+                                    return {
+                                        label: currencyName,
+                                        // filter by the selected OrgType before mapping
+                                        data: dashboardOverview?.orgsDisbursementMetrics.filter((organization) => organization.organizationType === selectedOrg).map((disbursementMetric) => {
+                                            const disbursement = disbursementMetric.disbursements.find((disbursement) => disbursement.currencyName === currencyName);
+                                            return disbursement.amount;
+                                        }),
+                                        borderColor: colors[index % colors.length],
+                                        backgroundColor: colors[index % colors.length],
+                                    };
+                                });
+                            })()}
+                        />
+                    ) : (
+                        <LineGraph
+                            title={"Disbursements Per Project"}
+                            labels={dashboardOverview?.projectDisbursementMetrics?.map((project) => project.projectTitle) || []}
+                            datasets={(() => {
+                                const currencyNames = [...new Set(
+                                    dashboardOverview?.projectDisbursementMetrics?.flatMap(project =>
+                                        project.disbursements.map(disbursement => disbursement.currencyName)
+                                    ) || []
+                                )];
+                                const colors = ["#059212", "#E9ECF1", "#FFA500", "#0000FF", "#FF0000"];
+                                return currencyNames.map((currencyName, index) => {
+                                    return {
+                                        label: currencyName,
+                                        data: dashboardOverview?.projectDisbursementMetrics.map((project) => {
+                                            const disbursement = project.disbursements.find((disbursement) => disbursement.currencyName === currencyName);
+                                            return disbursement.amount;
+                                        }),
+                                        borderColor: colors[index % colors.length],
+                                        backgroundColor: colors[index % colors.length],
+                                    };
+                                });
+                            })()}
+                        />
+                    )}
                 </Row>
             </MetricsAreaWrapper>
         </Dashboard>

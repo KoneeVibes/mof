@@ -10,15 +10,16 @@ import Cookies from "universal-cookie";
 export const ProjectsTableArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
+    const categories = ["Project Title", "Fundings", "Status"];
 
     const navigate = useNavigate();
     const { entity, entityId } = useParams();
     const [projects, setProjects] = useState([]);
-    const [columns, setColumns] = useState(["Project Title", "MDA", "Status"]);
+    const [columns, setColumns] = useState(categories);
     const [uniqueCurrencies, setUniqueCurrencies] = useState([]);
 
     const token = cookie.TOKEN;
-    const { roles, organization, organizationId } = cookie.USER || {};
+    const { role, organization, organizationId } = cookie.USER || {};
 
     useEffect(() => {
         if (token && entityId) {
@@ -30,7 +31,7 @@ export const ProjectsTableArea = () => {
                     const currencyNames = [...new Set(fundingSources.map(funding => funding.currencyName))];
                     setUniqueCurrencies(currencyNames);
 
-                    const newColumns = ["Project Title", "MDA", ...currencyNames.map(currency => `Fundings in ${currency}`), "Status"];
+                    const newColumns = ["Project Title", ...currencyNames.map(currency => `${currency}`), "Status"];
                     setColumns(newColumns);
                 })
                 .catch((err) => console.error("Failed to fetch projects:", err));
@@ -38,10 +39,10 @@ export const ProjectsTableArea = () => {
     }, [token, entityId, projects]);
 
     useEffect(() => {
-        if (!roles?.includes("SuperAdmin") && (entity !== organization.replace(/\s+/g, '').toLowerCase() || entityId !== organizationId)) {
+        if ((role !== "SuperAdmin") && (entity !== organization.replace(/\s+/g, '').toLowerCase() || entityId !== organizationId)) {
             console.error("Error, unauthorized viewership");
         }
-    }, [roles, entity, organization, entityId, organizationId]);
+    }, [role, entity, organization, entityId, organizationId]);
 
     const navigateToProjectDetails = (organization, projectId, event) => {
         navigate(`/${organization.replace(/\s+/g, '').toLowerCase()}/${projectId}`);
@@ -50,9 +51,10 @@ export const ProjectsTableArea = () => {
     return (
         <Dashboard>
             <EntitiesAreaWrapper>
-                <Jumbotron />
+                <Jumbotron entity={projects[0]?.organization} />
                 <EntitiesTableWrapper>
                     <Table
+                        categories={categories}
                         columnTitles={columns}
                         rowItems={projects}
                         onSelectOption={navigateToProjectDetails}

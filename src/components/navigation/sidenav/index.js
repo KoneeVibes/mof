@@ -1,20 +1,19 @@
 import { useNavigate } from "react-router-dom";
-import { sideNavItems } from "../../../data";
+import { useContext, useEffect, useState } from "react";
+import Cookies from "universal-cookie";
+import { getProjectsPerOrganization } from "../../../util/apis/getProjectsPerOrganization";
+import { getAllOrganizations } from "../../../util/apis/getAllOrganizations";
+import { Context } from "../../../context";
 import { Avatar } from "../../avatar";
 import { Li, P } from "../../typography/styled";
 import { SideNavItemsListWrapper, SideNavWrapper } from "./styled";
-import Cookies from "universal-cookie";
-import { useContext, useEffect, useState } from "react";
 import { Row } from "../../flex/styled";
-import { getProjectsPerOrganization } from "../../../util/apis/getProjectsPerOrganization";
-import { Context } from "../../../context";
-import { getAllOrganizations } from "../../../util/apis/getAllOrganizations";
+import { sideNavItems } from "../../../data";
 
 export const SideNav = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
     const token = cookie.TOKEN;
-
     const navigate = useNavigate();
     const { setIsMenuOpen } = useContext(Context);
     const [listOfProjectPerOrganization, setListOfProjectPerOrganization] = useState({
@@ -30,9 +29,10 @@ export const SideNav = () => {
     const [organizationProjects, setOrganizationProjects] = useState([]);
     const [activeEntity, setActiveEntity] = useState(null);
     const [organizations, setOrganizations] = useState([]);
+    const [populatedStatus, setPopulatedStatus] = useState({});
 
-    const { roles, orgType, organizationId, organization, userId } = cookie.USER || {};
-    const entities = roles?.includes("SuperAdmin") ? Object.keys(listOfProjectPerOrganization) : ["Projects"];
+    const { role, orgType, organizationId, organization, userId } = cookie.USER || {};
+    const entities = (role === "SuperAdmin") ? Object.keys(listOfProjectPerOrganization) : ["Projects"];
 
     const navigateFromSideBar = (organization, id, e) => {
         setIsMenuOpen(false);
@@ -42,7 +42,7 @@ export const SideNav = () => {
             return navigate(`/${userId}/approvals`);
         }
         // handle click of any of the projects
-        if (!roles?.includes("SuperAdmin")) {
+        if (role !== "SuperAdmin") {
             return navigate(`/${parsedOrganization}/${id}`);
         }
         // handle click of an organization
@@ -59,12 +59,11 @@ export const SideNav = () => {
             const Agency = organizations.flatMap(org =>
                 org.subOrganizations.filter(subOrg => subOrg.orgType === "Agency")
             );
-            setListOfOrganizations((prev) => ({
-                ...prev,
+            setListOfOrganizations({
                 Ministry: Ministry,
                 Parastatal: Parastatal,
                 Agency: Agency,
-            }));
+            });
         } catch (error) {
             console.error("Failed to fetch organizations:", error);
         }
@@ -77,18 +76,35 @@ export const SideNav = () => {
         // update organizationProjects state with different projects array for 
         // a superadmin (an array of all projects per orgType) or subadmin (an array of
         // all projects in the logged in user's organization) respectively.
-        if (roles?.includes("SuperAdmin")) {
+        if (role === "SuperAdmin") {
             setOrganizationProjects(listOfProjectPerOrganization[key]);
             await updateListOfOrganizations();
-            // return navigate(`/${parsedOrganization}/${projectId}`);
         } else {
             setOrganizationProjects(listOfProjectPerOrganization[key]?.filter((project) => project.organization === organization));
         }
     };
 
     useEffect(() => {
-        setOrganizations(listOfOrganizations[activeEntity]);
-    }, [activeEntity, listOfOrganizations])
+        if (activeEntity) {
+            setOrganizations(listOfOrganizations[activeEntity]);
+        }
+    }, [activeEntity, listOfOrganizations]);
+
+    useEffect(() => {
+        const updateOrganizationStatus = async () => {
+            const status = {};
+            if (Array.isArray(organizations) && organizations.length > 0) {
+                for (const org of organizations) {
+                    if (org.id) {
+                        const projectList = await getProjectsPerOrganization(token, org.id);
+                        status[org.id] = projectList.length < 1 ? 'unpopulated' : null;
+                    }
+                }
+                setPopulatedStatus(status);
+            }
+        };
+        updateOrganizationStatus();
+    }, [organizations, token]);
 
     useEffect(() => {
         if (token && organizationId) {
@@ -97,18 +113,17 @@ export const SideNav = () => {
                     const Ministry = projects.filter((project) => project.orgType === "Ministry");
                     const Parastatal = projects.filter((project) => project.orgType === "Parastatal");
                     const Agency = projects.filter((project) => project.orgType === "Agency");
-                    setListOfProjectPerOrganization((prev) => ({
-                        ...prev,
+                    setListOfProjectPerOrganization({
                         Ministry: Ministry,
                         Parastatal: Parastatal,
                         Agency: Agency,
-                    }));
+                    });
                 })
                 .catch((err) => {
                     console.error("Failed to fetch projects:", err);
                 });
         }
-    }, [token, organizationId, cookie.USER]);
+    }, [token, organizationId]);
 
     return (
         <SideNavWrapper>
@@ -123,30 +138,25 @@ export const SideNav = () => {
                         <div key={key}>
                             <Row
                                 className="navItem"
-                                //Here, we want to update the organization-key attribute with the indexed
-                                //entity (in the case of superadmin) and with orgType in the case of a subadmin
-                                data-organization-key={roles?.includes("SuperAdmin") ? entity : orgType}
+                                data-organization-key={(role === "SuperAdmin") ? entity : orgType}
                                 onClick={getSideNavItems}
                             >
                                 <P
-                                    //Had to repeat this here because of bubbling/propagation bugs.
-                                    //should clean up in later version
                                     onClick={getSideNavItems}
-                                    data-organization-key={roles?.includes("SuperAdmin") ? entity : orgType}
+                                    data-organization-key={(role === "SuperAdmin") ? entity : orgType}
                                 >
                                     {entity}
                                 </P>
                                 {/* Mirabel, add a drop down symbol here */}
                             </Row>
-                            {/* Here, we just conditionally show projects based on which OrgType is clicked (for super
-                            admin) or all projects (for a single-organization-authorized subadmin or user) */}
                             {(activeEntity === entity || entities.length === 1) && (
                                 <ul>
-                                    {roles?.includes("SuperAdmin") ? (
+                                    {(role === "SuperAdmin") ? (
                                         organizations?.map((organization, k) => (
                                             <Li
                                                 key={k}
-                                                onClick={(e) => navigateFromSideBar(organization.name, organization.id, e)}
+                                                className={populatedStatus[organization.id] === 'unpopulated' ? 'unpopulated' : ''}
+                                                onClick={(e) => populatedStatus[organization.id] !== 'unpopulated' && navigateFromSideBar(organization.name, organization.id, e)}
                                             >
                                                 {organization.name}
                                             </Li>
@@ -165,15 +175,6 @@ export const SideNav = () => {
                             )}
                         </div>
                     ))}
-                    {cookie.USER.roles.includes("SubAdmin") && (
-                        <P
-                            className="navItem"
-                            data-nav-key="Disbursement Requests"
-                            onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
-                        >
-                            Disbursement Requests
-                        </P>
-                    )}
                 </div>
                 <div className="avatar-div">
                     <Avatar location={"side-nav"} />

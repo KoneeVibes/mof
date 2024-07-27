@@ -2,7 +2,7 @@ import { BASE_ENDPOINT } from "../endpoint";
 
 export const makeDisbursementRequest = async (token, requestDetails) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements/requests`, {
+        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

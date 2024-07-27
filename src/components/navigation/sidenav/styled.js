@@ -69,9 +69,13 @@ export const SideNavItemsListWrapper = styled(Column)(
         }
         
         ul {
-            // list-style-type: none;
             margin-left: 1.9rem;
             margin-block: 0;
+        }
+
+        .unpopulated{
+            cursor: none;
+            color: #EBEBE4;
         }
     `
     });
