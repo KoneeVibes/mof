@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { H2, Label, P } from "../../components/typography/styled";
-import { Dashboard } from "../dashboard";
+import { Layout } from "../layout";
 import { UserOnboardingAreaWrapper } from "./styled";
 import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import Cookies from "universal-cookie";
@@ -63,7 +63,7 @@ export const UserOnboardingArea = () => {
     }, [token]);
 
     return (
-        <Dashboard>
+        <Layout>
             <UserOnboardingAreaWrapper>
                 <H2>USER DETAILS</H2>
                 <form onSubmit={handleSubmit}>
@@ -93,7 +93,7 @@ export const UserOnboardingArea = () => {
                         ))}
                     </SelectFieldWrapper>
                     <BaseButton type="submit">
-                    {loading ?
+                        {loading ?
                             <DotLoader
                                 size={20}
                                 color="white"
@@ -103,6 +103,6 @@ export const UserOnboardingArea = () => {
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
             </UserOnboardingAreaWrapper>
-        </Dashboard>
+        </Layout>
     )
 }

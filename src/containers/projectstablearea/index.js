@@ -1,4 +1,4 @@
-import { Dashboard } from "../dashboard";
+import { Layout } from "../layout";
 import { EntitiesAreaWrapper, EntitiesTableWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron/index";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,7 +15,7 @@ export const ProjectsTableArea = () => {
     const navigate = useNavigate();
     const { entity, entityId } = useParams();
     const [projects, setProjects] = useState([]);
-    const [columns, setColumns] = useState(categories);
+    // const [columns, setColumns] = useState(categories);
     const [uniqueCurrencies, setUniqueCurrencies] = useState([]);
 
     const token = cookie.TOKEN;
@@ -31,8 +31,8 @@ export const ProjectsTableArea = () => {
                     const currencyNames = [...new Set(fundingSources.map(funding => funding.currencyName))];
                     setUniqueCurrencies(currencyNames);
 
-                    const newColumns = ["Project Title", ...currencyNames.map(currency => `${currency}`), "Status"];
-                    setColumns(newColumns);
+                    // const newColumns = ["Project Title", ...currencyNames.map(currency => `${currency}`), "Status"];
+                    // setColumns(newColumns);
                 })
                 .catch((err) => console.error("Failed to fetch projects:", err));
         }
@@ -49,13 +49,13 @@ export const ProjectsTableArea = () => {
     };
 
     return (
-        <Dashboard>
+        <Layout>
             <EntitiesAreaWrapper>
                 <Jumbotron entity={projects[0]?.organization} />
                 <EntitiesTableWrapper>
                     <Table
                         categories={categories}
-                        columnTitles={columns}
+                        // columnTitles={columns}
                         rowItems={projects}
                         onSelectOption={navigateToProjectDetails}
                         uniqueCurrencies={uniqueCurrencies}
@@ -63,6 +63,6 @@ export const ProjectsTableArea = () => {
                     />
                 </EntitiesTableWrapper>
             </EntitiesAreaWrapper>
-        </Dashboard>
+        </Layout>
     );
 };

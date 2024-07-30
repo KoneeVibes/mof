@@ -3,7 +3,7 @@ import { BaseButton } from "../../components/buttons/styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { H2, Label, P } from "../../components/typography/styled";
-import { Dashboard } from "../dashboard";
+import { Layout } from "../layout";
 import { DisbursementRequestAreaWrapper } from "./style";
 import { useEffect, useState } from "react";
 import { getCurrencies } from "../../util/apis/getCurrencies";
@@ -63,7 +63,7 @@ export const DisbursementRequestArea = () => {
     }, [TOKEN]);
 
     return (
-        <Dashboard>
+        <Layout>
             <DisbursementRequestAreaWrapper>
                 <H2>DISBURSEMENT POSTING</H2>
                 <form onSubmit={handleSubmit}>
@@ -113,6 +113,6 @@ export const DisbursementRequestArea = () => {
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
             </DisbursementRequestAreaWrapper>
-        </Dashboard>
+        </Layout>
     )
 }

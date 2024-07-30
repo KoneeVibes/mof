@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Column, Row } from "../../components/flex/styled";
 import { CardWrapper } from "../../components/card/styled";
 
-export const MetricsAreaWrapper = styled(Column)(() => {
+export const DataOverviewAreaWrapper = styled(Column)(() => {
     return `
         h1{
             margin-block: 0;
@@ -45,4 +45,33 @@ export const NewProjectCardWrapper = styled(CardWrapper)(() => {
             min-width: 22rem;
         }
     `
+})
+
+export const DataOverviewTableWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
+    return {
+        overflow: "auto",
+        "table": {
+            width: "100%",
+            backgroundColor: "#FFFFFF",
+            borderRadius: "8px",
+            borderCollapse: "collapse",
+            cursor: "pointer",
+        },
+        "th": {
+            textAlign: "left",
+            textTransform: "uppercase",
+            padding: cardPadding,
+            borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
+            minWidth: "150px",
+        },
+        "td": {
+            textAlign: "left",
+            border: "1px solid rgba(33, 63, 125, 0.10)",
+            padding: cardPadding,
+            minWidth: "150px",
+        },
+        "tbody tr td:nth-child(1)": {
+            textAlign: "left",
+        },
+    }
 })

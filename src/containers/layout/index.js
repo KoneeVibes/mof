@@ -1,16 +1,16 @@
 import React from "react";
 import { SideNav } from "../../components/navigation/sidenav";
 import { TopNav } from "../../components/navigation/topnav";
-import { DashboardWrapper, MainAreaWrapper } from "./styled";
+import { LayoutWrapper, MainAreaWrapper } from "./styled";
 
-export const Dashboard = ({ children }) => {
+export const Layout = ({ children }) => {
     return (
-        <DashboardWrapper>
+        <LayoutWrapper>
             <TopNav />
             <SideNav />
             <MainAreaWrapper>
                 {children}
             </MainAreaWrapper>
-        </DashboardWrapper>
+        </LayoutWrapper>
     )
 }

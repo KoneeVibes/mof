@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { CardWrapper } from "../../components/card/styled";
 import { BaseButton } from "../../components/buttons/styled";
+import { Row } from "../../components/flex/styled";
 
 export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
     return {
@@ -50,5 +51,11 @@ export const ProjectDetailBaseButton = styled(BaseButton)(({ cardPadding = "var(
         width: "fit-content",
         padding: `calc(${cardPadding}/2) calc(${cardPadding})`,
 
+    }
+})
+
+export const ProjectDetailActionRow = styled(Row)(() => {
+    return {
+        justifyContent: "space-between",
     }
 })

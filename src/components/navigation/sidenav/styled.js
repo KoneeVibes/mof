@@ -37,6 +37,10 @@ export const SideNavWrapper = styled("div")`
             @media screen and (min-width: 768px){
                 display: block;
                 width: var(--navWidth);
+
+                .avatar-div{
+                    display: none;
+                }
             }
         `;
     }}

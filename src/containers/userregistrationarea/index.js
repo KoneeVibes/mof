@@ -1,12 +1,12 @@
-import { Dashboard } from "../dashboard"
+import { Layout } from "../layout"
 import { UserRegistrationAreaWrapper } from "./styled"
 
 export const UserRegistrationArea = () => {
     return (
-        <Dashboard>
+        <Layout>
             <UserRegistrationAreaWrapper>
                 <h1>User registration to a project area</h1>
             </UserRegistrationAreaWrapper>
-        </Dashboard>
+        </Layout>
     )
 }

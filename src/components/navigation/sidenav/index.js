@@ -36,10 +36,10 @@ export const SideNav = () => {
 
     const navigateFromSideBar = (organization, id, e) => {
         setIsMenuOpen(false);
-        const parsedOrganization = organization?.replace(/\s+/g, '').toLowerCase();
-        // handle click of disbursement requests
-        if (e.currentTarget.getAttribute("data-nav-key") === "Disbursement Requests") {
-            return navigate(`/${userId}/approvals`);
+        const parsedOrganization = organization?.replace(/\s+/g, '')?.toLowerCase();
+        // handle click of Admin
+        if (e.currentTarget.getAttribute("data-nav-key") === "admin area") {
+            return navigate(`/admin/${userId}/overview`);
         }
         // handle click of any of the projects
         if (role !== "SuperAdmin") {
@@ -175,6 +175,17 @@ export const SideNav = () => {
                             )}
                         </div>
                     ))}
+                </div>
+                <div>
+                    {(role === "SuperAdmin") && (
+                        <P
+                            style={{ color: "red" }}
+                            data-nav-key={"admin area"}
+                            onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
+                        >
+                            Admin Overview
+                        </P>
+                    )}
                 </div>
                 <div className="avatar-div">
                     <Avatar location={"side-nav"} />

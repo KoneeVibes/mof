@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
-import { Dashboard } from "../dashboard";
+import { Layout } from "../layout";
 import {
     ProjectRegistrationAreaWrapper,
     ProjectRegistrationBaseInputWrapper,
@@ -121,7 +121,7 @@ export const ProjectRegistrationArea = () => {
     };
 
     return (
-        <Dashboard>
+        <Layout>
             <ProjectRegistrationAreaWrapper>
                 <H2>PROJECT DETAILS</H2>
                 <P>PLEASE ENTER THE PROJECT INFORMATION</P>
@@ -228,6 +228,6 @@ export const ProjectRegistrationArea = () => {
                 </form>
                 {error && <P style={{ color: "red" }}>{error}</P>}
             </ProjectRegistrationAreaWrapper>
-        </Dashboard>
+        </Layout>
     );
 };
