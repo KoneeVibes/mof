@@ -18,12 +18,12 @@ export const SideNav = () => {
     const { setIsMenuOpen } = useContext(Context);
     const [listOfProjectPerOrganization, setListOfProjectPerOrganization] = useState({
         Ministry: [],
-        Parastatal: [],
+        Department: [],
         Agency: [],
     });
     const [listOfOrganizations, setListOfOrganizations] = useState({
         Ministry: [],
-        Parastatal: [],
+        Department: [],
         Agency: []
     });
     const [organizationProjects, setOrganizationProjects] = useState([]);
@@ -37,10 +37,11 @@ export const SideNav = () => {
     const navigateFromSideBar = (organization, id, e) => {
         setIsMenuOpen(false);
         const parsedOrganization = organization?.replace(/\s+/g, '')?.toLowerCase();
-        // handle click of Admin
-        if (e.currentTarget.getAttribute("data-nav-key") === "admin area") {
+        // handle click of reports
+        if (e.currentTarget.getAttribute("data-nav-key") === "reports") {
             return navigate(`/admin/${userId}/overview`);
         }
+
         // handle click of any of the projects
         if (role !== "SuperAdmin") {
             return navigate(`/${parsedOrganization}/${id}`);
@@ -53,15 +54,15 @@ export const SideNav = () => {
         try {
             const organizations = await getAllOrganizations(token);
             const Ministry = organizations.filter(org => org.orgType === "Ministry");
-            const Parastatal = organizations.flatMap(org =>
-                org.subOrganizations.filter(subOrg => subOrg.orgType === "Parastatal")
+            const Department = organizations.flatMap(org =>
+                org.subOrganizations.filter(subOrg => subOrg.orgType === "Department")
             );
             const Agency = organizations.flatMap(org =>
                 org.subOrganizations.filter(subOrg => subOrg.orgType === "Agency")
             );
             setListOfOrganizations({
                 Ministry: Ministry,
-                Parastatal: Parastatal,
+                Department: Department,
                 Agency: Agency,
             });
         } catch (error) {
@@ -111,11 +112,11 @@ export const SideNav = () => {
             getProjectsPerOrganization(token, organizationId)
                 .then((projects) => {
                     const Ministry = projects.filter((project) => project.orgType === "Ministry");
-                    const Parastatal = projects.filter((project) => project.orgType === "Parastatal");
+                    const Department = projects.filter((project) => project.orgType === "Department");
                     const Agency = projects.filter((project) => project.orgType === "Agency");
                     setListOfProjectPerOrganization({
                         Ministry: Ministry,
-                        Parastatal: Parastatal,
+                        Department: Department,
                         Agency: Agency,
                     });
                 })
@@ -176,17 +177,17 @@ export const SideNav = () => {
                         </div>
                     ))}
                 </div>
-                <div>
+                {/* <div>
                     {(role === "SuperAdmin") && (
                         <P
                             style={{ color: "red" }}
-                            data-nav-key={"admin area"}
+                            data-nav-key={"reports"}
                             onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
                         >
-                            Admin Overview
+                            Reports
                         </P>
                     )}
-                </div>
+                </div> */}
                 <div className="avatar-div">
                     <Avatar location={"side-nav"} />
                 </div>

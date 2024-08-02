@@ -27,6 +27,10 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
             borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
             padding: cardPadding,
         },
+        ".card-component": {
+            padding: cardPadding,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        }
     }
 })
 

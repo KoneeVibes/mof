@@ -111,7 +111,7 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
                                 ))}
                                 {rowItem.totalAllocations.map((allocation, index) => (
                                     <Td key={index} style={{ textAlign: "center" }}>
-                                        {new Intl.NumberFormat().format(allocation.amountAllocated - allocation.amountDisbursed) || ""}
+                                        {new Intl.NumberFormat().format(allocation.balance) || ""}
                                     </Td>
                                 ))}
                                 <Td>{rowItem.status || ""}</Td>
@@ -119,6 +119,47 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
                         )}
                     </tr>
                 ))}
+                {location === "dataOverviewArea" && (
+                    <tr>
+                        <Td style={{ fontWeight: 600 }}>Total</Td>
+                        {/* Empty cell for organization name */}
+                        {role === "SuperAdmin" && <Td></Td>}
+                        {/* Sum total allocation for each unique currency */}
+                        {uniqueCurrencies?.map((uniqueCurrency) => {
+                            // Initialize a sum variable
+                            let currencyTotal = 0;
+                            // Loop through rowItems and sum the totalAllocations for the current uniqueCurrency
+                            rowItems?.forEach((rowItem) => {
+                                rowItem?.totalAllocations?.forEach((totalAllocation) => {
+                                    if (totalAllocation.currencyName === uniqueCurrency) {
+                                        currencyTotal += totalAllocation.amountAllocated;
+                                    }
+                                });
+                            });
+                            // Return the <Td> element with the summed total for the currency
+                            return (
+                                <Td key={uniqueCurrency} style={{ textAlign: "center", fontWeight: 600 }}>{new Intl.NumberFormat().format(currencyTotal)}</Td>
+                            );
+                        })}
+                        {/* Sum total balance for each unique currency */}
+                        {uniqueCurrencies?.map((uniqueCurrency) => {
+                            // Initialize a sum variable
+                            let currencyTotal = 0;
+                            // Loop through rowItems and sum the balance for the current uniqueCurrency
+                            rowItems?.forEach((rowItem) => {
+                                rowItem?.totalAllocations.forEach((totalAllocation) => {
+                                    if (totalAllocation.currencyName === uniqueCurrency) {
+                                        currencyTotal += totalAllocation.balance;
+                                    }
+                                });
+                            });
+                            // Return the <Td> element with the summed total for the currency
+                            return (
+                                <Td key={uniqueCurrency} style={{ textAlign: "center", fontWeight: 600 }}>{new Intl.NumberFormat().format(currencyTotal)}</Td>
+                            );
+                        })}
+                    </tr>
+                )}
             </tbody>
         </table >
     );

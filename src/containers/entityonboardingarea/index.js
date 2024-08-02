@@ -51,7 +51,7 @@ export const EntityOnboardingArea = () => {
         setLoading(true);
         try {
             const response = await addOrganization(token, formDetails);
-            if (response.ok) {
+            if (response.status === "Success") {
                 setLoading(false);
                 navigate("/dashboard");
             } else {

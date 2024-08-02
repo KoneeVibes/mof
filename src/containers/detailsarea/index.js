@@ -155,16 +155,16 @@ export const ProjectDetailsArea = () => {
                                     <SelectFieldWrapper
                                         as="select"
                                         name="projectStatus"
-                                        value={projectStatus !== "Ongoing" ? `Status: ${projectStatus}` : "Update Status"}
+                                        value={(projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? `Status: ${projectStatus}` : "Update Status"}
                                         onChange={handleStatusChange}
-                                        disabled={projectStatus !== "Ongoing"}
+                                        disabled={(projectStatus !== "Ongoing" || cookie.USER.role === "Individual")}
                                         style={{
-                                            appearance: projectStatus !== "Ongoing" ? "none" : "auto",
-                                            MozAppearance: projectStatus !== "Ongoing" ? "none" : "auto",
-                                            WebkitAppearance: projectStatus !== "Ongoing" ? "none" : "auto",
+                                            appearance: (projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? "none" : "auto",
+                                            MozAppearance: (projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? "none" : "auto",
+                                            WebkitAppearance: (projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? "none" : "auto",
                                         }}
                                     >
-                                        <option value="Ongoing">{projectStatus !== "Ongoing" ? `Status: ${projectStatus}` : "Update Status"}</option>
+                                        <option value="Ongoing">{(projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? `Status: ${projectStatus}` : "Update Status"}</option>
                                         {actions.map((status, key) => (
                                             <option key={key} value={status}>
                                                 {status}
@@ -174,19 +174,30 @@ export const ProjectDetailsArea = () => {
                                 </div>
                                 <div
                                     style={{
-                                        backgroundColor: project?.status === "Closed" ? "green" : project?.status === "Ongoing" ? "yellow" : "red",
+                                        backgroundColor: projectStatus === "Closed" ? "green" : projectStatus === "Ongoing" ? "yellow" : "red",
                                         padding: "0.5rem",
                                         borderRadius: "8px",
                                     }}>
                                 </div>
                             </Row>
                         </ProjectDetailActionRow>
-                        <H3>{project?.projectTitle}</H3>
-                        <P>{project?.description}</P>
-                        <P>
-                            <span>MDA:</span> {project?.organization}
-                        </P>
+                        <H3>{`${project?.projectTitle}(${project?.projectSerialNo})`}</H3>
+                        <P>{`Loan Number: ${project?.fundingSources.map((fundingSource) => ` ${fundingSource.loanNo}`)}`}</P>
+                        <P>{`MDA: ${project?.organization}`}</P>
+                        <P>{`Tier of Government: ${project?.governmentTier}`}</P>
+                        <P>{`Effective Date: ${project?.dateEffective}`}</P>
+                        <P>{`Closing Date: ${project?.dateUpdated}`}</P>
+                        {project?.closingDate && (<P>{`Closing Date: ${project?.closingDate}`}</P>)}
+                        <P>{`Description: ${project?.description}`}</P>
                     </ProjectDetailCardWrapper>
+                    {project?.beneficiaries && (
+                        <ProjectDetailCardWrapper>
+                            <H3>Benefiting Institutions</H3>
+                            <ul>
+                                {project?.beneficiaries.map((beneficiary, key) => <Li key={key}>{beneficiary?.name}</Li>)}
+                            </ul>
+                        </ProjectDetailCardWrapper>
+                    )}
                 </Row>
                 <Row tocolumn={1}>
                     <ProjectDetailCardWrapper>

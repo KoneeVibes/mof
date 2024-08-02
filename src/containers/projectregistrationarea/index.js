@@ -23,6 +23,7 @@ export const ProjectRegistrationArea = () => {
     const cookie = cookies.getAll();
     const token = cookies.get("TOKEN");
     const { organizationId } = cookie.USER;
+    const tiersOfGovernment = ["Federal", "State", "LGA"];
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -33,8 +34,11 @@ export const ProjectRegistrationArea = () => {
     const [formDetails, setFormDetails] = useState({
         projectTitle: "",
         description: "",
+        dateEffective: "",
+        governmentTier: "",
         fundingSources: [{ funderName: "", amount: 0, currencyName: "" }],
         projectMembers: [{ email: "" }],
+        beneficiaries: [{ name: "" }]
     });
 
     useEffect(() => {
@@ -79,13 +83,11 @@ export const ProjectRegistrationArea = () => {
         const newItem =
             section === "fundingSources"
                 ? { funderName: "", amount: 0, currencyName: "" }
-                : section === "allocations"
-                    ? { amount: 0, currencyName: "" }
-                    : section === "projectMembers"
-                        ? { email: "" }
-                        : section === "milestones"
-                            ? { text: "" }
-                            : null;
+                : section === "projectMembers"
+                    ? { email: "" }
+                    : section === "beneficiaries"
+                        ? { name: "" }
+                        : null;
 
         if (newItem) {
             setFormDetails((prevDetails) => ({
@@ -143,8 +145,35 @@ export const ProjectRegistrationArea = () => {
                         onChange={handleChange}
                     />
 
+                    <Label htmlFor="">Effective Date and Tier of Government</Label>
+                    <ProjectRegistrationBaseInputWrapper>
+                        <BaseInputWrapper
+                            as="input"
+                            type="date"
+                            name="dateEffective"
+                            placeholder="Effective Date"
+                            required
+                            value={formDetails.dateEffective}
+                            onChange={handleChange}
+                        />
+                        <SelectFieldWrapper
+                            as="select"
+                            name="governmentTier"
+                            required
+                            value={formDetails.governmentTier}
+                            onChange={handleChange}
+                        >
+                            <option value="">Select a government tier</option>
+                            {tiersOfGovernment.map((tier, key) => (
+                                <option key={key} value={tier}>
+                                    {tier}
+                                </option>
+                            ))}
+                        </SelectFieldWrapper>
+                    </ProjectRegistrationBaseInputWrapper>
+
                     <Label>Funding Sources</Label>
-                    {formDetails.fundingSources.map((source, index) => (
+                    {formDetails?.fundingSources?.map((source, index) => (
                         <ProjectRegistrationBaseInputWrapper key={index}>
                             <ProjectRegistrationBaseInput
                                 type="text"
@@ -189,7 +218,7 @@ export const ProjectRegistrationArea = () => {
                     </ProjectRegistrationBaseButton>
 
                     <Label>Project Members</Label>
-                    {formDetails.projectMembers.map((member, index) => (
+                    {formDetails?.projectMembers?.map((member, index) => (
                         <ProjectRegistrationBaseInputWrapper key={index}>
                             <SelectFieldWrapper
                                 as="select"
@@ -214,6 +243,29 @@ export const ProjectRegistrationArea = () => {
                         </ProjectRegistrationBaseInputWrapper>
                     ))}
                     <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry("projectMembers")}>
+                        Add New Entry
+                    </ProjectRegistrationBaseButton>
+
+                    <Label>Beneficiaries</Label>
+                    {formDetails?.beneficiaries?.map((beneficiary, index) => (
+                        <ProjectRegistrationBaseInputWrapper key={index}>
+                            <ProjectRegistrationBaseInput
+                                type="string"
+                                name="name"
+                                placeholder="Enter Beneficiary Name"
+                                required
+                                value={beneficiary.name}
+                                onChange={(e) => handleNestedChange("beneficiaries", index, e)}
+                            />
+                            <ProjectRegistrationBaseButton
+                                type="button"
+                                onClick={() => handleRemoveEntry("beneficiaries", index)}
+                            >
+                                -
+                            </ProjectRegistrationBaseButton>
+                        </ProjectRegistrationBaseInputWrapper>
+                    ))}
+                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry("beneficiaries")}>
                         Add New Entry
                     </ProjectRegistrationBaseButton>
 
