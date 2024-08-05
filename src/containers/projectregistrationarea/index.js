@@ -107,6 +107,7 @@ export const ProjectRegistrationArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
         setLoading(true);
         try {
             const response = await addProject(token, formDetails);
@@ -114,11 +115,13 @@ export const ProjectRegistrationArea = () => {
                 setLoading(false);
                 navigate("/dashboard");
             } else {
+                setLoading(false);
                 setError("Submission failed. Please check your inputs and try again.");
             }
         } catch (error) {
+            setLoading(false);
+            setError(`Submission failed. ${error.message}`);
             console.error("Submission failed:", error);
-            setError("Submission failed. Please check your inputs and try again.");
         }
     };
 

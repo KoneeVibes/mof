@@ -48,6 +48,7 @@ export const EntityOnboardingArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
         setLoading(true);
         try {
             const response = await addOrganization(token, formDetails);
@@ -55,11 +56,13 @@ export const EntityOnboardingArea = () => {
                 setLoading(false);
                 navigate("/dashboard");
             } else {
+                setLoading(false);
                 setError(`"Submission failed:". Please check your inputs and try again.`);
             }
         } catch (error) {
+            setLoading(false);
+            setError(`Submission failed: ${error.message}`);
             console.error("Submission failed:", error);
-            setError(`"Submission failed:" ${error.message}`);
         }
     };
 

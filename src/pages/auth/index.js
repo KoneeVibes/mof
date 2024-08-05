@@ -30,6 +30,7 @@ export const Auth = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setError(null);
         setLoading(true);
         try {
             const response = await authenticateUser(formDetails);
@@ -47,11 +48,13 @@ export const Auth = () => {
                 })
                 navigate("/dashboard");
             } else {
+                setLoading(false);
                 setError('Authentication failed. Please check your credentials and try again.');
             }
         } catch (error) {
+            setLoading(false);
+            setError(`Login failed. ${error.message}`);
             console.error('Login failed:', error);
-            setError('Login failed. Please check your credentials and try again.');
         }
     };
 
