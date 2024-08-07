@@ -37,6 +37,10 @@ export const SideNavWrapper = styled("div")`
             @media screen and (min-width: 768px){
                 display: block;
                 width: var(--navWidth);
+
+                .avatar-div{
+                    display: none;
+                }
             }
         `;
     }}
@@ -78,11 +82,13 @@ export const SideNavItemsListWrapper = styled(Column)(
         }
         
         ul {
-            // list-style-type: none;
             margin-left: 1.9rem;
             margin-block: 0;
         }
 
-           
+        .unpopulated{
+            cursor: none;
+            color: #EBEBE4;
+        }
     `
     });

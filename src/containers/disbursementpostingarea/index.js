@@ -3,7 +3,7 @@ import { BaseButton } from "../../components/buttons/styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { H2, Label, P } from "../../components/typography/styled";
-import { Dashboard } from "../dashboard";
+import { Layout } from "../layout";
 import { DisbursementRequestAreaWrapper } from "./style";
 import { useEffect, useState } from "react";
 import { getCurrencies } from "../../util/apis/getCurrencies";
@@ -38,6 +38,7 @@ export const DisbursementRequestArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
         setLoading(true);
         try {
             const response = await makeDisbursementRequest(TOKEN, formDetails);
@@ -45,11 +46,13 @@ export const DisbursementRequestArea = () => {
                 setLoading(false);
                 navigate(-1);
             } else {
+                setLoading(false);
                 setError("Submission failed. Please check your inputs and try again.");
             }
         } catch (error) {
+            setLoading(false);
+            setError(`Submission failed. ${error.message}`);
             console.error("Submission failed:", error);
-            setError("Submission failed. Please check your inputs and try again.");
         }
     }
 
@@ -63,9 +66,9 @@ export const DisbursementRequestArea = () => {
     }, [TOKEN]);
 
     return (
-        <Dashboard>
+        <Layout>
             <DisbursementRequestAreaWrapper>
-                <H2>DISBURSEMENT REQUEST</H2>
+                <H2>DISBURSEMENT POSTING</H2>
                 <form onSubmit={handleSubmit}>
                     <Label>Disbursement Purpose</Label>
                     <BaseInputWrapper
@@ -113,6 +116,6 @@ export const DisbursementRequestArea = () => {
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
             </DisbursementRequestAreaWrapper>
-        </Dashboard>
+        </Layout>
     )
 }

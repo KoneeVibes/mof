@@ -1,4 +1,4 @@
-import { Dashboard } from "../dashboard";
+import { Layout } from "../layout";
 import { EntityOnboardingAreaWrapper } from "./styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { H2, Label, P } from "../../components/typography/styled";
@@ -10,12 +10,12 @@ import { useNavigate } from "react-router-dom";
 import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { DotLoader } from "react-spinners";
-import {flattenOrganizations} from "../../config/flattenOrganizations";
+import { flattenOrganizations } from "../../config/flattenOrganizations";
 
 export const EntityOnboardingArea = () => {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
-    const orgTypes = ["Ministry", "Parastatal", "Agency"];
+    const orgTypes = ["Ministry", "Department", "Agency"];
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -48,6 +48,7 @@ export const EntityOnboardingArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
         setLoading(true);
         try {
             const response = await addOrganization(token, formDetails);
@@ -55,16 +56,18 @@ export const EntityOnboardingArea = () => {
                 setLoading(false);
                 navigate("/dashboard");
             } else {
-                setError("Submission failed. Please check your inputs and try again.");
+                setLoading(false);
+                setError(`"Submission failed:". Please check your inputs and try again.`);
             }
         } catch (error) {
+            setLoading(false);
+            setError(`Submission failed: ${error.message}`);
             console.error("Submission failed:", error);
-            setError("Submission failed. Please check your inputs and try again.");
         }
     };
 
     return (
-        <Dashboard>
+        <Layout>
             <EntityOnboardingAreaWrapper>
                 <H2>NEW MDA DETAILS</H2>
                 <form onSubmit={handleSubmit}>
@@ -104,7 +107,7 @@ export const EntityOnboardingArea = () => {
                         ))}
                     </SelectFieldWrapper>
                     <BaseButton type="submit">
-                    {loading ?
+                        {loading ?
                             <DotLoader
                                 size={20}
                                 color="white"
@@ -114,6 +117,6 @@ export const EntityOnboardingArea = () => {
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
             </EntityOnboardingAreaWrapper>
-        </Dashboard>
+        </Layout>
     );
 };

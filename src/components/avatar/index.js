@@ -10,14 +10,13 @@ import { useNavigate } from "react-router-dom";
 export const Avatar = ({ location }) => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
-    const { email, roles, userId } = cookie.USER || {};
+    const { email, role, userId } = cookie.USER || {};
 
     const navigate = useNavigate();
     const { isavatarmodalopen, setIsAvatarModalOpen } = useContext(Context);
 
     const handleRedirect = (e, id) => {
         e.preventDefault();
-        console.log(id);
         switch (id) {
             case "onboardSubAdmin":
                 navigate(`/registration/${userId}/subadmin`);
@@ -27,6 +26,12 @@ export const Avatar = ({ location }) => {
                 break;
             case "onboardOrganization":
                 navigate(`/registration/${userId}/entity`);
+                break;
+            case "addNewProject":
+                navigate("/registration/project");
+                break;
+            case "addFundingSource":
+                navigate(`/registration/${userId}/funding`);
                 break;
             default:
                 break;
@@ -51,14 +56,18 @@ export const Avatar = ({ location }) => {
             <AvatarModalWrapper
                 isavatarmodalopen={isavatarmodalopen}
             >
-                {roles?.includes("SuperAdmin") && (
+                {(role === "SuperAdmin") && (
                     <React.Fragment>
                         <P onClick={(e) => handleRedirect(e, "onboardSubAdmin")}>Add SubAdmin</P>
                         <P onClick={(e) => handleRedirect(e, "onboardOrganization")}>Add Organization</P>
                     </React.Fragment>
                 )}
-                {roles?.includes("SubAdmin") && (
-                    <P onClick={(e) => handleRedirect(e, "onboardUser")}>Onboard New User</P>
+                {(role === "SubAdmin") && (
+                    <React.Fragment>
+                        <P onClick={(e) => handleRedirect(e, "addNewProject")}>Add New Project</P>
+                        <P onClick={(e) => handleRedirect(e, "addFundingSource")}>Add Funding Source</P>
+                        <P onClick={(e) => handleRedirect(e, "onboardUser")}>Onboard New User</P>
+                    </React.Fragment>
                 )}
                 <P onClick={handleLogout}>Logout</P>
             </AvatarModalWrapper>

@@ -1,13 +1,20 @@
 import styled from "styled-components";
 import { CardWrapper } from "../../components/card/styled";
 import { BaseButton } from "../../components/buttons/styled";
+import { Row } from "../../components/flex/styled";
 
 export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
     return {
         display: "flex",
         flexDirection: "column",
         gap: "var(--flexGap)",
-
+        ".tableWrapper": {
+            overflow: "auto",
+        },
+        ".exportButton": {
+            display: "flex",
+            justifyContent: "flex-end",
+        },
         "table": {
             width: "100%",
             backgroundColor: "#FFFFFF",
@@ -26,6 +33,10 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
             borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
             padding: cardPadding,
         },
+        ".card-component": {
+            padding: cardPadding,
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        }
     }
 })
 
@@ -50,5 +61,11 @@ export const ProjectDetailBaseButton = styled(BaseButton)(({ cardPadding = "var(
         width: "fit-content",
         padding: `calc(${cardPadding}/2) calc(${cardPadding})`,
 
+    }
+})
+
+export const ProjectDetailActionRow = styled(Row)(() => {
+    return {
+        justifyContent: "space-between",
     }
 })

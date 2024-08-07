@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Dashboard } from "../dashboard";
+import { Layout } from "../layout";
 import { Row } from "../../components/flex/styled";
-import { ProjectDetailCardWrapper, ProjectDetailsAreaWrapper } from "./styled";
+import { ProjectDetailActionRow, ProjectDetailCardWrapper, ProjectDetailsAreaWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron";
 import { InitiativeIcon, FundingSourceIcon } from "../../assets";
 import { Table } from "../../components/table";
@@ -10,17 +10,28 @@ import { H1, H2, H3, Li, P } from "../../components/typography/styled";
 import { useEffect, useState } from "react";
 import { getProject } from "../../util/apis/getProject";
 import Cookies from "universal-cookie";
-import { BaseButton } from "../../components/buttons/styled";
-import { NewProjectCardWrapper } from "../metricsarea/styled";
-import { getDisbursementRequests } from "../../util/apis/getDisbursementRequests";
+import { getDisbursements } from "../../util/apis/getDisbursements";
 import { BarChart } from "../../components/barchart";
+import { deleteDisbursement } from "../../util/apis/deleteDisbursement";
+import { SelectFieldWrapper } from "../../components/formfields/select/styled";
+import { updateProjectStatus } from "../../util/apis/updateProjectStatus";
+import { getExcelSheet } from "../../util/apis/getExcelSheet";
+// import { NewProjectCardWrapper } from "../metricsarea/styled";
+// import { BaseButton } from "../../components/buttons/styled";
 
 export const ProjectDetailsArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
     const token = cookie.TOKEN;
     // eslint-disable-next-line no-unused-vars
-    const [columns, setColumns] = useState(["Date Requested", "Requester", "Purpose", "Amount", "Status"]);
+    const [columns, setColumns] = useState([
+        "Date Disbursed",
+        "Posted By",
+        "Purpose",
+        "Amount",
+        "Status",
+        ...(cookie.USER.role === "Individual" ? ["Action"] : []),
+    ]);
     // eslint-disable-next-line no-unused-vars
     const [currencies, setCurrencies] = useState([]);
     const [requests, setRequests] = useState([]);
@@ -28,7 +39,73 @@ export const ProjectDetailsArea = () => {
     const navigate = useNavigate();
     const { entity, projectId } = useParams();
     const [project, setProject] = useState(null);
+    const [projectStatus, setProjectStatus] = useState(project?.status);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const actions = (cookie.USER.role === "SuperAdmin") ? ["Terminate"] : (cookie.USER.role === "SubAdmin") ? ["Close", "Terminate"] : [];
+
+    const performAction = async (e, disbursementId) => {
+        try {
+            const response = await deleteDisbursement(token, disbursementId);
+            if (response.status === "Success") {
+                setError("Successful");
+            } else {
+                setError("Failed to delete. You are not authorized to delete this disbursement.");
+            }
+        } catch (error) {
+            console.error("Failed to delete:", error);
+            setError(`Failed to delete: ${error.message}`);
+        }
+    };
+
+    const exportToExcel = async (e) => {
+        e.preventDefault();
+        // Loader starts
+        try {
+            const blob = await getExcelSheet(token, "disbursements", projectId);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            // may have to come back to reset this filename
+            a.download = 'export.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            // Loader stops
+            console.log("Successfully exported to an xlsx file");
+        } catch (error) {
+            // Loader stops
+            console.error("Failed to export:", error);
+        }
+    };
+
+
+    const handleStatusChange = async (event) => {
+        const value = event?.target?.value;
+        try {
+            let response;
+            switch (value) {
+                // First case may be dormant if subadmin cannot terminate project
+                case "Terminate":
+                    response = await updateProjectStatus(token, "terminate", projectId);
+                    break;
+                case "Close":
+                    response = await updateProjectStatus(token, "complete", projectId);
+                    break;
+                default:
+                    return;
+            }
+            if (response.status !== "success") {
+                console.error("Error in calling update project status inside project details area");
+            } else {
+                // Update the local state to reflect the new status
+                setProjectStatus(value);
+            }
+        } catch (error) {
+            console.error("Failed to update:", error);
+        }
+    };
 
     useEffect(() => {
         getProject(token, projectId)
@@ -41,38 +118,42 @@ export const ProjectDetailsArea = () => {
     }, [projectId, token]);
 
     useEffect(() => {
-        getDisbursementRequests(token, projectId).then((requests) => setRequests(requests))
-    })
+        getDisbursements(token, projectId).then((requests) => setRequests(requests))
+    });
+
+    useEffect(() => {
+        setProjectStatus(project?.status);
+    }, [project?.status]);
 
     if (loading) {
         return (
-            <Dashboard>
+            <Layout>
                 <ProjectDetailsAreaWrapper>
                     <Jumbotron />
                     <H1>Loading...</H1>
                 </ProjectDetailsAreaWrapper>
-            </Dashboard>
+            </Layout>
         );
     }
 
     if (!project) {
         return (
-            <Dashboard>
+            <Layout>
                 <ProjectDetailsAreaWrapper>
                     <Jumbotron />
                     <H1>Project not found</H1>
                     <P>We couldn't find the project you were looking for. Please check the URL or try again later.</P>
                 </ProjectDetailsAreaWrapper>
-            </Dashboard>
+            </Layout>
         );
     }
 
     return (
-        <Dashboard>
+        <Layout>
             <ProjectDetailsAreaWrapper>
-                <Jumbotron />
+                <Jumbotron entity={project?.organization} />
                 <Row tocolumn={1}>
-                    {cookie.USER.roles.includes("SubAdmin") && (
+                    {/* {cookie.USER.role === "SubAdmin" && (
                         <NewProjectCardWrapper>
                             <H2>New User</H2>
                             <br />
@@ -83,15 +164,63 @@ export const ProjectDetailsArea = () => {
                                 Add new user to Project
                             </BaseButton>
                         </NewProjectCardWrapper>
-                    )}
+                    )} */}
                     <ProjectDetailCardWrapper>
-                        <InitiativeIcon />
-                        <H3>{project?.projectTitle}</H3>
-                        <P>{project?.description}</P>
-                        <P>
-                            <span>MDA:</span> {project?.organization}
-                        </P>
+                        <ProjectDetailActionRow>
+                            <InitiativeIcon />
+                            <Row
+                                style={{
+                                    alignItems: "center",
+                                }}
+                            >
+                                <div
+                                    style={{ height: "fit-content", cursor: "pointer" }}
+                                >
+                                    <SelectFieldWrapper
+                                        as="select"
+                                        name="projectStatus"
+                                        value={(projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? `Status: ${projectStatus}` : "Update Status"}
+                                        onChange={handleStatusChange}
+                                        disabled={(projectStatus !== "Ongoing" || cookie.USER.role === "Individual")}
+                                        style={{
+                                            appearance: (projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? "none" : "auto",
+                                            MozAppearance: (projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? "none" : "auto",
+                                            WebkitAppearance: (projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? "none" : "auto",
+                                        }}
+                                    >
+                                        <option value="Ongoing">{(projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? `Status: ${projectStatus}` : "Update Status"}</option>
+                                        {actions.map((status, key) => (
+                                            <option key={key} value={status}>
+                                                {status}
+                                            </option>
+                                        ))}
+                                    </SelectFieldWrapper>
+                                </div>
+                                <div
+                                    style={{
+                                        backgroundColor: projectStatus === "Closed" ? "green" : projectStatus === "Ongoing" ? "yellow" : "red",
+                                        padding: "0.5rem",
+                                        borderRadius: "8px",
+                                    }}>
+                                </div>
+                            </Row>
+                        </ProjectDetailActionRow>
+                        <H3>{`${project?.projectTitle}(${project?.projectSerialNo})`}</H3>
+                        <P>{`Loan Number: ${project?.fundingSources.map((fundingSource) => ` ${fundingSource.loanNo}`)}`}</P>
+                        <P>{`MDA: ${project?.organization}`}</P>
+                        <P>{`Tier of Government: ${project?.governmentTier}`}</P>
+                        <P>{`Effective Date: ${project?.dateEffective}`}</P>
+                        {(project?.dateUpdated && projectStatus !== "Ongoing") && (<P>{`Closing Date: ${project?.dateUpdated}`}</P>)}
+                        <P>{`Description: ${project?.description}`}</P>
                     </ProjectDetailCardWrapper>
+                    {project?.beneficiaries && (
+                        <ProjectDetailCardWrapper>
+                            <H3>Benefiting Institutions</H3>
+                            <ul>
+                                {project?.beneficiaries.map((beneficiary, key) => <Li key={key}>{beneficiary?.name}</Li>)}
+                            </ul>
+                        </ProjectDetailCardWrapper>
+                    )}
                 </Row>
                 <Row tocolumn={1}>
                     <ProjectDetailCardWrapper>
@@ -99,8 +228,11 @@ export const ProjectDetailsArea = () => {
                         <H3>Funding Source and Amount</H3>
                         <ul>
                             {project?.fundingSources?.map((source, key) => (
-                                <Li key={key}>{source.funder}: <span>{source.currencySymbol}{source.amount}</span></Li>
+                                <Li key={key}>{source.funder}: <span>{source.currencySymbol}{new Intl.NumberFormat().format(source.amount)}</span></Li>
                             ))}
+                            {/* {project?.allocations?.map((allocation, key) => (
+                                <Li key={key}><span>{allocation.currencySymbol}{new Intl.NumberFormat().format(allocation.amountAllocated)}</span></Li>
+                            ))} */}
                         </ul>
                     </ProjectDetailCardWrapper>
                     <BarChart
@@ -134,7 +266,7 @@ export const ProjectDetailsArea = () => {
                         })()}
                     />
                 </Row>
-                <H2>Disbursement Requests</H2>
+                <H2>Disbursements</H2>
                 <div style={{ overflow: "auto" }}>
                     <Table
                         location={"detailsArea"}
@@ -142,16 +274,20 @@ export const ProjectDetailsArea = () => {
                         rowItems={requests}
                         uniqueCurrencies={currencies}
                         onSelectOption={(x, y, event) => event.preventDefault()}
+                        performAction={performAction}
+                        role={cookie.USER.role}
+                        exportToExcel={exportToExcel}
                     />
                 </div>
-                {!cookie.USER.roles.includes("SuperAdmin") && (
+                {(cookie.USER.role === "Individual") && (
                     <ProjectDetailBaseButton
                         onClick={() => navigate(`/${entity}/${projectId}/request`)}
                     >
-                        Make a Request
+                        Post a disbursement
                     </ProjectDetailBaseButton>
                 )}
+                {error && <P style={{ color: "red" }}>{error}</P>}
             </ProjectDetailsAreaWrapper>
-        </Dashboard>
+        </Layout>
     );
 };

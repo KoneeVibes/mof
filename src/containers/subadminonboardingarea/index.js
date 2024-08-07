@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { H2, Label, P } from "../../components/typography/styled";
-import { Dashboard } from "../dashboard";
+import { Layout } from "../layout";
 import { SubAdminOnboardingAreaWrapper } from "./styled";
 import { onboardSubAdmin } from "../../util/apis/onboardSubAdmin";
 import Cookies from "universal-cookie";
@@ -36,6 +36,7 @@ export const SubAdminOnboardingArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
         setLoading(true);
         try {
             const response = await onboardSubAdmin(token, formDetails);
@@ -43,11 +44,13 @@ export const SubAdminOnboardingArea = () => {
                 setLoading(false);
                 navigate("/dashboard");
             } else {
+                setLoading(false);
                 setError("Submission failed. Please check your inputs and try again.");
             }
         } catch (error) {
+            setLoading(false);
+            setError(`Submission failed. ${error.message}`);
             console.error("Submission failed:", error);
-            setError("Submission failed. Please check your inputs and try again.");
         }
     };
 
@@ -63,7 +66,7 @@ export const SubAdminOnboardingArea = () => {
     }, [token]);
 
     return (
-        <Dashboard>
+        <Layout>
             <SubAdminOnboardingAreaWrapper>
                 <H2>SUB-ADMIN DETAILS</H2>
                 <form onSubmit={handleSubmit}>
@@ -93,7 +96,7 @@ export const SubAdminOnboardingArea = () => {
                         ))}
                     </SelectFieldWrapper>
                     <BaseButton as="button" type="submit">
-                    {loading ?
+                        {loading ?
                             <DotLoader
                                 size={20}
                                 color="white"
@@ -103,6 +106,6 @@ export const SubAdminOnboardingArea = () => {
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
             </SubAdminOnboardingAreaWrapper>
-        </Dashboard>
+        </Layout>
     );
 };

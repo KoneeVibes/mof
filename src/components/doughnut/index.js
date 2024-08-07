@@ -1,6 +1,6 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
-import { ChartsCardWrapper } from '../../containers/metricsarea/styled';
+import { ChartsCardWrapper } from '../../containers/dataoverviewarea/styled';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

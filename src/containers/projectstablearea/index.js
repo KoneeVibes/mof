@@ -1,4 +1,4 @@
-import { Dashboard } from "../dashboard";
+import { Layout } from "../layout";
 import { EntitiesAreaWrapper, EntitiesTableWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron/index";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,19 +6,43 @@ import { Table } from "../../components/table";
 import { useEffect, useState } from "react";
 import { getProjectsPerOrganization } from "../../util/apis/getProjectsPerOrganization";
 import Cookies from "universal-cookie";
+import { getExcelSheet } from "../../util/apis/getExcelSheet";
 
 export const ProjectsTableArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
+    const categories = ["Project Title", "Allocation", "Status"];
 
     const navigate = useNavigate();
     const { entity, entityId } = useParams();
     const [projects, setProjects] = useState([]);
-    const [columns, setColumns] = useState(["Project Title", "MDA", "Status"]);
+    // const [columns, setColumns] = useState(categories);
     const [uniqueCurrencies, setUniqueCurrencies] = useState([]);
 
     const token = cookie.TOKEN;
-    const { roles, organization, organizationId } = cookie.USER || {};
+    const { role, organization, organizationId } = cookie.USER || {};
+
+    const exportToExcel = async (e) => {
+        e.preventDefault();
+        // Loader starts
+        try {
+            const blob = await getExcelSheet(token, "projects", "export");
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            // may have to come back to reset this filename
+            a.download = 'export.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            // Loader stops
+            console.log("Successfully exported to an xlsx file");
+        } catch (error) {
+            // Loader stops
+            console.error("Failed to export:", error);
+        }
+    };
 
     useEffect(() => {
         if (token && entityId) {
@@ -30,37 +54,39 @@ export const ProjectsTableArea = () => {
                     const currencyNames = [...new Set(fundingSources.map(funding => funding.currencyName))];
                     setUniqueCurrencies(currencyNames);
 
-                    const newColumns = ["Project Title", "MDA", ...currencyNames.map(currency => `Fundings in ${currency}`), "Status"];
-                    setColumns(newColumns);
+                    // const newColumns = ["Project Title", ...currencyNames.map(currency => `${currency}`), "Status"];
+                    // setColumns(newColumns);
                 })
                 .catch((err) => console.error("Failed to fetch projects:", err));
         }
     }, [token, entityId, projects]);
 
     useEffect(() => {
-        if (!roles?.includes("SuperAdmin") && (entity !== organization.replace(/\s+/g, '').toLowerCase() || entityId !== organizationId)) {
+        if ((role !== "SuperAdmin") && (entity !== organization.replace(/\s+/g, '').toLowerCase() || entityId !== organizationId)) {
             console.error("Error, unauthorized viewership");
         }
-    }, [roles, entity, organization, entityId, organizationId]);
+    }, [role, entity, organization, entityId, organizationId]);
 
     const navigateToProjectDetails = (organization, projectId, event) => {
         navigate(`/${organization.replace(/\s+/g, '').toLowerCase()}/${projectId}`);
     };
 
     return (
-        <Dashboard>
+        <Layout>
             <EntitiesAreaWrapper>
-                <Jumbotron />
+                <Jumbotron entity={projects[0]?.organization} />
                 <EntitiesTableWrapper>
                     <Table
-                        columnTitles={columns}
+                        categories={categories}
+                        // columnTitles={columns}
                         rowItems={projects}
                         onSelectOption={navigateToProjectDetails}
                         uniqueCurrencies={uniqueCurrencies}
                         location={"projectsTableArea"}
+                        exportToExcel={exportToExcel}
                     />
                 </EntitiesTableWrapper>
             </EntitiesAreaWrapper>
-        </Dashboard>
+        </Layout>
     );
 };

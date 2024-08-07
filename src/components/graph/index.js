@@ -9,7 +9,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { ChartsCardWrapper } from "../../containers/metricsarea/styled";
+import { ChartsCardWrapper } from "../../containers/dataoverviewarea/styled";
 
 ChartJS.register(
     CategoryScale,
@@ -21,7 +21,7 @@ ChartJS.register(
     Legend
 );
 
-export const LineGraph = ({ title, labels, values }) => {
+export const LineGraph = ({ title, labels, datasets }) => {
     const options = {
         responsive: true,
         plugins: {
@@ -42,14 +42,7 @@ export const LineGraph = ({ title, labels, values }) => {
 
     const data = {
         labels: labels,
-        datasets: [
-            {
-                label: "Disbursement Requests",
-                data: values,
-                borderColor: '#059212',
-                backgroundColor: '#059212',
-            },
-        ],
+        datasets: datasets
     };
     return (
         <ChartsCardWrapper

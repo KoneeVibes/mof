@@ -1,29 +1,31 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Dashboard } from './pages/home';
+import { Dashboard } from './pages/dashboard';
 import { Auth } from './pages/auth';
-import { MetricsArea } from './containers/metricsarea';
 import { ProjectsTableArea } from './containers/projectstablearea';
 import { ProjectRegistrationArea } from './containers/projectregistrationarea';
 import { ProjectDetailsArea } from './containers/detailsarea';
 import { SubAdminOnboardingArea } from './containers/subadminonboardingarea';
-import { DisbursementRequestArea } from './containers/disbursementrequestarea';
+import { DisbursementRequestArea } from './containers/disbursementpostingarea';
 import { UserRegistrationArea } from './containers/userregistrationarea';
 import { UserOnboardingArea } from './containers/useronboardingarea';
 import { EntityOnboardingArea } from './containers/entityonboardingarea';
-import { DisbursementsApprovalArea } from './containers/disbursementsapprovalsarea';
+import { AdminOverviewArea } from './containers/adminoverviewarea';
+import { FundingSourceOnboardingArea } from './containers/fundingsourceonboardingarea';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Auth />} />
-        <Route path='/dashboard' element={<MetricsArea />} />
+        <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/:entity/:entityId/projects' element={<ProjectsTableArea />} />
         <Route path='/:entity/:projectId' element={<ProjectDetailsArea />} />
         <Route path='/:entity/:projectId/request' element={<DisbursementRequestArea />} />
         <Route path='/registration/project' element={<ProjectRegistrationArea />} />
-        <Route path='/:superAdminId/approvals' element={<DisbursementsApprovalArea />} />
+        <Route path='/admin/:userId/overview' element={<AdminOverviewArea />} />
+        {/* Route to add a funding source */}
+        <Route path='/registration/:subAdminId/funding' element={<FundingSourceOnboardingArea />} />
         {/* Route to add a user to a project */}
         <Route path='/registration/:projectId/add/user' element={<UserRegistrationArea />} />
         {/* Route to onboard a new user - Pending */}

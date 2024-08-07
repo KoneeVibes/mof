@@ -30,6 +30,7 @@ export const Auth = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setError(null);
         setLoading(true);
         try {
             const response = await authenticateUser(formDetails);
@@ -47,11 +48,13 @@ export const Auth = () => {
                 })
                 navigate("/dashboard");
             } else {
+                setLoading(false);
                 setError('Authentication failed. Please check your credentials and try again.');
             }
         } catch (error) {
+            setLoading(false);
+            setError(`Login failed. ${error.message}`);
             console.error('Login failed:', error);
-            setError('Login failed. Please check your credentials and try again.');
         }
     };
 
@@ -66,7 +69,7 @@ export const Auth = () => {
                     <img src={authImg} alt="auth-img" />
                 </div>
                 <div className="auth-form-div">
-                    <H1>Welcome!</H1>
+                    <H1>International Economic Relations Portal</H1>
                     <P>Enter details to login.</P>
                     <form onSubmit={handleSubmit}>
                         <BaseInputWrapper
@@ -99,12 +102,12 @@ export const Auth = () => {
                         </div>
                         <A href="/" className="forgotPassword">FORGOT PASSWORD?</A>
                         <BaseButton type="submit">
-                        {loading ?
-                            <DotLoader
-                                size={20}
-                                color="white"
-                                className="dotLoader"
-                            /> : "LOG IN"}
+                            {loading ?
+                                <DotLoader
+                                    size={20}
+                                    color="white"
+                                    className="dotLoader"
+                                /> : "LOG IN"}
                         </BaseButton>
                     </form>
                     {error && <P style={{ color: 'red' }}>{error}</P>}

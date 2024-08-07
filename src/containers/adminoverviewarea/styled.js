@@ -1,11 +1,15 @@
 import styled from "styled-components";
+import { Column } from "../../components/flex/styled";
 
-export const DisbursementsApprovalAreaWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
+export const AdminOverviewAreaWrapper = styled(Column)(() => {
     return {
-        display: "flex",
-        flexDirection: "column",
-        gap: "var(--flexGap)",
 
+    }
+})
+
+export const AdminOverviewAreaTable = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
+    return {
+        overflow: "auto",
         "table": {
             width: "100%",
             backgroundColor: "#FFFFFF",
@@ -18,17 +22,16 @@ export const DisbursementsApprovalAreaWrapper = styled.div(({ cardPadding = "var
             textTransform: "uppercase",
             padding: cardPadding,
             borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
+            minWidth: "150px",
         },
         "td": {
             textAlign: "left",
-            borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
+            border: "1px solid rgba(33, 63, 125, 0.10)",
             padding: cardPadding,
+            minWidth: "150px",
         },
-        "select": {
-            padding: "0 !important",
-            fontFamily: "Work Sans",
-            fontWeight: 500,
-            fontSize: "14px",
-        }
+        "tbody tr td:nth-child(1)": {
+            textAlign: "left",
+        },
     }
 })
