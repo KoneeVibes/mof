@@ -17,6 +17,7 @@ import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { getCurrencies } from "../../util/apis/getCurrencies";
 import { DotLoader } from "react-spinners";
 import { getOrganizationMembers } from "../../util/apis/getOrganizationMembers";
+import { getFundingSources } from "../../util/apis/getFundingSources";
 
 export const ProjectRegistrationArea = () => {
     const cookies = new Cookies();
@@ -29,6 +30,7 @@ export const ProjectRegistrationArea = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [currencies, setCurrencies] = useState([]);
+    const [fundingSources, setFundingSources] = useState([]);
     const [members, setMembers] = useState([]);
 
     const [formDetails, setFormDetails] = useState({
@@ -40,6 +42,15 @@ export const ProjectRegistrationArea = () => {
         projectMembers: [{ email: "" }],
         beneficiaries: [{ name: "" }]
     });
+
+    useEffect(() => {
+        getFundingSources(token)
+            .then((data) => setFundingSources(data))
+            .catch((err) => {
+                console.error("Failed to fetch funding sources:", err);
+                setError("Failed to fetch funding sources. Please try again later.");
+            });
+    }, [token]);
 
     useEffect(() => {
         getCurrencies(token)
@@ -178,14 +189,20 @@ export const ProjectRegistrationArea = () => {
                     <Label>Funding Sources</Label>
                     {formDetails?.fundingSources?.map((source, index) => (
                         <ProjectRegistrationBaseInputWrapper key={index}>
-                            <ProjectRegistrationBaseInput
-                                type="text"
+                            <SelectFieldWrapper
+                                as="select"
                                 name="funderName"
-                                placeholder="Funder Name"
                                 required
                                 value={source.funderName}
                                 onChange={(e) => handleNestedChange("fundingSources", index, e)}
-                            />
+                            >
+                                <option value="">Select a funding source</option>
+                                {fundingSources.map((fundingSource, key) => (
+                                    <option key={key} value={fundingSource.name}>
+                                        {fundingSource.name}
+                                    </option>
+                                ))}
+                            </SelectFieldWrapper>
                             <ProjectRegistrationBaseInput
                                 type="number"
                                 name="amount"
@@ -256,7 +273,6 @@ export const ProjectRegistrationArea = () => {
                                 type="string"
                                 name="name"
                                 placeholder="Enter Beneficiary Name"
-                                required
                                 value={beneficiary.name}
                                 onChange={(e) => handleNestedChange("beneficiaries", index, e)}
                             />

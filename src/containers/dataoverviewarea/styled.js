@@ -49,7 +49,13 @@ export const NewProjectCardWrapper = styled(CardWrapper)(() => {
 
 export const DataOverviewTableWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
     return {
-        overflow: "auto",
+        ".tableWrapper": {
+            overflow: "auto",
+        },
+        ".exportButton": {
+            display: "flex",
+            justifyContent: "flex-end",
+        },
         "table": {
             width: "100%",
             backgroundColor: "#FFFFFF",

@@ -8,6 +8,7 @@ import Cookies from 'universal-cookie';
 import { getDashboardMetrics } from "../../util/apis/getDashboardMetrics";
 import { SelectFieldWrapper } from '../../components/formfields/select/styled';
 import { Table } from '../../components/table';
+import { getExcelSheet } from '../../util/apis/getExcelSheet';
 
 export const DataOverviewArea = () => {
     const cookies = new Cookies();
@@ -31,6 +32,28 @@ export const DataOverviewArea = () => {
         const { value } = e.target;
         setSelectedOrg(value);
     }
+
+    const exportToExcel = async (e) => {
+        e.preventDefault();
+        // Loader starts
+        try {
+            const blob = await getExcelSheet(token, "projects", "export");
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            // may have to come back to reset this filename
+            a.download = 'export.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url); // Clean up
+            // Loader stops
+            console.log("Successfully exported to an xlsx file");
+        } catch (error) {
+            // Loader stops
+            console.error("Failed to export:", error);
+        }
+    };
 
     useEffect(() => {
         getDashboardMetrics(token, orgId)
@@ -61,13 +84,13 @@ export const DataOverviewArea = () => {
                     labels={dashboardOverview?.fundingsMetrics?.map(funding => funding.currencyName)}
                     datasets={dashboardOverview?.fundingsMetrics ? [
                         {
-                            label: "Expended Fund",
+                            label: "Expended",
                             data: dashboardOverview.fundingsMetrics.map(funding => funding.totalUsed),
                             backgroundColor: "#059212"
                         },
                         {
-                            label: "Total Fund",
-                            data: dashboardOverview.fundingsMetrics.map(funding => funding.totalFunding),
+                            label: "Balance",
+                            data: dashboardOverview.fundingsMetrics.map(funding => funding.totalFunding - funding.totalUsed),
                             backgroundColor: "#E9ECF1"
                         }
                     ] : []}
@@ -206,6 +229,7 @@ export const DataOverviewArea = () => {
                     )]}
                     role={cookie.USER.role}
                     onSelectOption={(_, __, e) => e.preventDefault()}
+                    exportToExcel={exportToExcel}
                 />
             </DataOverviewTableWrapper>
         </DataOverviewAreaWrapper>

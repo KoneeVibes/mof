@@ -30,6 +30,9 @@ export const Avatar = ({ location }) => {
             case "addNewProject":
                 navigate("/registration/project");
                 break;
+            case "addFundingSource":
+                navigate(`/registration/${userId}/funding`);
+                break;
             default:
                 break;
         }
@@ -62,6 +65,7 @@ export const Avatar = ({ location }) => {
                 {(role === "SubAdmin") && (
                     <React.Fragment>
                         <P onClick={(e) => handleRedirect(e, "addNewProject")}>Add New Project</P>
+                        <P onClick={(e) => handleRedirect(e, "addFundingSource")}>Add Funding Source</P>
                         <P onClick={(e) => handleRedirect(e, "onboardUser")}>Onboard New User</P>
                     </React.Fragment>
                 )}

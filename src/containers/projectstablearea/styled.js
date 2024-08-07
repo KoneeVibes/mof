@@ -10,7 +10,13 @@ export const EntitiesAreaWrapper = styled.div(({ flexGap = "var(--flexGap)" }) =
 
 export const EntitiesTableWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
     return {
-        overflow: "auto",
+        ".tableWrapper": {
+            overflow: "auto",
+        },
+        ".exportButton": {
+            display: "flex",
+            justifyContent: "flex-end",
+        },
         "table": {
             width: "100%",
             backgroundColor: "#FFFFFF",

@@ -8,7 +8,13 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
         display: "flex",
         flexDirection: "column",
         gap: "var(--flexGap)",
-
+        ".tableWrapper": {
+            overflow: "auto",
+        },
+        ".exportButton": {
+            display: "flex",
+            justifyContent: "flex-end",
+        },
         "table": {
             width: "100%",
             backgroundColor: "#FFFFFF",

@@ -6,11 +6,12 @@ import { Table } from "../../components/table";
 import { useEffect, useState } from "react";
 import { getProjectsPerOrganization } from "../../util/apis/getProjectsPerOrganization";
 import Cookies from "universal-cookie";
+import { getExcelSheet } from "../../util/apis/getExcelSheet";
 
 export const ProjectsTableArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
-    const categories = ["Project Title", "Fundings", "Status"];
+    const categories = ["Project Title", "Allocation", "Status"];
 
     const navigate = useNavigate();
     const { entity, entityId } = useParams();
@@ -20,6 +21,28 @@ export const ProjectsTableArea = () => {
 
     const token = cookie.TOKEN;
     const { role, organization, organizationId } = cookie.USER || {};
+
+    const exportToExcel = async (e) => {
+        e.preventDefault();
+        // Loader starts
+        try {
+            const blob = await getExcelSheet(token, "projects", "export");
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            // may have to come back to reset this filename
+            a.download = 'export.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            // Loader stops
+            console.log("Successfully exported to an xlsx file");
+        } catch (error) {
+            // Loader stops
+            console.error("Failed to export:", error);
+        }
+    };
 
     useEffect(() => {
         if (token && entityId) {
@@ -60,6 +83,7 @@ export const ProjectsTableArea = () => {
                         onSelectOption={navigateToProjectDetails}
                         uniqueCurrencies={uniqueCurrencies}
                         location={"projectsTableArea"}
+                        exportToExcel={exportToExcel}
                     />
                 </EntitiesTableWrapper>
             </EntitiesAreaWrapper>

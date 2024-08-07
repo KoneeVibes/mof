@@ -15,6 +15,7 @@ import { BarChart } from "../../components/barchart";
 import { deleteDisbursement } from "../../util/apis/deleteDisbursement";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { updateProjectStatus } from "../../util/apis/updateProjectStatus";
+import { getExcelSheet } from "../../util/apis/getExcelSheet";
 // import { NewProjectCardWrapper } from "../metricsarea/styled";
 // import { BaseButton } from "../../components/buttons/styled";
 
@@ -56,6 +57,29 @@ export const ProjectDetailsArea = () => {
             setError(`Failed to delete: ${error.message}`);
         }
     };
+
+    const exportToExcel = async (e) => {
+        e.preventDefault();
+        // Loader starts
+        try {
+            const blob = await getExcelSheet(token, "disbursements", projectId);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            // may have to come back to reset this filename
+            a.download = 'export.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            // Loader stops
+            console.log("Successfully exported to an xlsx file");
+        } catch (error) {
+            // Loader stops
+            console.error("Failed to export:", error);
+        }
+    };
+
 
     const handleStatusChange = async (event) => {
         const value = event?.target?.value;
@@ -186,8 +210,7 @@ export const ProjectDetailsArea = () => {
                         <P>{`MDA: ${project?.organization}`}</P>
                         <P>{`Tier of Government: ${project?.governmentTier}`}</P>
                         <P>{`Effective Date: ${project?.dateEffective}`}</P>
-                        <P>{`Closing Date: ${project?.dateUpdated}`}</P>
-                        {project?.closingDate && (<P>{`Closing Date: ${project?.closingDate}`}</P>)}
+                        {(project?.dateUpdated && projectStatus !== "Ongoing") && (<P>{`Closing Date: ${project?.dateUpdated}`}</P>)}
                         <P>{`Description: ${project?.description}`}</P>
                     </ProjectDetailCardWrapper>
                     {project?.beneficiaries && (
@@ -253,6 +276,7 @@ export const ProjectDetailsArea = () => {
                         onSelectOption={(x, y, event) => event.preventDefault()}
                         performAction={performAction}
                         role={cookie.USER.role}
+                        exportToExcel={exportToExcel}
                     />
                 </div>
                 {(cookie.USER.role === "Individual") && (
