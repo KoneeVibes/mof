@@ -15,17 +15,18 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { getCurrencies } from "../../util/apis/getCurrencies";
-import { getOrganizationMembers } from "../../util/apis/getOrganizationMembers";
+import { DotLoader } from "react-spinners";
+import {getOrganizationMembers} from "../../util/apis/getOrganizationMembers";
 
 export const ProjectRegistrationArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
     const token = cookies.get("TOKEN");
     const { organizationId } = cookie.USER;
-    console.log(organizationId);
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [currencies, setCurrencies] = useState([]);
     const [members, setMembers] = useState([]);
 
@@ -106,9 +107,12 @@ export const ProjectRegistrationArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        console.log(formDetails);
         try {
             const response = await addProject(token, formDetails);
             if (response.status === "Success") {
+                setLoading(false);
                 navigate("/dashboard");
             } else {
                 setError("Submission failed. Please check your inputs and try again.");
@@ -276,7 +280,14 @@ export const ProjectRegistrationArea = () => {
                         Add New Entry
                     </ProjectRegistrationBaseButton>
 
-                    <BaseButton type="submit">Continue</BaseButton>
+                    <BaseButton type="submit">
+                    {loading ?
+                            <DotLoader
+                                size={20}
+                                color="white"
+                                className="dotLoader"
+                            /> : "Continue"}
+                    </BaseButton>
                 </form>
                 {error && <P style={{ color: "red" }}>{error}</P>}
             </ProjectRegistrationAreaWrapper>

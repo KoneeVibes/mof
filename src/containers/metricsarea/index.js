@@ -89,9 +89,9 @@ export const MetricsArea = () => {
                             title={"Allocation Metrics"}
                             labels={
                                 dashboardOverview?.orgsAllocationMetrics
-                                    ?.filter(metric => metric.totalAllocations.some(allocation => allocation.amount > 0)) // Prioritize non-zero allocations
+                                    ?.filter(metric => metric.totalAllocations.some(allocation => allocation.amountAllocated > 0)) // Prioritize non-zero allocations
                                     ?.concat(shuffleArray(dashboardOverview?.orgsAllocationMetrics
-                                        ?.filter(metric => !metric.totalAllocations.some(allocation => allocation.amount > 0)))) // Add randomized zero allocations if needed
+                                        ?.filter(metric => !metric.totalAllocations.some(allocation => allocation.amountAllocated > 0)))) // Add randomized zero allocations if needed
                                     ?.slice(0, 5) // Limit to 5 items
                                     ?.map(metric => metric.organizationName) // Extract labels
                             }
@@ -99,9 +99,9 @@ export const MetricsArea = () => {
                                 (() => {
                                     // Get unique currency names from all totalAllocations
                                     const limitedMetrics = dashboardOverview?.orgsAllocationMetrics
-                                        ?.filter(metric => metric.totalAllocations.some(allocation => allocation.amount > 0)) // Prioritize non-zero allocations
+                                        ?.filter(metric => metric.totalAllocations.some(allocation => allocation.amountAllocated > 0)) // Prioritize non-zero allocations
                                         ?.concat(shuffleArray(dashboardOverview?.orgsAllocationMetrics
-                                            ?.filter(metric => !metric.totalAllocations.some(allocation => allocation.amount > 0)))) // Add randomized zero allocations if needed
+                                            ?.filter(metric => !metric.totalAllocations.some(allocation => allocation.amountAllocated > 0)))) // Add randomized zero allocations if needed
                                         ?.slice(0, 5); // Limit to 5 items
 
                                     const currencies = Array.from(new Set(
@@ -117,7 +117,7 @@ export const MetricsArea = () => {
                                         label: currency,
                                         data: limitedMetrics?.map(org => {
                                             const allocation = org.totalAllocations.find(a => a.currencyName === currency);
-                                            return allocation ? allocation.amount : 0;
+                                            return allocation ? allocation.amountAllocated : 0;
                                         }),
                                         backgroundColor: colors[index % colors.length]
                                     }));
@@ -128,7 +128,7 @@ export const MetricsArea = () => {
                         <BarChart
                             axis="x"
                             title="Allocation Metrics"
-                            labels={dashboardOverview?.projectsAllocationMetrics?.map(project => project.projectTitle) || []}
+                            labels={dashboardOverview?.projectsAllocationMetrics?.map(project => project.projectTitle)?.slice(0, 5) || []}
                             datasets={(() => {
                                 const currencyNames = [...new Set(
                                     dashboardOverview?.projectsAllocationMetrics?.flatMap(project =>
@@ -138,8 +138,8 @@ export const MetricsArea = () => {
                                 const datasets = currencyNames.map((currency, index) => {
                                     const data = dashboardOverview?.projectsAllocationMetrics?.map(project => {
                                         const allocation = project.totalAllocations.find(allocation => allocation.currencyName === currency);
-                                        return allocation ? allocation.amount : 0;
-                                    }) || [];
+                                        return allocation ? allocation.amountAllocated : 0;
+                                    })?.slice(0, 5) || [];
                                     const colors = ["#059212", "#E9ECF1", "#FFA500", "#0000FF", "#FF0000"];
                                     return {
                                         label: currency,
@@ -147,7 +147,7 @@ export const MetricsArea = () => {
                                         backgroundColor: colors[index % colors.length],
                                     };
                                 });
-                                return datasets.slice(0, 6) || []
+                                return datasets
                             })()}
                         />
                     )}

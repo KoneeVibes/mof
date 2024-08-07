@@ -9,6 +9,8 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { onboardUser } from "../../util/apis/onboardUser";
 import { BaseButton } from "../../components/buttons/styled";
+import { DotLoader } from "react-spinners";
+import { flattenOrganizations } from "../../config/flattenOrganizations";
 
 export const UserOnboardingArea = () => {
     const cookies = new Cookies();
@@ -17,6 +19,7 @@ export const UserOnboardingArea = () => {
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [organizations, setOrganizations] = useState([]);
     const [formDetails, setFormDetails] = useState({
         email: "",
@@ -33,9 +36,11 @@ export const UserOnboardingArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await onboardUser(token, formDetails);
             if (response.status === "Success") {
+                setLoading(false);
                 navigate("/dashboard")
             } else {
                 setError("Submission failed. Please check your inputs and try again.");
@@ -47,9 +52,14 @@ export const UserOnboardingArea = () => {
     };
 
     useEffect(() => {
-        getAllOrganizations(token)
-            .then((listOfOrganizations) => setOrganizations(listOfOrganizations))
-            .catch((err) => console.error("Failed to fetch organizations:", err));
+        if (token) {
+            getAllOrganizations(token).then((listOfOrganizations) => {
+                const collapsedList = flattenOrganizations(listOfOrganizations);
+                setOrganizations(collapsedList);
+            }).catch((error) => {
+                console.error("Failed to fetch organizations:", error);
+            });
+        }
     }, [token]);
 
     return (
@@ -82,7 +92,14 @@ export const UserOnboardingArea = () => {
                             </option>
                         ))}
                     </SelectFieldWrapper>
-                    <BaseButton type="submit">Continue</BaseButton>
+                    <BaseButton type="submit">
+                    {loading ?
+                            <DotLoader
+                                size={20}
+                                color="white"
+                                className="dotLoader"
+                            /> : "Continue"}
+                    </BaseButton>
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
             </UserOnboardingAreaWrapper>

@@ -30,7 +30,7 @@ export const ProjectsTableArea = () => {
                     const currencyNames = [...new Set(fundingSources.map(funding => funding.currencyName))];
                     setUniqueCurrencies(currencyNames);
 
-                    const newColumns = ["Project Title", "MDA", ...currencyNames.map(currency => `Allocation in ${currency}`), "Status"];
+                    const newColumns = ["Project Title", "MDA", ...currencyNames.map(currency => `Fundings in ${currency}`), "Status"];
                     setColumns(newColumns);
                 })
                 .catch((err) => console.error("Failed to fetch projects:", err));

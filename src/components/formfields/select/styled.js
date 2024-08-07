@@ -8,7 +8,7 @@ export const SelectFieldWrapper = styled("select")`
             border: "none",
             outline: "none",
             width: width || "-webkit-fill-available",
-            fontFamily: "AvenirNext",
+            fontFamily: "Avenir-Next",
             fontSize: "14px",
             fontWeight: "500",
             borderRadius: "10px",

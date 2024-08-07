@@ -2,7 +2,7 @@ import { BASE_ENDPOINT } from "../endpoint";
 
 export const getDisbursementRequests = async (token, projectId) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements/requests/project/${projectId ? `${projectId}` : ''}`, {
+        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements/requests${projectId ? `/project/${projectId}` : ''}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,

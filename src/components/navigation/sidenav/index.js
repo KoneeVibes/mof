@@ -9,7 +9,7 @@ import { Row } from "../../flex/styled";
 import { getProjectsPerOrganization } from "../../../util/apis/getProjectsPerOrganization";
 import { Context } from "../../../context";
 import { getAllOrganizations } from "../../../util/apis/getAllOrganizations";
-import dropdown from "../../../assets/dropdowndownload.png";
+
 
 export const SideNav = () => {
     const cookies = new Cookies();
@@ -38,12 +38,15 @@ export const SideNav = () => {
     const navigateFromSideBar = (organization, id, e) => {
         setIsMenuOpen(false);
         const parsedOrganization = organization?.replace(/\s+/g, '').toLowerCase();
-        if (!roles?.includes("SuperAdmin")) {
-            return navigate(`/${parsedOrganization}/${id}`);
-        }
+        // handle click of disbursement requests
         if (e.currentTarget.getAttribute("data-nav-key") === "Disbursement Requests") {
             return navigate(`/${userId}/approvals`);
         }
+        // handle click of any of the projects
+        if (!roles?.includes("SuperAdmin")) {
+            return navigate(`/${parsedOrganization}/${id}`);
+        }
+        // handle click of an organization
         return navigate(`/${parsedOrganization}/${id}/projects`);
     }
 
@@ -113,14 +116,14 @@ export const SideNav = () => {
             <SideNavItemsListWrapper>
                 <div>
                     {sideNavItems?.length > 0 && (
-                        <P className="dashboard" onClick={() => navigate(sideNavItems[0].url)}>
+                        <P className="navItem" onClick={() => navigate(sideNavItems[0].url)}>
                             {sideNavItems[0].name}
                         </P>
                     )}
                     {entities?.map((entity, key) => (
                         <div key={key}>
                             <Row
-                                className="entity"
+                                className="navItem"
                                 //Here, we want to update the organization-key attribute with the indexed
                                 //entity (in the case of superadmin) and with orgType in the case of a subadmin
                                 data-organization-key={roles?.includes("SuperAdmin") ? entity : orgType}
@@ -137,11 +140,7 @@ export const SideNav = () => {
                                 {/* Mirabel, add a drop down symbol here */}
                                 
                                 
-                                <div className="dropdown">
-      
-                               <img src={dropdown} alt="dropdowndownload" />
-      
-                                    </div>
+                            
                             </Row>
                             {/* Here, we just conditionally show projects based on which OrgType is clicked (for super
                             admin) or all projects (for a single-organization-authorized subadmin or user) */}
@@ -170,8 +169,9 @@ export const SideNav = () => {
                             )}
                         </div>
                     ))}
-                    {cookie.USER.roles.includes("SuperAdmin") && (
+                    {cookie.USER.roles.includes("SubAdmin") && (
                         <P
+                            className="navItem"
                             data-nav-key="Disbursement Requests"
                             onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
                         >

@@ -54,7 +54,7 @@ export const SideNavItemsListWrapper = styled(Column)(
             cursor: pointer;
         }
 
-        .entity {
+        .navItem {
             &:hover {
                 border-left: 6px solid;
                 border-left-color: #059212;
@@ -83,10 +83,6 @@ export const SideNavItemsListWrapper = styled(Column)(
             margin-block: 0;
         }
 
-            .dropdown {
-            width: 10px;
-            height: 10px;
-            }
-
+           
     `
     });

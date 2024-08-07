@@ -54,6 +54,11 @@ export const AuthWrapper = styled("div")(() => ({
         color: "#102C57",
         textDecoration: "none",
     },
+    ".dotLoader":{
+            marginLeft: "auto",
+            marginRight: "auto",
+        },
+    
     
 }))
 
