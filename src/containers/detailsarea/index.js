@@ -62,7 +62,7 @@ export const ProjectDetailsArea = () => {
         e.preventDefault();
         // Loader starts
         try {
-            const blob = await getExcelSheet(token, "disbursements", projectId);
+            const blob = await getExcelSheet(token, `disbursements/${projectId}`);
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;

@@ -26,7 +26,7 @@ export const ProjectsTableArea = () => {
         e.preventDefault();
         // Loader starts
         try {
-            const blob = await getExcelSheet(token, "projects", "export");
+            const blob = await getExcelSheet(token, "projects");
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;

@@ -1,8 +1,8 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const getExcelSheet = async (token, subRoute, id) => {
+export const getExcelSheet = async (token, subRoute) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/${subRoute}/${id}`, {
+        const response = await fetch(`${BASE_ENDPOINT}/api/${subRoute}/export`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
