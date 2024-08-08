@@ -90,5 +90,19 @@ export const SideNavItemsListWrapper = styled(Column)(
             cursor: none;
             color: #EBEBE4;
         }
+        
+        dropdown {
+  position: relative;
+  display: inline-block;
+    }
+  
+.dropbtn {
+  background-color: #3498db;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+    }
     `
     });

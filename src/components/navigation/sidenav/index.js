@@ -150,7 +150,9 @@ export const SideNav = () => {
                                     {entity}
                                 </P>
                                 {/* Mirabel, add a drop down symbol here */}
-                                
+                                <div class="dropdown">
+                                 <button class="dropbtn">Dropdown &#9660;</button>
+                             </div>
                                 
                             
                             </Row>
