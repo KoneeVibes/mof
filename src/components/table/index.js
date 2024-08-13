@@ -26,6 +26,8 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
                                             style={{
                                                 textAlign: (category === "Fundings" || category === "Allocation" || category === "Funding Balance") ? "center" : "left",
                                                 border: "1px solid rgba(33, 63, 125, 0.10)",
+                                                borderLeft: (category === "Fundings" || category === "Allocation" || category === "Funding Balance") ? "5px solid red" : "1px solid rgba(33, 63, 125, 0.10)",
+                                                borderRight: (category === "Fundings" || category === "Allocation" || category === "Funding Balance") ? "5px solid red" : "1px solid rgba(33, 63, 125, 0.10)",
                                             }}
                                         >
                                             {category}
@@ -42,7 +44,9 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
                                                     key={index}
                                                     style={{
                                                         textAlign: "center",
-                                                        border: "1px solid rgba(33, 63, 125, 0.10)"
+                                                        border: "1px solid rgba(33, 63, 125, 0.10)",
+                                                        borderLeft: (index === 0) ? "5px solid red" : "1px solid rgba(33, 63, 125, 0.10)",
+                                                        borderRight: (index === uniqueCurrencies.length - 1) ? "5px solid red" : "1px solid rgba(33, 63, 125, 0.10)",
                                                     }}
                                                 >
                                                     {currency}
@@ -116,7 +120,7 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
                                     <React.Fragment>
                                         {role === "SuperAdmin" && <Td>{rowItem.organization}</Td>}
                                         {rowItem.totalAllocations.map((allocation, index) => (
-                                            <Td key={index} style={{ textAlign: "center" }}>
+                                            <Td key={index} style={{ textAlign: "center", borderLeft: (index === 0) ? "5px solid Red" : "1px solid rgba(33, 63, 125, 0.10)", borderRight: (index === rowItem.totalAllocations.length - 1) ? "5px solid Red" : "1px solid rgba(33, 63, 125, 0.10)" }}>
                                                 {new Intl.NumberFormat().format(allocation.amountAllocated) || ""}
                                             </Td>
                                         ))}

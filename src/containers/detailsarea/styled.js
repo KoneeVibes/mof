@@ -66,6 +66,17 @@ export const ProjectDetailBaseButton = styled(BaseButton)(({ cardPadding = "var(
 
 export const ProjectDetailActionRow = styled(Row)(() => {
     return {
+        alignItems: "center",
         justifyContent: "space-between",
+        position: "relative"
+    }
+})
+
+export const ProjectDetailEditModal = styled(CardWrapper)(({ display }) => {
+    return {
+        position: "absolute",
+        top: "100%",
+        right: 0,
+        display: display,
     }
 })
