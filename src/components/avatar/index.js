@@ -33,6 +33,9 @@ export const Avatar = ({ location }) => {
             case "addFundingSource":
                 navigate(`/registration/${userId}/funding`);
                 break;
+            case "onboardCurrency":
+                navigate(`/registration/${userId}/currency`);
+                break;
             default:
                 break;
         }
@@ -67,6 +70,7 @@ export const Avatar = ({ location }) => {
                         <P onClick={(e) => handleRedirect(e, "addNewProject")}>Add New Project</P>
                         <P onClick={(e) => handleRedirect(e, "addFundingSource")}>Add Funding Source</P>
                         <P onClick={(e) => handleRedirect(e, "onboardUser")}>Onboard New User</P>
+                        <P onClick={(e) => handleRedirect(e, "onboardCurrency")}>Onboard New Currency</P>
                     </React.Fragment>
                 )}
                 <P onClick={handleLogout}>Logout</P>
