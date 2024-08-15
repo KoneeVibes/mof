@@ -23,7 +23,8 @@ function App() {
         <Route path='/:entity/:projectId' element={<ProjectDetailsArea />} />
         <Route path='/:entity/:projectId/request' element={<DisbursementRequestArea />} />
         <Route path='/registration/project' element={<ProjectRegistrationArea />} />
-        <Route path='/admin/:userId/overview' element={<AdminOverviewArea />} />
+        {/* Route to the archives area */}
+        <Route path='/admin/:userId/archives' element={<AdminOverviewArea />} />
         {/* Route to add a funding source */}
         <Route path='/registration/:subAdminId/funding' element={<FundingSourceOnboardingArea />} />
         {/* Route to add a user to a project */}

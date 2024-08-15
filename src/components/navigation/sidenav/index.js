@@ -20,11 +20,13 @@ export const SideNav = () => {
         Ministry: [],
         Department: [],
         Agency: [],
+        State: [],
     });
     const [listOfOrganizations, setListOfOrganizations] = useState({
         Ministry: [],
         Department: [],
-        Agency: []
+        Agency: [],
+        State: [],
     });
     const [organizationProjects, setOrganizationProjects] = useState([]);
     const [activeEntity, setActiveEntity] = useState(null);
@@ -37,11 +39,10 @@ export const SideNav = () => {
     const navigateFromSideBar = (organization, id, e) => {
         setIsMenuOpen(false);
         const parsedOrganization = organization?.replace(/\s+/g, '')?.toLowerCase();
-        // handle click of reports
-        if (e.currentTarget.getAttribute("data-nav-key") === "reports") {
-            return navigate(`/admin/${userId}/overview`);
+        // handle click of archives
+        if (e.currentTarget.getAttribute("data-nav-key") === "archives") {
+            return navigate(`/admin/${userId}/archives`);
         }
-
         // handle click of any of the projects
         if (role !== "SuperAdmin") {
             return navigate(`/${parsedOrganization}/${id}`);
@@ -60,10 +61,12 @@ export const SideNav = () => {
             const Agency = organizations.flatMap(org =>
                 org.subOrganizations.filter(subOrg => subOrg.orgType === "Agency")
             );
+            const State = organizations.filter(org => org.orgType === "State");
             setListOfOrganizations({
                 Ministry: Ministry,
                 Department: Department,
                 Agency: Agency,
+                State: State
             });
         } catch (error) {
             console.error("Failed to fetch organizations:", error);
@@ -114,10 +117,12 @@ export const SideNav = () => {
                     const Ministry = projects.filter((project) => project.orgType === "Ministry");
                     const Department = projects.filter((project) => project.orgType === "Department");
                     const Agency = projects.filter((project) => project.orgType === "Agency");
+                    const State = projects.filter((project) => project.orgType === "State");
                     setListOfProjectPerOrganization({
                         Ministry: Ministry,
                         Department: Department,
                         Agency: Agency,
+                        State: State,
                     });
                 })
                 .catch((err) => {
@@ -177,17 +182,17 @@ export const SideNav = () => {
                         </div>
                     ))}
                 </div>
-                {/* <div>
+                <div>
                     {(role === "SuperAdmin") && (
                         <P
                             style={{ color: "red" }}
-                            data-nav-key={"reports"}
+                            data-nav-key={"archives"}
                             onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
                         >
-                            Reports
+                            Archives
                         </P>
                     )}
-                </div> */}
+                </div>
                 <div className="avatar-div">
                     <Avatar location={"side-nav"} />
                 </div>

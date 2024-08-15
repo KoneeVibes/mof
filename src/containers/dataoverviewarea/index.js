@@ -19,6 +19,7 @@ export const DataOverviewArea = () => {
         "Project Title",
         ...(cookie.USER.role === "SuperAdmin" ? ["MDA"] : []),
         "Allocation",
+        "Disbursement",
         "Funding Balance",
         "Status"
     ];

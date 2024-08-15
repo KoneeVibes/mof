@@ -22,12 +22,12 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
                                     {categories?.map((category, index) => (
                                         <Th
                                             key={index}
-                                            colSpan={(category === "Fundings" || category === "Allocation" || category === "Funding Balance") ? uniqueCurrencies?.length : 1}
+                                            colSpan={(category === "Fundings" || category === "Allocation" || category === "Funding Balance" || category === "Disbursement") ? uniqueCurrencies?.length : 1}
                                             style={{
-                                                textAlign: (category === "Fundings" || category === "Allocation" || category === "Funding Balance") ? "center" : "left",
+                                                textAlign: (category === "Fundings" || category === "Allocation" || category === "Funding Balance" || category === "Disbursement") ? "center" : "left",
                                                 border: "1px solid rgba(33, 63, 125, 0.10)",
-                                                borderLeft: (category === "Fundings" || category === "Allocation" || category === "Funding Balance") ? "5px solid red" : "1px solid rgba(33, 63, 125, 0.10)",
-                                                borderRight: (category === "Fundings" || category === "Allocation" || category === "Funding Balance") ? "5px solid red" : "1px solid rgba(33, 63, 125, 0.10)",
+                                                borderLeft: (category === "Fundings" || category === "Allocation" || category === "Funding Balance" || category === "Disbursement") ? "5px solid red" : "1px solid rgba(33, 63, 125, 0.10)",
+                                                borderRight: (category === "Fundings" || category === "Allocation" || category === "Funding Balance" || category === "Disbursement") ? "5px solid red" : "1px solid rgba(33, 63, 125, 0.10)",
                                             }}
                                         >
                                             {category}
@@ -39,7 +39,7 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
                                         <React.Fragment>
                                             {/* Empty cell for "Project Title" and "MDA" */}
                                             <Th colSpan={role === "SuperAdmin" ? 2 : 1}></Th>
-                                            {["Allocation", "Funding Balance"].map(category => uniqueCurrencies?.map((currency, index) => (
+                                            {["Allocation", "Disbursement", "Funding Balance"].map(category => uniqueCurrencies?.map((currency, index) => (
                                                 <Th
                                                     key={index}
                                                     style={{
@@ -126,6 +126,11 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
                                         ))}
                                         {rowItem.totalAllocations.map((allocation, index) => (
                                             <Td key={index} style={{ textAlign: "center" }}>
+                                                {new Intl.NumberFormat().format(allocation.amountDisbursed) || ""}
+                                            </Td>
+                                        ))}
+                                        {rowItem.totalAllocations.map((allocation, index) => (
+                                            <Td key={index} style={{ textAlign: "center" }}>
                                                 {new Intl.NumberFormat().format(allocation.balance) || ""}
                                             </Td>
                                         ))}
@@ -148,6 +153,23 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
                                         rowItem?.totalAllocations?.forEach((totalAllocation) => {
                                             if (totalAllocation.currencyName === uniqueCurrency) {
                                                 currencyTotal += totalAllocation.amountAllocated;
+                                            }
+                                        });
+                                    });
+                                    // Return the <Td> element with the summed total for the currency
+                                    return (
+                                        <Td key={uniqueCurrency} style={{ textAlign: "center", fontWeight: 600 }}>{new Intl.NumberFormat().format(currencyTotal)}</Td>
+                                    );
+                                })}
+                                {/* Sum total disbursements for each unique currency */}
+                                {uniqueCurrencies?.map((uniqueCurrency) => {
+                                    // Initialize a sum variable
+                                    let currencyTotal = 0;
+                                    // Loop through rowItems and sum the disbursements for the current uniqueCurrency
+                                    rowItems?.forEach((rowItem) => {
+                                        rowItem?.totalAllocations.forEach((totalAllocation) => {
+                                            if (totalAllocation.currencyName === uniqueCurrency) {
+                                                currencyTotal += totalAllocation.amountDisbursed;
                                             }
                                         });
                                     });
