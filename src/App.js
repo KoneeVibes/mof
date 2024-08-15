@@ -12,6 +12,7 @@ import { UserOnboardingArea } from './containers/useronboardingarea';
 import { EntityOnboardingArea } from './containers/entityonboardingarea';
 import { AdminOverviewArea } from './containers/adminoverviewarea';
 import { FundingSourceOnboardingArea } from './containers/fundingsourceonboardingarea';
+import { CurrencyOnboardingArea } from './containers/currencyonboardingarea';
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
         <Route path='/admin/:userId/archives' element={<AdminOverviewArea />} />
         {/* Route to add a funding source */}
         <Route path='/registration/:subAdminId/funding' element={<FundingSourceOnboardingArea />} />
+        {/* Route to add a currency*/}
+        <Route path='/registration/:subAdminId/currency' element={<CurrencyOnboardingArea/>} />
         {/* Route to add a user to a project */}
         <Route path='/registration/:projectId/add/user' element={<UserRegistrationArea />} />
         {/* Route to onboard a new user - Pending */}
