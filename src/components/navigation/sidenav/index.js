@@ -33,6 +33,7 @@ export const SideNav = () => {
     const [activeEntity, setActiveEntity] = useState(null);
     const [organizations, setOrganizations] = useState([]);
     const [populatedStatus, setPopulatedStatus] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const { role, orgType, organizationId, organization, userId } = cookie.USER || {};
     const entities = (role === "SuperAdmin") ? Object.keys(listOfProjectPerOrganization) : ["Projects"];
@@ -74,49 +75,49 @@ export const SideNav = () => {
         }
     };
 
-  const getSideNavItems = async (e) => {
-    const key = e.currentTarget.getAttribute("data-organization-key");
-    setActiveEntity(key);
-    setLoading(true);
-    // So with the right organization key, we should be able to conditionally
-    // update organizationProjects state with different projects array for
-    // a superadmin (an array of all projects per orgType) or subadmin (an array of
-    // all projects in the logged in user's organization) respectively.
-    if (role === "SuperAdmin") {
-      setOrganizationProjects(listOfProjectPerOrganization[key]);
-      await updateListOfOrganizations();
-      setLoading(false);
-    } else {
-      setOrganizationProjects(
-        listOfProjectPerOrganization[key]?.filter(
-          (project) => project.organization === organization
-        )
-      );
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (activeEntity) {
-      setOrganizations(listOfOrganizations[activeEntity]);
-    }
-  }, [activeEntity, listOfOrganizations]);
-
-  useEffect(() => {
-    const updateOrganizationStatus = async () => {
-      const status = {};
-      if (Array.isArray(organizations) && organizations.length > 0) {
-        for (const org of organizations) {
-          if (org.id) {
-            const projectList = await getProjectsPerOrganization(token, org.id);
-            status[org.id] = projectList.length < 1 ? "unpopulated" : null;
-          }
+    const getSideNavItems = async (e) => {
+        const key = e.currentTarget.getAttribute("data-organization-key");
+        setActiveEntity(key);
+        setLoading(true);
+        // So with the right organization key, we should be able to conditionally
+        // update organizationProjects state with different projects array for
+        // a superadmin (an array of all projects per orgType) or subadmin (an array of
+        // all projects in the logged in user's organization) respectively.
+        if (role === "SuperAdmin") {
+            setOrganizationProjects(listOfProjectPerOrganization[key]);
+            await updateListOfOrganizations();
+            setLoading(false);
+        } else {
+            setOrganizationProjects(
+                listOfProjectPerOrganization[key]?.filter(
+                    (project) => project.organization === organization
+                )
+            );
+            setLoading(false);
         }
-        setPopulatedStatus(status);
-      }
     };
-    updateOrganizationStatus();
-  }, [organizations, token]);
+
+    useEffect(() => {
+        if (activeEntity) {
+            setOrganizations(listOfOrganizations[activeEntity]);
+        }
+    }, [activeEntity, listOfOrganizations]);
+
+    useEffect(() => {
+        const updateOrganizationStatus = async () => {
+            const status = {};
+            if (Array.isArray(organizations) && organizations.length > 0) {
+                for (const org of organizations) {
+                    if (org.id) {
+                        const projectList = await getProjectsPerOrganization(token, org.id);
+                        status[org.id] = projectList.length < 1 ? "unpopulated" : null;
+                    }
+                }
+                setPopulatedStatus(status);
+            }
+        };
+        updateOrganizationStatus();
+    }, [organizations, token]);
 
     useEffect(() => {
         if (token && organizationId) {

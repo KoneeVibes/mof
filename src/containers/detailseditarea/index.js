@@ -9,25 +9,29 @@ import { DotLoader } from "react-spinners";
 export const DetailsEditArea = React.forwardRef((props, ref) => {
     const { modalId, project } = props;
     const [loading, setLoading] = useState(false);
-    const [formDetails, setFormDetails] = useState([]);
+    const [formDetails, setFormDetails] = useState({});
 
     useEffect(() => {
         const fetchInitialValues = async () => {
             try {
-                let details;
+                let details = {};
                 switch (modalId) {
                     case "basic":
                         details = {
-                            projectTitle: project?.projectTitle,
-                            description: project?.description,
-                            effectiveDate: project?.dateEffective,
-                        }
+                            projectTitle: project?.projectTitle || "",
+                            description: project?.description || "",
+                            effectiveDate: project?.dateEffective || "",
+                        };
                         break;
                     case "beneficiaries":
-                        details = project?.beneficiaries || [];
+                        details = {
+                            beneficiaries: project?.beneficiaries || [{ name: "" }],
+                        };
                         break;
                     case "funding":
-                        details = project?.fundingSources || [];
+                        details = {
+                            fundingSources: project?.fundingSources || [{ funderName: "", amount: 0, currencyName: "" }],
+                        };
                         break;
                     default:
                         return;
@@ -35,7 +39,7 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                 setFormDetails(details);
             } catch (error) {
                 console.error('Error fetching initial values:', error);
-                setFormDetails([]);
+                setFormDetails({});
             }
         };
         fetchInitialValues();
@@ -141,23 +145,20 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                 ));
             case "funding":
             case "beneficiaries":
-                return Array.isArray(formDetails) ? (
-                    <>
-                        {formDetails.map((item, index) => (
-                            <React.Fragment key={index}>
-                                <Label>{modalId === "funding" ? `Funding Source ${index + 1}` : `Beneficiary ${index + 1}`}</Label>
-                                {Object.entries(item).map(([field, value], subIndex) => (
-                                    <React.Fragment key={subIndex}>
-                                        <Label>{field.replace(/([A-Z])/g, ' $1').trim()}</Label>
-                                        <BaseInputWrapper
-                                            as="input"
-                                            type="text"
-                                            name={field}
-                                            value={value || ''}
-                                            onChange={(e) => handleNestedChange(modalId, index, e)}
-                                        />
-                                    </React.Fragment>
-                                ))}
+                const section = modalId === "funding" ? "fundingSources" : "beneficiaries";
+                return (formDetails[section] || []).map((item, index) => (
+                    <React.Fragment key={index}>
+                        <Label>{modalId === "funding" ? `Funding Source ${index + 1}` : `Beneficiary ${index + 1}`}</Label>
+                        {Object.entries(item).map(([field, value], subIndex) => (
+                            <React.Fragment key={subIndex}>
+                                <Label>{field.replace(/([A-Z])/g, ' $1').trim()}</Label>
+                                <BaseInputWrapper
+                                    as="input"
+                                    type="text"
+                                    name={field}
+                                    value={value || ''}
+                                    onChange={(e) => handleNestedChange(section, index, e)}
+                                />
                                 <ProjectRegistrationBaseButton
                                     type="button"
                                     onClick={() => handleRemoveEntry(modalId, index)}
@@ -172,8 +173,8 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                         >
                             Add New Entry
                         </ProjectRegistrationBaseButton>
-                    </>
-                ) : null;
+                    </React.Fragment>
+                ));
             default:
                 return null;
         }
