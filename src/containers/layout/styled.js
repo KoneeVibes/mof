@@ -1,15 +1,12 @@
-// import { useContext } from "react";
 import styled from "styled-components";
-// import { Context } from "../../context";
 
-export const DashboardWrapper = styled("div")(() => {
+export const LayoutWrapper = styled("div")(() => {
     return {
 
     }
 })
 
 export const MainAreaWrapper = styled("div")(({ cardPadding = "var(--cardPadding)" }) => {
-    // const { isMenuOpen } = useContext(Context);
     return `
         position: absolute;
         top: calc(var(--navHeight));

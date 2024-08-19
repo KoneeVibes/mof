@@ -15,6 +15,11 @@ export const ProjectRegistrationAreaWrapper = styled.div(() => {
             flex-direction: column;
             gap: var(--flexGap);
         }
+
+        .dotLoader{
+            margin-left: auto;
+            margin-right: auto;
+        }
     `
 })
 

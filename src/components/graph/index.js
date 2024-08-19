@@ -9,7 +9,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { ChartsCardWrapper } from "../../containers/metricsarea/styled";
+import { ChartsCardWrapper } from "../../containers/dataoverviewarea/styled";
 
 ChartJS.register(
     CategoryScale,
@@ -21,7 +21,7 @@ ChartJS.register(
     Legend
 );
 
-export const LineGraph = ({ title, label1, values1, label2, values2, label3, values3 }) => {
+export const LineGraph = ({ title, labels, datasets }) => {
     const options = {
         responsive: true,
         plugins: {
@@ -40,30 +40,9 @@ export const LineGraph = ({ title, label1, values1, label2, values2, label3, val
         }
     };
 
-    const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
     const data = {
-        labels,
-        datasets: [
-            {
-                label: label1,
-                data: values1,
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            },
-            {
-                label: label2,
-                data: values2,
-                borderColor: 'rgb(53, 162, 235)',
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
-            },
-            {
-                label: label3,
-                data: values3,
-                borderColor: '#059212',
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
-            },
-        ],
+        labels: labels,
+        datasets: datasets
     };
     return (
         <ChartsCardWrapper

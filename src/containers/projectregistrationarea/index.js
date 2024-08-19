@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
-import { Dashboard } from "../dashboard";
+import { Layout } from "../layout";
 import {
     ProjectRegistrationAreaWrapper,
     ProjectRegistrationBaseInputWrapper,
@@ -15,28 +15,42 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { getCurrencies } from "../../util/apis/getCurrencies";
+import { DotLoader } from "react-spinners";
 import { getOrganizationMembers } from "../../util/apis/getOrganizationMembers";
+import { getFundingSources } from "../../util/apis/getFundingSources";
 
 export const ProjectRegistrationArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
     const token = cookies.get("TOKEN");
     const { organizationId } = cookie.USER;
-    console.log(organizationId);
+    const tiersOfGovernment = ["Federal", "State", "LGA"];
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [currencies, setCurrencies] = useState([]);
+    const [fundingSources, setFundingSources] = useState([]);
     const [members, setMembers] = useState([]);
 
     const [formDetails, setFormDetails] = useState({
         projectTitle: "",
         description: "",
+        dateEffective: "",
+        governmentTier: "",
         fundingSources: [{ funderName: "", amount: 0, currencyName: "" }],
-        milestones: [{ text: "" }],
-        allocations: [{ amount: 0, currencyName: "" }],
         projectMembers: [{ email: "" }],
+        beneficiaries: [{ name: "" }]
     });
+
+    useEffect(() => {
+        getFundingSources(token)
+            .then((data) => setFundingSources(data))
+            .catch((err) => {
+                console.error("Failed to fetch funding sources:", err);
+                setError("Failed to fetch funding sources. Please try again later.");
+            });
+    }, [token]);
 
     useEffect(() => {
         getCurrencies(token)
@@ -80,13 +94,11 @@ export const ProjectRegistrationArea = () => {
         const newItem =
             section === "fundingSources"
                 ? { funderName: "", amount: 0, currencyName: "" }
-                : section === "allocations"
-                    ? { amount: 0, currencyName: "" }
-                    : section === "projectMembers"
-                        ? { email: "" }
-                        : section === "milestones"
-                            ? { text: "" }
-                            : null;
+                : section === "projectMembers"
+                    ? { email: "" }
+                    : section === "beneficiaries"
+                        ? { name: "" }
+                        : null;
 
         if (newItem) {
             setFormDetails((prevDetails) => ({
@@ -106,21 +118,26 @@ export const ProjectRegistrationArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
+        setLoading(true);
         try {
             const response = await addProject(token, formDetails);
             if (response.status === "Success") {
+                setLoading(false);
                 navigate("/dashboard");
             } else {
+                setLoading(false);
                 setError("Submission failed. Please check your inputs and try again.");
             }
         } catch (error) {
+            setLoading(false);
+            setError(`Submission failed. ${error.message}`);
             console.error("Submission failed:", error);
-            setError("Submission failed. Please check your inputs and try again.");
         }
     };
 
     return (
-        <Dashboard>
+        <Layout>
             <ProjectRegistrationAreaWrapper>
                 <H2>PROJECT DETAILS</H2>
                 <P>PLEASE ENTER THE PROJECT INFORMATION</P>
@@ -142,17 +159,50 @@ export const ProjectRegistrationArea = () => {
                         onChange={handleChange}
                     />
 
+                    <Label htmlFor="">Effective Date and Tier of Government</Label>
+                    <ProjectRegistrationBaseInputWrapper>
+                        <BaseInputWrapper
+                            as="input"
+                            type="date"
+                            name="dateEffective"
+                            placeholder="Effective Date"
+                            required
+                            value={formDetails.dateEffective}
+                            onChange={handleChange}
+                        />
+                        <SelectFieldWrapper
+                            as="select"
+                            name="governmentTier"
+                            required
+                            value={formDetails.governmentTier}
+                            onChange={handleChange}
+                        >
+                            <option value="">Select a government tier</option>
+                            {tiersOfGovernment.map((tier, key) => (
+                                <option key={key} value={tier}>
+                                    {tier}
+                                </option>
+                            ))}
+                        </SelectFieldWrapper>
+                    </ProjectRegistrationBaseInputWrapper>
+
                     <Label>Funding Sources</Label>
-                    {formDetails.fundingSources.map((source, index) => (
+                    {formDetails?.fundingSources?.map((source, index) => (
                         <ProjectRegistrationBaseInputWrapper key={index}>
-                            <ProjectRegistrationBaseInput
-                                type="text"
+                            <SelectFieldWrapper
+                                as="select"
                                 name="funderName"
-                                placeholder="Funder Name"
                                 required
                                 value={source.funderName}
                                 onChange={(e) => handleNestedChange("fundingSources", index, e)}
-                            />
+                            >
+                                <option value="">Select a funding source</option>
+                                {fundingSources.map((fundingSource, key) => (
+                                    <option key={key} value={fundingSource.name}>
+                                        {fundingSource.name}
+                                    </option>
+                                ))}
+                            </SelectFieldWrapper>
                             <ProjectRegistrationBaseInput
                                 type="number"
                                 name="amount"
@@ -187,68 +237,8 @@ export const ProjectRegistrationArea = () => {
                         Add New Entry
                     </ProjectRegistrationBaseButton>
 
-                    <Label>Milestones</Label>
-                    {formDetails.milestones.map((milestone, index) => (
-                        <ProjectRegistrationBaseInputWrapper key={index}>
-                            <ProjectRegistrationBaseInput
-                                type="text"
-                                name="text"
-                                placeholder="State Milestone"
-                                required
-                                value={milestone.text}
-                                onChange={(e) => handleNestedChange("milestones", index, e)}
-                            />
-                            <ProjectRegistrationBaseButton
-                                type="button"
-                                onClick={() => handleRemoveEntry("milestones", index)}
-                            >
-                                -
-                            </ProjectRegistrationBaseButton>
-                        </ProjectRegistrationBaseInputWrapper>
-                    ))}
-                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry("milestones")}>
-                        Add New Entry
-                    </ProjectRegistrationBaseButton>
-
-                    <Label>Allocations</Label>
-                    {formDetails.allocations.map((allocation, index) => (
-                        <ProjectRegistrationBaseInputWrapper key={index}>
-                            <ProjectRegistrationBaseInput
-                                type="number"
-                                name="amount"
-                                placeholder="Amount"
-                                required
-                                value={allocation.amount}
-                                onChange={(e) => handleNestedChange("allocations", index, e)}
-                            />
-                            <SelectFieldWrapper
-                                as="select"
-                                name="currencyName"
-                                required
-                                value={allocation.currencyName}
-                                onChange={(e) => handleNestedChange("allocations", index, e)}
-                            >
-                                <option value="">Select a currency</option>
-                                {currencies.map((currency, key) => (
-                                    <option key={key} value={currency.name}>
-                                        {currency.name}
-                                    </option>
-                                ))}
-                            </SelectFieldWrapper>
-                            <ProjectRegistrationBaseButton
-                                type="button"
-                                onClick={() => handleRemoveEntry("allocations", index)}
-                            >
-                                -
-                            </ProjectRegistrationBaseButton>
-                        </ProjectRegistrationBaseInputWrapper>
-                    ))}
-                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry("allocations")}>
-                        Add New Entry
-                    </ProjectRegistrationBaseButton>
-
                     <Label>Project Members</Label>
-                    {formDetails.projectMembers.map((member, index) => (
+                    {formDetails?.projectMembers?.map((member, index) => (
                         <ProjectRegistrationBaseInputWrapper key={index}>
                             <SelectFieldWrapper
                                 as="select"
@@ -276,10 +266,39 @@ export const ProjectRegistrationArea = () => {
                         Add New Entry
                     </ProjectRegistrationBaseButton>
 
-                    <BaseButton type="submit">Continue</BaseButton>
+                    <Label>Beneficiaries</Label>
+                    {formDetails?.beneficiaries?.map((beneficiary, index) => (
+                        <ProjectRegistrationBaseInputWrapper key={index}>
+                            <ProjectRegistrationBaseInput
+                                type="string"
+                                name="name"
+                                placeholder="Enter Beneficiary Name"
+                                value={beneficiary.name}
+                                onChange={(e) => handleNestedChange("beneficiaries", index, e)}
+                            />
+                            <ProjectRegistrationBaseButton
+                                type="button"
+                                onClick={() => handleRemoveEntry("beneficiaries", index)}
+                            >
+                                -
+                            </ProjectRegistrationBaseButton>
+                        </ProjectRegistrationBaseInputWrapper>
+                    ))}
+                    <ProjectRegistrationBaseButton type="button" onClick={() => handleAddNewEntry("beneficiaries")}>
+                        Add New Entry
+                    </ProjectRegistrationBaseButton>
+
+                    <BaseButton type="submit">
+                        {loading ?
+                            <DotLoader
+                                size={20}
+                                color="white"
+                                className="dotLoader"
+                            /> : "Continue"}
+                    </BaseButton>
                 </form>
                 {error && <P style={{ color: "red" }}>{error}</P>}
             </ProjectRegistrationAreaWrapper>
-        </Dashboard>
+        </Layout>
     );
 };

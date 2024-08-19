@@ -1,14 +1,14 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const makeDisbursementRequest = async (token, requestDetails) => {
+export const updateDisbursementStatus = async (token, status) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements`, {
-            method: 'POST',
+        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements/requests`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify(requestDetails),
+            body: JSON.stringify(status),
         });
         const res = await response.json();
         if (!response.ok) {

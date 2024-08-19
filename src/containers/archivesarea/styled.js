@@ -1,14 +1,13 @@
 import styled from "styled-components";
+import { Column } from "../../components/flex/styled";
 
-export const EntitiesAreaWrapper = styled.div(({ flexGap = "var(--flexGap)" }) => {
-    return `
-        display: flex;
-        flex-direction: column;
-        gap: ${flexGap}; 
-    `
+export const ArchivesAreaWrapper = styled(Column)(() => {
+    return {
+
+    }
 })
 
-export const EntitiesTableWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
+export const ArchivesAreaTableWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
     return {
         ".tableWrapper": {
             overflow: "auto",
@@ -33,7 +32,7 @@ export const EntitiesTableWrapper = styled.div(({ cardPadding = "var(--cardPaddi
         },
         "td": {
             textAlign: "left",
-            borderBottom: "1px solid rgba(33, 63, 125, 0.10)",
+            border: "1px solid rgba(33, 63, 125, 0.10)",
             padding: cardPadding,
             minWidth: "150px",
         },

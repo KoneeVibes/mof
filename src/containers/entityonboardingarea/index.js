@@ -1,4 +1,4 @@
-import { Dashboard } from "../dashboard";
+import { Layout } from "../layout";
 import { EntityOnboardingAreaWrapper } from "./styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { H2, Label, P } from "../../components/typography/styled";
@@ -9,16 +9,18 @@ import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
+import { DotLoader } from "react-spinners";
 import { flattenOrganizations } from "../../config/flattenOrganizations";
 
 export const EntityOnboardingArea = () => {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
-    const orgTypes = ["Ministry", "Parastatal"];
+    const orgTypes = ["Ministry", "Department", "Agency", "State"];
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [organizations, setOrganizations] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [formDetails, setFormDetails] = useState({
         name: "",
         orgType: "",
@@ -46,21 +48,26 @@ export const EntityOnboardingArea = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
+        setLoading(true);
         try {
             const response = await addOrganization(token, formDetails);
             if (response.status === "Success") {
+                setLoading(false);
                 navigate("/dashboard");
             } else {
-                setError("Submission failed. Please check your inputs and try again.");
+                setLoading(false);
+                setError(`"Submission failed:". Please check your inputs and try again.`);
             }
         } catch (error) {
+            setLoading(false);
+            setError(`Submission failed: ${error.message}`);
             console.error("Submission failed:", error);
-            setError("Submission failed. Please check your inputs and try again.");
         }
     };
 
     return (
-        <Dashboard>
+        <Layout>
             <EntityOnboardingAreaWrapper>
                 <H2>NEW MDA DETAILS</H2>
                 <form onSubmit={handleSubmit}>
@@ -99,10 +106,17 @@ export const EntityOnboardingArea = () => {
                             </option>
                         ))}
                     </SelectFieldWrapper>
-                    <BaseButton type="submit">Continue</BaseButton>
+                    <BaseButton type="submit">
+                        {loading ?
+                            <DotLoader
+                                size={20}
+                                color="white"
+                                className="dotLoader"
+                            /> : "Continue"}
+                    </BaseButton>
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
             </EntityOnboardingAreaWrapper>
-        </Dashboard>
+        </Layout>
     );
 };

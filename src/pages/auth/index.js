@@ -7,6 +7,7 @@ import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { A, H1, Label, P } from "../../components/typography/styled";
 import Cookies from "universal-cookie";
 import { authenticateUser } from "../../util/apis/authUser";
+import { DotLoader } from "react-spinners";
 
 export const Auth = () => {
     const cookies = new Cookies();
@@ -17,6 +18,7 @@ export const Auth = () => {
     });
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -28,9 +30,12 @@ export const Auth = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setError(null);
+        setLoading(true);
         try {
             const response = await authenticateUser(formDetails);
             if (response.status === "Success") {
+                setLoading(false);
                 cookies.set("TOKEN", response.token, {
                     path: "/",
                     // should check this out pretty much later.
@@ -43,11 +48,13 @@ export const Auth = () => {
                 })
                 navigate("/dashboard");
             } else {
+                setLoading(false);
                 setError('Authentication failed. Please check your credentials and try again.');
             }
         } catch (error) {
+            setLoading(false);
+            setError(`Login failed. ${error.message}`);
             console.error('Login failed:', error);
-            setError('Login failed. Please check your credentials and try again.');
         }
     };
 
@@ -62,7 +69,7 @@ export const Auth = () => {
                     <img src={authImg} alt="auth-img" />
                 </div>
                 <div className="auth-form-div">
-                    <H1>Welcome!</H1>
+                    <H1>International Economic Relations Portal</H1>
                     <P>Enter details to login.</P>
                     <form onSubmit={handleSubmit}>
                         <BaseInputWrapper
@@ -94,7 +101,14 @@ export const Auth = () => {
                             </Label>
                         </div>
                         <A href="/" className="forgotPassword">FORGOT PASSWORD?</A>
-                        <BaseButton type="submit">LOG IN</BaseButton>
+                        <BaseButton type="submit">
+                            {loading ?
+                                <DotLoader
+                                    size={20}
+                                    color="white"
+                                    className="dotLoader"
+                                /> : "LOG IN"}
+                        </BaseButton>
                     </form>
                     {error && <P style={{ color: 'red' }}>{error}</P>}
                 </div>

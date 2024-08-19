@@ -8,7 +8,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { ChartsCardWrapper } from '../../containers/metricsarea/styled';
+import { ChartsCardWrapper } from '../../containers/dataoverviewarea/styled';
 
 ChartJS.register(
     CategoryScale,

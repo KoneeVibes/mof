@@ -1,12 +1,13 @@
 import React from 'react';
 import { JumbotronWrapper } from "./styled";
+import { H1 } from '../typography/styled';
 
-export const Jumbotron = () => {
+export const Jumbotron = ({ entity }) => {
     return (
         <JumbotronWrapper>
             <div className='entity-logo-div'>
                 {/* parastatal logo goes in here */}
-                {/* <img src={sampleLogo} alt='entity-logo'></img> */}
+                <H1>{entity || ""}</H1>
             </div>
         </JumbotronWrapper>
     )

@@ -1,14 +1,14 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const makeDisbursementRequest = async (token, requestDetails) => {
+export const onboardFundingSource = async (token, userDetails) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements`, {
+        const response = await fetch(`${BASE_ENDPOINT}/api/funders`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify(requestDetails),
+            body: JSON.stringify(userDetails),
         });
         const res = await response.json();
         if (!response.ok) {

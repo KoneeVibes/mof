@@ -4,16 +4,16 @@ import { useContext, useEffect } from "react";
 import { Context } from "../../../context";
 
 export const SideNavWrapper = styled("div")`
-    ${({ cardPadding = 'var(--cardPadding)' }) => {
-        const { isMenuOpen } = useContext(Context);
-        useEffect(() => {
-            if (isMenuOpen) {
-                document.body.style.overflowY = "hidden";
-            } else {
-                document.body.style.overflowY = "visible";
-            }
-        }, [isMenuOpen]);
-        return `
+  ${({ cardPadding = "var(--cardPadding)" }) => {
+    const { isMenuOpen } = useContext(Context);
+    useEffect(() => {
+      if (isMenuOpen) {
+        document.body.style.overflowY = "hidden";
+      } else {
+        document.body.style.overflowY = "visible";
+      }
+    }, [isMenuOpen]);
+    return `
             @media screen and (min-width: 0px){
                 display: ${!isMenuOpen ? "none" : "block"};
                 position: fixed;
@@ -37,14 +37,18 @@ export const SideNavWrapper = styled("div")`
             @media screen and (min-width: 768px){
                 display: block;
                 width: var(--navWidth);
+
+                .avatar-div{
+                    display: none;
+                }
             }
         `;
-    }}
+  }}
 `;
 
 export const SideNavItemsListWrapper = styled(Column)(
-    ({ cardPadding = 'var(--cardPadding)' }) => {
-        return `
+  ({ cardPadding = "var(--cardPadding)" }) => {
+    return `
         gap: 0;
         justify-content: space-between;
         height: -webkit-fill-available;
@@ -53,25 +57,54 @@ export const SideNavItemsListWrapper = styled(Column)(
             margin-block: 0;
             cursor: pointer;
         }
-
-        .entity {
+        .navItem {
+            align-items: center;
             &:hover {
                 border-left: 6px solid;
                 border-left-color: #059212;
                 background-color: #afedb5;
             }
         }
-
+        .dashboard{
+            &:hover {
+            border-left: 6px solid;
+            border-left-color: #059212;
+            background-color: #afedb5;
+            }
+        }
         li {
             cursor: pointer;
             padding: 0 ${cardPadding};
             margin-block: 0.5rem;
         }
-        
         ul {
-            // list-style-type: none;
             margin-left: 1.9rem;
             margin-block: 0;
         }
-    `
-    });
+        .unpopulated{
+            cursor: none;
+            color: #EBEBE4;
+        }
+        dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropbtn {
+            background-color: transparent;
+            color: black;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-block;
+            padding: 0;
+            border: none;
+        }
+
+        .dotLoader{
+            margin: 0 auto;
+        }
+        .entity{
+            align-items: center;
+        }
+    `;
+  }
+);

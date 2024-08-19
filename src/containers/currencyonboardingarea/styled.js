@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const SubAdminOnboardingAreaWrapper = styled.div(() => {
+export const CurrencyOnboardingAreaWrapper = styled("div")(() => {
     return `
         display: flex;
         flex-direction: column;
@@ -13,7 +13,7 @@ export const SubAdminOnboardingAreaWrapper = styled.div(() => {
             gap: var(--flexGap);
         }
 
-                        .dotLoader{
+        .dotLoader{
             margin-left: auto;
             margin-right: auto;
         }
