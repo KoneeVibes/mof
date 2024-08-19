@@ -1,13 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Layout } from "../layout";
 import { Row } from "../../components/flex/styled";
-import { ProjectDetailActionRow, ProjectDetailCardWrapper, ProjectDetailsAreaWrapper } from "./styled";
+import { ProjectDetailActionRow, ProjectDetailCardWrapper, ProjectDetailEditModal, ProjectDetailsAreaWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron";
 import { InitiativeIcon, FundingSourceIcon } from "../../assets";
 import { Table } from "../../components/table";
 import { ProjectDetailBaseButton } from "./styled";
 import { H1, H2, H3, Li, P } from "../../components/typography/styled";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getProject } from "../../util/apis/getProject";
 import Cookies from "universal-cookie";
 import { getDisbursements } from "../../util/apis/getDisbursements";
@@ -32,19 +32,21 @@ export const ProjectDetailsArea = () => {
         "Status",
         ...(cookie.USER.role === "Individual" ? ["Action"] : []),
     ]);
+    const actions = (cookie.USER.role === "SuperAdmin") ? ["Terminate"] : (cookie.USER.role === "SubAdmin") ? ["Close", "Re-open", "Terminate"] : [];
+
+    const modalRef = useRef(null);
+    const navigate = useNavigate();
+    const { entity, projectId } = useParams();
     // eslint-disable-next-line no-unused-vars
     const [currencies, setCurrencies] = useState([]);
     const [requests, setRequests] = useState([]);
-
-    const navigate = useNavigate();
-    const { entity, projectId } = useParams();
     const [project, setProject] = useState(null);
     const [projectStatus, setProjectStatus] = useState(project?.status);
+    const [activeEditModal, setActiveEditModal] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const actions = (cookie.USER.role === "SuperAdmin") ? ["Terminate"] : (cookie.USER.role === "SubAdmin") ? ["Close", "Terminate"] : [];
 
-    const performAction = async (e, disbursementId) => {
+    const handleDeleteDisbursement = async (e, disbursementId) => {
         try {
             const response = await deleteDisbursement(token, disbursementId);
             if (response.status === "Success") {
@@ -58,7 +60,7 @@ export const ProjectDetailsArea = () => {
         }
     };
 
-    const exportToExcel = async (e) => {
+    const handleExportToExcel = async (e) => {
         e.preventDefault();
         // Loader starts
         try {
@@ -106,6 +108,25 @@ export const ProjectDetailsArea = () => {
             console.error("Failed to update:", error);
         }
     };
+
+    const handleEditModalOpen = (e, modalId) => {
+        e.stopPropagation();
+        setActiveEditModal(modalId === activeEditModal ? null : modalId);
+    }
+
+    const handleEditModalClose = (e) => {
+        console.log(modalRef.current)
+        if (modalRef.current && !modalRef.current.contains(e.target)) {
+            setActiveEditModal(null);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleEditModalClose);
+        return () => {
+            document.removeEventListener('mousedown', handleEditModalClose);
+        };
+    }, []);
 
     useEffect(() => {
         getProject(token, projectId)
@@ -179,16 +200,16 @@ export const ProjectDetailsArea = () => {
                                     <SelectFieldWrapper
                                         as="select"
                                         name="projectStatus"
-                                        value={(projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? `Status: ${projectStatus}` : "Update Status"}
+                                        value={(cookie.USER.role === "Individual") ? `Status: ${projectStatus}` : "Update Status"}
                                         onChange={handleStatusChange}
-                                        disabled={(projectStatus !== "Ongoing" || cookie.USER.role === "Individual")}
+                                        disabled={(cookie.USER.role === "Individual")}
                                         style={{
-                                            appearance: (projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? "none" : "auto",
-                                            MozAppearance: (projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? "none" : "auto",
-                                            WebkitAppearance: (projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? "none" : "auto",
+                                            appearance: (cookie.USER.role === "Individual") ? "none" : "auto",
+                                            MozAppearance: (cookie.USER.role === "Individual") ? "none" : "auto",
+                                            WebkitAppearance: (cookie.USER.role === "Individual") ? "none" : "auto",
                                         }}
                                     >
-                                        <option value="Ongoing">{(projectStatus !== "Ongoing" || cookie.USER.role === "Individual") ? `Status: ${projectStatus}` : "Update Status"}</option>
+                                        <option value="Ongoing">Update Status</option>
                                         {actions.map((status, key) => (
                                             <option key={key} value={status}>
                                                 {status}
@@ -203,6 +224,13 @@ export const ProjectDetailsArea = () => {
                                         borderRadius: "8px",
                                     }}>
                                 </div>
+                                <i className="fa-solid fa-ellipsis-vertical" onClick={(e) => handleEditModalOpen(e, "basic")}></i>
+                                <ProjectDetailEditModal
+                                    ref={modalRef}
+                                    display={(activeEditModal === "basic") ? "block" : "none"}
+                                >
+                                    <P>Edit Basic Details</P>
+                                </ProjectDetailEditModal>
                             </Row>
                         </ProjectDetailActionRow>
                         <H3>{`${project?.projectTitle}(${project?.projectSerialNo})`}</H3>
@@ -215,7 +243,16 @@ export const ProjectDetailsArea = () => {
                     </ProjectDetailCardWrapper>
                     {project?.beneficiaries && (
                         <ProjectDetailCardWrapper>
-                            <H3>Benefiting Institutions</H3>
+                            <ProjectDetailActionRow>
+                                <H3>Benefiting Institutions</H3>
+                                <i className="fa-solid fa-ellipsis-vertical" onClick={(e) => handleEditModalOpen(e, "beneficiaries")}></i>
+                                <ProjectDetailEditModal
+                                    ref={modalRef}
+                                    display={(activeEditModal === "beneficiaries") ? "block" : "none"}
+                                >
+                                    <P>Edit Beneficiaries List</P>
+                                </ProjectDetailEditModal>
+                            </ProjectDetailActionRow>
                             <ul>
                                 {project?.beneficiaries.map((beneficiary, key) => <Li key={key}>{beneficiary?.name}</Li>)}
                             </ul>
@@ -224,7 +261,16 @@ export const ProjectDetailsArea = () => {
                 </Row>
                 <Row tocolumn={1}>
                     <ProjectDetailCardWrapper>
-                        <FundingSourceIcon />
+                        <ProjectDetailActionRow>
+                            <FundingSourceIcon />
+                            <i className="fa-solid fa-ellipsis-vertical" onClick={(e) => handleEditModalOpen(e, "funding")}></i>
+                            <ProjectDetailEditModal
+                                ref={modalRef}
+                                display={(activeEditModal === "funding") ? "block" : "none"}
+                            >
+                                <P>Edit Funding Sources</P>
+                            </ProjectDetailEditModal>
+                        </ProjectDetailActionRow>
                         <H3>Funding Source and Amount</H3>
                         <ul>
                             {project?.fundingSources?.map((source, key) => (
@@ -274,9 +320,9 @@ export const ProjectDetailsArea = () => {
                         rowItems={requests}
                         uniqueCurrencies={currencies}
                         onSelectOption={(x, y, event) => event.preventDefault()}
-                        performAction={performAction}
+                        performAction={handleDeleteDisbursement}
                         role={cookie.USER.role}
-                        exportToExcel={exportToExcel}
+                        exportToExcel={handleExportToExcel}
                     />
                 </div>
                 {(cookie.USER.role === "Individual") && (
