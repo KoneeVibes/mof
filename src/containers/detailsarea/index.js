@@ -16,6 +16,7 @@ import { deleteDisbursement } from "../../util/apis/deleteDisbursement";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { updateProjectStatus } from "../../util/apis/updateProjectStatus";
 import { getExcelSheet } from "../../util/apis/getExcelSheet";
+import { DetailsEditArea } from "../detailseditarea";
 // import { NewProjectCardWrapper } from "../metricsarea/styled";
 // import { BaseButton } from "../../components/buttons/styled";
 
@@ -32,9 +33,14 @@ export const ProjectDetailsArea = () => {
         "Status",
         ...(cookie.USER.role === "Individual" ? ["Action"] : []),
     ]);
-    const actions = (cookie.USER.role === "SuperAdmin") ? ["Terminate"] : (cookie.USER.role === "SubAdmin") ? ["Close", "Re-open", "Terminate"] : [];
+    const actions = (cookie.USER.role === "SuperAdmin") ? ["Terminate", "Re-open"] : (cookie.USER.role === "SubAdmin") ? ["Close", "Re-open", "Terminate"] : [];
 
-    const modalRef = useRef(null);
+    const modalRefs = {
+        basic: useRef(null),
+        beneficiaries: useRef(null),
+        funding: useRef(null),
+    };
+    const detailsEditAreaRef = useRef(null);
     const navigate = useNavigate();
     const { entity, projectId } = useParams();
     // eslint-disable-next-line no-unused-vars
@@ -43,6 +49,8 @@ export const ProjectDetailsArea = () => {
     const [project, setProject] = useState(null);
     const [projectStatus, setProjectStatus] = useState(project?.status);
     const [activeEditModal, setActiveEditModal] = useState(null);
+    const [editArea, setEditArea] = useState(null);
+    const [shouldShowDetailsEditArea, setShouldShowDetailsEditArea] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -82,7 +90,6 @@ export const ProjectDetailsArea = () => {
         }
     };
 
-
     const handleStatusChange = async (event) => {
         const value = event?.target?.value;
         try {
@@ -90,10 +97,13 @@ export const ProjectDetailsArea = () => {
             switch (value) {
                 // First case may be dormant if subadmin cannot terminate project
                 case "Terminate":
-                    response = await updateProjectStatus(token, "terminate", projectId);
+                    response = await updateProjectStatus(token, { projectId: parseInt(projectId), option: "terminate" });
+                    break;
+                case "Re-open":
+                    response = await updateProjectStatus(token, { projectId: parseInt(projectId), option: "reopen" });
                     break;
                 case "Close":
-                    response = await updateProjectStatus(token, "complete", projectId);
+                    response = await updateProjectStatus(token, { projectId: parseInt(projectId), option: "close" });
                     break;
                 default:
                     return;
@@ -103,6 +113,9 @@ export const ProjectDetailsArea = () => {
             } else {
                 // Update the local state to reflect the new status
                 setProjectStatus(value);
+                // force reload to update the projectStatus state. I may have 
+                // to look at this again.
+                window.location.reload(true);
             }
         } catch (error) {
             console.error("Failed to update:", error);
@@ -112,21 +125,40 @@ export const ProjectDetailsArea = () => {
     const handleEditModalOpen = (e, modalId) => {
         e.stopPropagation();
         setActiveEditModal(modalId === activeEditModal ? null : modalId);
-    }
+        setShouldShowDetailsEditArea(false);
+    };
 
-    const handleEditModalClose = (e) => {
-        console.log(modalRef.current)
-        if (modalRef.current && !modalRef.current.contains(e.target)) {
+    const handleEditModalClose = (e, isInsideClick, modalType) => {
+        const modalRef = modalRefs[modalType]?.current;
+        if (isInsideClick) {
+            setEditArea(activeEditModal);
             setActiveEditModal(null);
+            setShouldShowDetailsEditArea(true);
+        } else {
+            if (modalRef && !modalRef.contains(e.target)) {
+                setActiveEditModal(null);
+                setShouldShowDetailsEditArea(false);
+            }
         }
     };
 
     useEffect(() => {
-        document.addEventListener('mousedown', handleEditModalClose);
-        return () => {
-            document.removeEventListener('mousedown', handleEditModalClose);
+        const handleClickOutside = (e) => {
+            const isClickOutsideModals = Object.values(modalRefs).every(ref => !ref.current || !ref.current.contains(e.target));
+            const isClickOutsideDetailsEditArea = detailsEditAreaRef.current && !detailsEditAreaRef.current.contains(e.target);
+            if (!detailsEditAreaRef.current && isClickOutsideModals) {
+                handleEditModalClose(e, false, activeEditModal);
+            }
+            if (isClickOutsideModals && isClickOutsideDetailsEditArea) {
+                handleEditModalClose(e, false, activeEditModal);
+                setShouldShowDetailsEditArea(false);
+            }
         };
-    }, []);
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    });
 
     useEffect(() => {
         getProject(token, projectId)
@@ -172,6 +204,13 @@ export const ProjectDetailsArea = () => {
     return (
         <Layout>
             <ProjectDetailsAreaWrapper>
+                {shouldShowDetailsEditArea &&
+                    <DetailsEditArea
+                        ref={detailsEditAreaRef}
+                        modalId={editArea}
+                        project={project}
+                    />
+                }
                 <Jumbotron entity={project?.organization} />
                 <Row tocolumn={1}>
                     {/* {cookie.USER.role === "SubAdmin" && (
@@ -192,6 +231,7 @@ export const ProjectDetailsArea = () => {
                             <Row
                                 style={{
                                     alignItems: "center",
+                                    flexWrap: "wrap"
                                 }}
                             >
                                 <div
@@ -209,7 +249,7 @@ export const ProjectDetailsArea = () => {
                                             WebkitAppearance: (cookie.USER.role === "Individual") ? "none" : "auto",
                                         }}
                                     >
-                                        <option value="Ongoing">Update Status</option>
+                                        <option value="Ongoing">Status: {projectStatus}</option>
                                         {actions.map((status, key) => (
                                             <option key={key} value={status}>
                                                 {status}
@@ -224,12 +264,16 @@ export const ProjectDetailsArea = () => {
                                         borderRadius: "8px",
                                     }}>
                                 </div>
-                                <i className="fa-solid fa-ellipsis-vertical" onClick={(e) => handleEditModalOpen(e, "basic")}></i>
+                                <i
+                                    className="fa-solid fa-ellipsis-vertical pad-up"
+                                    style={{ padding: "0.5rem", cursor: "pointer" }}
+                                    onClick={(e) => handleEditModalOpen(e, "basic")}
+                                />
                                 <ProjectDetailEditModal
-                                    ref={modalRef}
+                                    ref={modalRefs.basic}
                                     display={(activeEditModal === "basic") ? "block" : "none"}
                                 >
-                                    <P>Edit Basic Details</P>
+                                    <P onClick={(e) => handleEditModalClose(e, true, "basic")}>Edit Basic Details</P>
                                 </ProjectDetailEditModal>
                             </Row>
                         </ProjectDetailActionRow>
@@ -245,12 +289,16 @@ export const ProjectDetailsArea = () => {
                         <ProjectDetailCardWrapper>
                             <ProjectDetailActionRow>
                                 <H3>Benefiting Institutions</H3>
-                                <i className="fa-solid fa-ellipsis-vertical" onClick={(e) => handleEditModalOpen(e, "beneficiaries")}></i>
+                                <i
+                                    className="fa-solid fa-ellipsis-vertical pad-up"
+                                    style={{ padding: "0.5rem", cursor: "pointer" }}
+                                    onClick={(e) => handleEditModalOpen(e, "beneficiaries")}
+                                />
                                 <ProjectDetailEditModal
-                                    ref={modalRef}
+                                    ref={modalRefs.beneficiaries}
                                     display={(activeEditModal === "beneficiaries") ? "block" : "none"}
                                 >
-                                    <P>Edit Beneficiaries List</P>
+                                    <P onClick={(e) => handleEditModalClose(e, true, "beneficiaries")}>Edit Beneficiaries List</P>
                                 </ProjectDetailEditModal>
                             </ProjectDetailActionRow>
                             <ul>
@@ -263,12 +311,16 @@ export const ProjectDetailsArea = () => {
                     <ProjectDetailCardWrapper>
                         <ProjectDetailActionRow>
                             <FundingSourceIcon />
-                            <i className="fa-solid fa-ellipsis-vertical" onClick={(e) => handleEditModalOpen(e, "funding")}></i>
+                            <i
+                                className="fa-solid fa-ellipsis-vertical pad-up"
+                                style={{ padding: "0.5rem", cursor: "pointer" }}
+                                onClick={(e) => handleEditModalOpen(e, "funding")}
+                            />
                             <ProjectDetailEditModal
-                                ref={modalRef}
+                                ref={modalRefs.funding}
                                 display={(activeEditModal === "funding") ? "block" : "none"}
                             >
-                                <P>Edit Funding Sources</P>
+                                <P onClick={(e) => handleEditModalClose(e, true, "funding")}>Edit Funding Sources</P>
                             </ProjectDetailEditModal>
                         </ProjectDetailActionRow>
                         <H3>Funding Source and Amount</H3>

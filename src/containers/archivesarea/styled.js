@@ -1,15 +1,21 @@
 import styled from "styled-components";
 import { Column } from "../../components/flex/styled";
 
-export const AdminOverviewAreaWrapper = styled(Column)(() => {
+export const ArchivesAreaWrapper = styled(Column)(() => {
     return {
 
     }
 })
 
-export const AdminOverviewAreaTable = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
+export const ArchivesAreaTableWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
     return {
-        overflow: "auto",
+        ".tableWrapper": {
+            overflow: "auto",
+        },
+        ".exportButton": {
+            display: "flex",
+            justifyContent: "flex-end",
+        },
         "table": {
             width: "100%",
             backgroundColor: "#FFFFFF",

@@ -1,13 +1,14 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const updateProjectStatus = async (token, action, projectId) => {
+export const updateProjectStatus = async (token, projectDetails) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/projects/${action}/${projectId}`, {
+        const response = await fetch(`${BASE_ENDPOINT}/api/projects/set-status`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
+            body: JSON.stringify(projectDetails)
         });
         const res = await response.json();
         if (!response.ok) {

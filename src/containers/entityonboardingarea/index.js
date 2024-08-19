@@ -15,7 +15,7 @@ import { flattenOrganizations } from "../../config/flattenOrganizations";
 export const EntityOnboardingArea = () => {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
-    const orgTypes = ["Ministry", "Department", "Agency"];
+    const orgTypes = ["Ministry", "Department", "Agency", "State"];
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);

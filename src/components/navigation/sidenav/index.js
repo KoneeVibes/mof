@@ -12,72 +12,67 @@ import { sideNavItems } from "../../../data";
 import { DotLoader } from "react-spinners";
 
 export const SideNav = () => {
-  const cookies = new Cookies();
-  const cookie = cookies.getAll();
-  const token = cookie.TOKEN;
-  const navigate = useNavigate();
-  const { setIsMenuOpen } = useContext(Context);
-  const [listOfProjectPerOrganization, setListOfProjectPerOrganization] =
-    useState({
-      Ministry: [],
-      Department: [],
-      Agency: [],
+    const cookies = new Cookies();
+    const cookie = cookies.getAll();
+    const token = cookie.TOKEN;
+    const navigate = useNavigate();
+    const { setIsMenuOpen } = useContext(Context);
+    const [listOfProjectPerOrganization, setListOfProjectPerOrganization] = useState({
+        Ministry: [],
+        Department: [],
+        Agency: [],
+        State: [],
     });
-  const [listOfOrganizations, setListOfOrganizations] = useState({
-    Ministry: [],
-    Department: [],
-    Agency: [],
-  });
-  const [organizationProjects, setOrganizationProjects] = useState([]);
-  const [activeEntity, setActiveEntity] = useState(null);
-  const [organizations, setOrganizations] = useState([]);
-  const [populatedStatus, setPopulatedStatus] = useState({});
-  const [loading, setLoading] = useState(false);
+    const [listOfOrganizations, setListOfOrganizations] = useState({
+        Ministry: [],
+        Department: [],
+        Agency: [],
+        State: [],
+    });
+    const [organizationProjects, setOrganizationProjects] = useState([]);
+    const [activeEntity, setActiveEntity] = useState(null);
+    const [organizations, setOrganizations] = useState([]);
+    const [populatedStatus, setPopulatedStatus] = useState({});
 
-  const { role, orgType, organizationId, organization, userId } =
-    cookie.USER || {};
-  const entities =
-    role === "SuperAdmin"
-      ? Object.keys(listOfProjectPerOrganization)
-      : ["Projects"];
+    const { role, orgType, organizationId, organization, userId } = cookie.USER || {};
+    const entities = (role === "SuperAdmin") ? Object.keys(listOfProjectPerOrganization) : ["Projects"];
 
-  const navigateFromSideBar = (organization, id, e) => {
-    setIsMenuOpen(false);
-    const parsedOrganization = organization?.replace(/\s+/g, "")?.toLowerCase();
-    // handle click of reports
-    if (e.currentTarget.getAttribute("data-nav-key") === "reports") {
-      return navigate(`/admin/${userId}/overview`);
+    const navigateFromSideBar = (organization, id, e) => {
+        setIsMenuOpen(false);
+        const parsedOrganization = organization?.replace(/\s+/g, '')?.toLowerCase();
+        // handle click of archives
+        if (e.currentTarget.getAttribute("data-nav-key") === "archives") {
+            return navigate(`/admin/${userId}/archives`);
+        }
+        // handle click of any of the projects
+        if (role !== "SuperAdmin") {
+            return navigate(`/${parsedOrganization}/${id}`);
+        }
+        // handle click of an organization
+        return navigate(`/${parsedOrganization}/${id}/projects`);
     }
 
-    // handle click of any of the projects
-    if (role !== "SuperAdmin") {
-      return navigate(`/${parsedOrganization}/${id}`);
-    }
-    // handle click of an organization
-    return navigate(`/${parsedOrganization}/${id}/projects`);
-  };
-
-  const updateListOfOrganizations = async () => {
-    try {
-      const organizations = await getAllOrganizations(token);
-      const Ministry = organizations.filter(
-        (org) => org.orgType === "Ministry"
-      );
-      const Department = organizations.flatMap((org) =>
-        org.subOrganizations.filter((subOrg) => subOrg.orgType === "Department")
-      );
-      const Agency = organizations.flatMap((org) =>
-        org.subOrganizations.filter((subOrg) => subOrg.orgType === "Agency")
-      );
-      setListOfOrganizations({
-        Ministry: Ministry,
-        Department: Department,
-        Agency: Agency,
-      });
-    } catch (error) {
-      console.error("Failed to fetch organizations:", error);
-    }
-  };
+    const updateListOfOrganizations = async () => {
+        try {
+            const organizations = await getAllOrganizations(token);
+            const Ministry = organizations.filter(org => org.orgType === "Ministry");
+            const Department = organizations.flatMap(org =>
+                org.subOrganizations.filter(subOrg => subOrg.orgType === "Department")
+            );
+            const Agency = organizations.flatMap(org =>
+                org.subOrganizations.filter(subOrg => subOrg.orgType === "Agency")
+            );
+            const State = organizations.filter(org => org.orgType === "State");
+            setListOfOrganizations({
+                Ministry: Ministry,
+                Department: Department,
+                Agency: Agency,
+                State: State
+            });
+        } catch (error) {
+            console.error("Failed to fetch organizations:", error);
+        }
+    };
 
   const getSideNavItems = async (e) => {
     const key = e.currentTarget.getAttribute("data-organization-key");
@@ -123,123 +118,93 @@ export const SideNav = () => {
     updateOrganizationStatus();
   }, [organizations, token]);
 
-  useEffect(() => {
-    if (token && organizationId) {
-      getProjectsPerOrganization(token, organizationId)
-        .then((projects) => {
-          const Ministry = projects.filter(
-            (project) => project.orgType === "Ministry"
-          );
-          const Department = projects.filter(
-            (project) => project.orgType === "Department"
-          );
-          const Agency = projects.filter(
-            (project) => project.orgType === "Agency"
-          );
-          setListOfProjectPerOrganization({
-            Ministry: Ministry,
-            Department: Department,
-            Agency: Agency,
-          });
-        })
-        .catch((err) => {
-          console.error("Failed to fetch projects:", err);
-        });
-    }
-  }, [token, organizationId]);
+    useEffect(() => {
+        if (token && organizationId) {
+            getProjectsPerOrganization(token, organizationId)
+                .then((projects) => {
+                    const Ministry = projects.filter((project) => project.orgType === "Ministry");
+                    const Department = projects.filter((project) => project.orgType === "Department");
+                    const Agency = projects.filter((project) => project.orgType === "Agency");
+                    const State = projects.filter((project) => project.orgType === "State");
+                    setListOfProjectPerOrganization({
+                        Ministry: Ministry,
+                        Department: Department,
+                        Agency: Agency,
+                        State: State,
+                    });
+                })
+                .catch((err) => {
+                    console.error("Failed to fetch projects:", err);
+                });
+        }
+    }, [token, organizationId]);
 
-  return (
-    <SideNavWrapper>
-      <SideNavItemsListWrapper>
-        <div>
-          {sideNavItems?.length > 0 && (
-            <P
-              className="navItem"
-              onClick={() => navigate(sideNavItems[0].url)}
-            >
-              {sideNavItems[0].name}
-            </P>
-          )}
-          {entities?.map((entity, key) => (
-            <div key={key}>
-              <Row
-                className="navItem"
-                data-organization-key={role === "SuperAdmin" ? entity : orgType}
-                onClick={getSideNavItems}
-              >
-                <P
-                  onClick={getSideNavItems}
-                  data-organization-key={
-                    role === "SuperAdmin" ? entity : orgType
-                  }
-                >
-                  {entity}
-                </P>
-                {/* Mirabel, add a drop down symbol here */}
-                {loading ? (
-                  <DotLoader size={15} color="green" className="dotLoader" />
-                ) : (
-                  <div className="dropdown-btn" />
-                )}
-              </Row>
-              {(activeEntity === entity || entities.length === 1) && (
-                <ul>
-                  {role === "SuperAdmin"
-                    ? organizations?.map((organization, k) => (
-                        <Li
-                          key={k}
-                          className={
-                            populatedStatus[organization.id] === "unpopulated"
-                              ? "unpopulated"
-                              : ""
-                          }
-                          onClick={(e) =>
-                            populatedStatus[organization.id] !==
-                              "unpopulated" &&
-                            navigateFromSideBar(
-                              organization.name,
-                              organization.id,
-                              e
-                            )
-                          }
-                        >
-                          {organization.name}
-                        </Li>
-                      ))
-                    : organizationProjects?.map((project, k) => (
-                        <Li
-                          key={k}
-                          onClick={(e) =>
-                            navigateFromSideBar(
-                              project.organization,
-                              project.projectId,
-                              e
-                            )
-                          }
-                        >
-                          {project.title}
-                        </Li>
-                      ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </div>
-        {/* <div>
+    return (
+        <SideNavWrapper>
+            <SideNavItemsListWrapper>
+                <div>
+                    {sideNavItems?.length > 0 && (
+                        <P className="navItem" onClick={() => navigate(sideNavItems[0].url)}>
+                            {sideNavItems[0].name}
+                        </P>
+                    )}
+                    {entities?.map((entity, key) => (
+                        <div key={key}>
+                            <Row
+                                className="navItem"
+                                data-organization-key={(role === "SuperAdmin") ? entity : orgType}
+                                onClick={getSideNavItems}
+                            >
+                                <P
+                                    onClick={getSideNavItems}
+                                    data-organization-key={(role === "SuperAdmin") ? entity : orgType}
+                                >
+                                    {entity}
+                                </P>
+                                {/* Mirabel, add a drop down symbol here */}
+                            </Row>
+                            {(activeEntity === entity || entities.length === 1) && (
+                                <ul>
+                                    {(role === "SuperAdmin") ? (
+                                        organizations?.map((organization, k) => (
+                                            <Li
+                                                key={k}
+                                                className={populatedStatus[organization.id] === 'unpopulated' ? 'unpopulated' : ''}
+                                                onClick={(e) => populatedStatus[organization.id] !== 'unpopulated' && navigateFromSideBar(organization.name, organization.id, e)}
+                                            >
+                                                {organization.name}
+                                            </Li>
+                                        ))
+                                    ) : (
+                                        organizationProjects?.map((project, k) => (
+                                            <Li
+                                                key={k}
+                                                onClick={(e) => navigateFromSideBar(project.organization, project.projectId, e)}
+                                            >
+                                                {project.title}
+                                            </Li>
+                                        ))
+                                    )}
+                                </ul>
+                            )}
+                        </div>
+                    ))}
+                </div>
+                <div>
                     {(role === "SuperAdmin") && (
                         <P
                             style={{ color: "red" }}
-                            data-nav-key={"reports"}
+                            data-nav-key={"archives"}
                             onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
                         >
-                            Reports
+                            Archives
                         </P>
                     )}
-                </div> */}
-        <div className="avatar-div">
-          <Avatar location={"side-nav"} />
-        </div>
-      </SideNavItemsListWrapper>
-    </SideNavWrapper>
-  );
-};
+                </div>
+                <div className="avatar-div">
+                    <Avatar location={"side-nav"} />
+                </div>
+            </SideNavItemsListWrapper>
+        </SideNavWrapper>
+    );
+}

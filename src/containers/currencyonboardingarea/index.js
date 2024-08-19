@@ -3,7 +3,7 @@ import { BaseButton } from "../../components/buttons/styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { H2, Label, P } from "../../components/typography/styled";
 import { Layout } from "../layout";
-import {CurrencyOnboardingAreaWrapper} from "./styled";
+import { CurrencyOnboardingAreaWrapper } from "./styled";
 import { useNavigate } from "react-router-dom";
 import { DotLoader } from "react-spinners";
 import { onboardCurrency } from "../../util/apis/onboardCurrency";
@@ -60,7 +60,7 @@ export const CurrencyOnboardingArea = () => {
                     <BaseInputWrapper
                         as="input"
                         type="text"
-                        name="currency"
+                        name="name"
                         placeholder="Enter Name of Currency"
                         required
                         value={formDetails.name}
@@ -70,7 +70,7 @@ export const CurrencyOnboardingArea = () => {
                     <BaseInputWrapper
                         as="input"
                         type="text"
-                        name="currency"
+                        name="abbreviation"
                         placeholder="Enter Currency Abbreviation"
                         required
                         value={formDetails.abbreviation}
@@ -80,7 +80,7 @@ export const CurrencyOnboardingArea = () => {
                     <BaseInputWrapper
                         as="input"
                         type="text"
-                        name="Symbol"
+                        name="symbol"
                         placeholder="Enter Symbol of Currency"
                         required
                         value={formDetails.symbol}

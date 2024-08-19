@@ -4,7 +4,7 @@ import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { H2, Label, P } from "../../components/typography/styled";
 import { Layout } from "../layout";
-import { DisbursementRequestAreaWrapper } from "./style";
+import { DisbursementRequestAreaWrapper, DisbursementRequestBaseButton, DisbursementRequestBaseInputWrapper } from "./style";
 import { useEffect, useState } from "react";
 import { getCurrencies } from "../../util/apis/getCurrencies";
 import Cookies from "universal-cookie";
@@ -23,9 +23,10 @@ export const DisbursementRequestArea = () => {
     const [loading, setLoading] = useState(false);
     const [formDetails, setFormDetails] = useState({
         projectId: projectId,
-        purpose: "",
+        Purpose: "",
         amount: "",
-        currencyName: "",
+        CurrencyName: "",
+        attachments: [{ file: "" }]
     })
 
     const handleChange = (e) => {
@@ -36,10 +37,43 @@ export const DisbursementRequestArea = () => {
         }))
     }
 
+    const handleNestedChange = (section, index, event) => {
+        const { name, files } = event.target;
+        const updatedSection = formDetails[section].map((entry, i) =>
+            i === index ? { ...entry, [name]: files[0] } : entry
+        );
+        setFormDetails((prevDetails) => ({
+            ...prevDetails,
+            [section]: updatedSection,
+        }));
+    };
+
+    const handleAddNewEntry = (section) => {
+        const newItem =
+            section === "attachments"
+                ? { file: "" }
+                : null;
+        if (newItem) {
+            setFormDetails((prevDetails) => ({
+                ...prevDetails,
+                [section]: [...prevDetails[section], newItem],
+            }));
+        }
+    };
+
+    const handleRemoveEntry = (section, index) => {
+        const updatedSection = formDetails[section].filter((_, i) => i !== index);
+        setFormDetails((prevDetails) => ({
+            ...prevDetails,
+            [section]: updatedSection,
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
         setLoading(true);
+        console.log(formDetails);
         try {
             const response = await makeDisbursementRequest(TOKEN, formDetails);
             if (response.status === "Success") {
@@ -74,10 +108,10 @@ export const DisbursementRequestArea = () => {
                     <BaseInputWrapper
                         as="input"
                         type="text"
-                        name="purpose"
+                        name="Purpose"
                         placeholder="Enter Purpose of Disbursement"
                         required
-                        value={formDetails.purpose}
+                        value={formDetails.Purpose}
                         onChange={handleChange}
                     />
                     <Label>Amount</Label>
@@ -93,9 +127,8 @@ export const DisbursementRequestArea = () => {
                     <Label>Select Currency:</Label>
                     <SelectFieldWrapper
                         as="select"
-                        name="currencyName"
-                        // required
-                        value={formDetails.currencyName}
+                        name="CurrencyName"
+                        value={formDetails.CurrencyName}
                         onChange={handleChange}
                     >
                         <option value="">Select a currency</option>
@@ -105,6 +138,27 @@ export const DisbursementRequestArea = () => {
                             </option>
                         ))}
                     </SelectFieldWrapper>
+                    <Label>Attachment</Label>
+                    {formDetails?.attachments.map((attachment, index) => (
+                        <DisbursementRequestBaseInputWrapper key={index}>
+                            <BaseInputWrapper
+                                as="input"
+                                type="file"
+                                name="file"
+                                placeholder="Select Attachment"
+                                onChange={(e) => handleNestedChange("attachments", index, e)}
+                            />
+                            <DisbursementRequestBaseButton
+                                type="button"
+                                onClick={() => handleRemoveEntry("attachments", index)}
+                            >
+                                -
+                            </DisbursementRequestBaseButton>
+                        </DisbursementRequestBaseInputWrapper>
+                    ))}
+                    <DisbursementRequestBaseButton type="button" onClick={() => handleAddNewEntry("attachments")}>
+                        Add New Entry
+                    </DisbursementRequestBaseButton>
                     <BaseButton as="button" type="submit">
                         {loading ?
                             <DotLoader
@@ -116,6 +170,6 @@ export const DisbursementRequestArea = () => {
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
             </DisbursementRequestAreaWrapper>
-        </Layout>
+        </Layout >
     )
 }
