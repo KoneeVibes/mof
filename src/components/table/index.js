@@ -16,7 +16,7 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
             <div className="tableWrapper">
                 <table>
                     <thead>
-                        {(location === "dataOverviewArea" || location === "projectsTableArea") ? (
+                        {(location === "dataOverviewArea" || location === "projectsTableArea" || location === "archivesArea") ? (
                             <React.Fragment>
                                 <tr>
                                     {categories?.map((category, index) => (
@@ -35,7 +35,7 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
                                     ))}
                                 </tr>
                                 <tr>
-                                    {(location === "dataOverviewArea") ? (
+                                    {(location === "dataOverviewArea" || location === "archivesArea") ? (
                                         <React.Fragment>
                                             {/* Empty cell for "Project Title" and "MDA" */}
                                             <Th colSpan={role === "SuperAdmin" ? 2 : 1}></Th>
@@ -116,7 +116,7 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
                                         <Td>{rowItem.status || ''}</Td>
                                     </React.Fragment>
                                 )}
-                                {location === "dataOverviewArea" && (
+                                {(location === "dataOverviewArea" || location === "archivesArea") && (
                                     <React.Fragment>
                                         {role === "SuperAdmin" && <Td>{rowItem.organization}</Td>}
                                         {rowItem.totalAllocations.map((allocation, index) => (
@@ -139,7 +139,7 @@ export const Table = ({ categories, columnTitles, onSelectOption, rowItems, uniq
                                 )}
                             </tr>
                         ))}
-                        {location === "dataOverviewArea" && (
+                        {(location === "dataOverviewArea" || location === "archivesArea") && (
                             <tr>
                                 <Td style={{ fontWeight: 600 }}>Total</Td>
                                 {/* Empty cell for organization name */}

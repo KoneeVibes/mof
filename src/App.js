@@ -10,7 +10,7 @@ import { DisbursementRequestArea } from './containers/disbursementpostingarea';
 import { UserRegistrationArea } from './containers/userregistrationarea';
 import { UserOnboardingArea } from './containers/useronboardingarea';
 import { EntityOnboardingArea } from './containers/entityonboardingarea';
-import { AdminOverviewArea } from './containers/adminoverviewarea';
+import { ArchivesArea } from './containers/archivesarea';
 import { FundingSourceOnboardingArea } from './containers/fundingsourceonboardingarea';
 import { CurrencyOnboardingArea } from './containers/currencyonboardingarea';
 
@@ -25,11 +25,11 @@ function App() {
         <Route path='/:entity/:projectId/request' element={<DisbursementRequestArea />} />
         <Route path='/registration/project' element={<ProjectRegistrationArea />} />
         {/* Route to the archives area */}
-        <Route path='/admin/:userId/archives' element={<AdminOverviewArea />} />
+        <Route path='/admin/:userId/archives' element={<ArchivesArea />} />
         {/* Route to add a funding source */}
         <Route path='/registration/:subAdminId/funding' element={<FundingSourceOnboardingArea />} />
         {/* Route to add a currency*/}
-        <Route path='/registration/:subAdminId/currency' element={<CurrencyOnboardingArea/>} />
+        <Route path='/registration/:subAdminId/currency' element={<CurrencyOnboardingArea />} />
         {/* Route to add a user to a project */}
         <Route path='/registration/:projectId/add/user' element={<UserRegistrationArea />} />
         {/* Route to onboard a new user - Pending */}

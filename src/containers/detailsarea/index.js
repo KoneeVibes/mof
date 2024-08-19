@@ -208,6 +208,7 @@ export const ProjectDetailsArea = () => {
                     <DetailsEditArea
                         ref={detailsEditAreaRef}
                         modalId={editArea}
+                        project={project}
                     />
                 }
                 <Jumbotron entity={project?.organization} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Label } from "../../components/typography/styled";
 import { DetailsEditAreaWrapper } from "./styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
@@ -7,69 +7,82 @@ import { BaseButton } from "../../components/buttons";
 import { DotLoader } from "react-spinners";
 
 export const DetailsEditArea = React.forwardRef((props, ref) => {
-    const { modalId } = props;
+    const { modalId, project } = props;
     const [loading, setLoading] = useState(false);
-    const [formDetails, setFormDetails] = useState({});
+    const [formDetails, setFormDetails] = useState([]);
 
     useEffect(() => {
         const fetchInitialValues = async () => {
             try {
-                let apiUrl = '';
+                let details;
                 switch (modalId) {
                     case "basic":
-                        apiUrl = '/api/basicDetails';
+                        details = {
+                            projectTitle: project?.projectTitle,
+                            description: project?.description,
+                            effectiveDate: project?.dateEffective,
+                        }
                         break;
                     case "beneficiaries":
-                        apiUrl = '/api/beneficiariesDetails';
+                        details = project?.beneficiaries || [];
                         break;
                     case "funding":
-                        apiUrl = '/api/fundingDetails';
+                        details = project?.fundingSources || [];
                         break;
                     default:
                         return;
                 }
-                const response = await fetch(apiUrl);
-                if (!response.ok) throw new Error('Network response was not ok');
-                const data = await response.json();
-                setFormDetails(data || {});
+                setFormDetails(details);
             } catch (error) {
                 console.error('Error fetching initial values:', error);
-                setFormDetails({});
+                setFormDetails([]);
             }
         };
         fetchInitialValues();
-    }, [modalId]);
+    }, [modalId, project]);
 
-    const handleChange = (event) => {
+    const handleChange = useCallback((event) => {
         const { name, value } = event.target;
         setFormDetails(prevDetails => ({
             ...prevDetails,
             [name]: value,
         }));
-    };
+    }, []);
 
-    const handleAddNewEntry = (section) => {
+    const handleNestedChange = useCallback((section, index, event) => {
+        const { name, value } = event.target;
+        const updatedSection = formDetails[section]?.map((entry, i) =>
+            i === index ? { ...entry, [name]: value } : entry
+        );
+        setFormDetails(prevDetails => ({
+            ...prevDetails,
+            [section]: updatedSection,
+        }));
+    }, [formDetails]);
+
+    const handleAddNewEntry = useCallback((section) => {
         const newItem =
             section === "fundingSources"
                 ? { funderName: "", amount: 0, currencyName: "" }
                 : section === "beneficiaries"
                     ? { name: "" }
                     : null;
-
         if (newItem) {
             setFormDetails(prevDetails => ({
                 ...prevDetails,
                 [section]: [...(prevDetails[section] || []), newItem],
             }));
         }
-    };
+    }, []);
 
-    const handleRemoveEntry = (section, index) => {
+    const handleRemoveEntry = useCallback((section, index) => {
         setFormDetails(prevDetails => ({
             ...prevDetails,
             [section]: (prevDetails[section] || []).filter((_, i) => i !== index),
         }));
-    };
+    }, []);
+
+    useEffect(() => console.log(formDetails));
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -81,22 +94,21 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                     apiUrl = '/api/basicDetails';
                     break;
                 case "beneficiaries":
-                    apiUrl = '/api/beneficiariesDetails';
+                    apiUrl = '/api/projects/beneficiaries';
                     break;
                 case "funding":
-                    apiUrl = '/api/fundingDetails';
+                    apiUrl = '/api/projects/fundings';
                     break;
                 default:
                     throw new Error('Invalid modalId');
             }
             const response = await fetch(apiUrl, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formDetails),
             });
-
             if (!response.ok) {
                 setLoading(false);
                 throw new Error('Network response was not ok');
@@ -128,60 +140,27 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                     </React.Fragment>
                 ));
             case "funding":
-                return Array.isArray(formDetails.fundingSources) ? (
-                    <>
-                        {formDetails.fundingSources.map((source, index) => (
-                            <React.Fragment key={index}>
-                                <Label>Funding Source {index + 1}</Label>
-                                {Object.entries(source).map(([field, value], subIndex) => (
-                                    <React.Fragment key={subIndex}>
-                                        <Label>{field.replace(/([A-Z])/g, ' $1').trim()}</Label>
-                                        <BaseInputWrapper
-                                            as="input"
-                                            type="text"
-                                            name={`${field}[${index}]`}
-                                            value={value || ''}
-                                            onChange={handleChange}
-                                        />
-                                    </React.Fragment>
-                                ))}
-                                <ProjectRegistrationBaseButton
-                                    type="button"
-                                    onClick={() => handleRemoveEntry("fundingSources", index)}
-                                >
-                                    -
-                                </ProjectRegistrationBaseButton>
-                            </React.Fragment>
-                        ))}
-                        <ProjectRegistrationBaseButton
-                            type="button"
-                            onClick={() => handleAddNewEntry("fundingSources")}
-                        >
-                            Add New Entry
-                        </ProjectRegistrationBaseButton>
-                    </>
-                ) : null;
             case "beneficiaries":
-                return Array.isArray(formDetails.beneficiaries) ? (
+                return Array.isArray(formDetails) ? (
                     <>
-                        {formDetails.beneficiaries.map((beneficiary, index) => (
+                        {formDetails.map((item, index) => (
                             <React.Fragment key={index}>
-                                <Label>Beneficiary {index + 1}</Label>
-                                {Object.entries(beneficiary).map(([field, value], subIndex) => (
+                                <Label>{modalId === "funding" ? `Funding Source ${index + 1}` : `Beneficiary ${index + 1}`}</Label>
+                                {Object.entries(item).map(([field, value], subIndex) => (
                                     <React.Fragment key={subIndex}>
                                         <Label>{field.replace(/([A-Z])/g, ' $1').trim()}</Label>
                                         <BaseInputWrapper
                                             as="input"
                                             type="text"
-                                            name={`${field}[${index}]`}
+                                            name={field}
                                             value={value || ''}
-                                            onChange={handleChange}
+                                            onChange={(e) => handleNestedChange(modalId, index, e)}
                                         />
                                     </React.Fragment>
                                 ))}
                                 <ProjectRegistrationBaseButton
                                     type="button"
-                                    onClick={() => handleRemoveEntry("beneficiaries", index)}
+                                    onClick={() => handleRemoveEntry(modalId, index)}
                                 >
                                     -
                                 </ProjectRegistrationBaseButton>
@@ -189,7 +168,7 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                         ))}
                         <ProjectRegistrationBaseButton
                             type="button"
-                            onClick={() => handleAddNewEntry("beneficiaries")}
+                            onClick={() => handleAddNewEntry(modalId)}
                         >
                             Add New Entry
                         </ProjectRegistrationBaseButton>
