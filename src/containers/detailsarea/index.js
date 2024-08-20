@@ -168,7 +168,7 @@ export const ProjectDetailsArea = () => {
             }).catch(() => {
                 setLoading(false);
             });
-    }, [projectId, token]);
+    }, [projectId, token, shouldShowDetailsEditArea]);
 
     useEffect(() => {
         getDisbursements(token, projectId).then((requests) => setRequests(requests))

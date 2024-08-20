@@ -19,6 +19,10 @@ export const DetailsEditAreaWrapper = styled(CardWrapper)(({ cardPadding = "var(
             display: "flex",
             flexDirection: "column",
             gap: "var(--flexGap)",
-        }
+        },
+        ".dotLoader": {
+            marginLeft: "auto",
+            marginRight: "auto",
+        },
     }
 })
