@@ -179,6 +179,17 @@ export const SideNav = () => {
                                     {entity}
                                 </P>
                                 {/* Mirabel, add a drop down symbol here */}
+                                <Row>
+                                    {loading && entity === activeEntity ?
+                                        <DotLoader
+                                            size={20}
+                                            color="green"
+                                            className="dotLoader"
+                                        />
+                                        :
+                                        <i class="fa-solid fa-caret-down" style={{ transform: loading ? "translate(0)" : "translate(180)" }}></i>
+                                    }
+                                </Row>
                             </Row>
                             {(activeEntity === entity || entities.length === 1) && (
                                 <ul>
