@@ -127,6 +127,7 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        console.log(formDetails);
         try {
             let subRoute = '';
             let method = '';

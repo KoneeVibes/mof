@@ -56,6 +56,9 @@ export const DataOverviewTableWrapper = styled.div(({ cardPadding = "var(--cardP
             display: "flex",
             justifyContent: "flex-end",
         },
+        ".filterField": {
+            width: "auto",
+        },
         "table": {
             width: "100%",
             backgroundColor: "#FFFFFF",

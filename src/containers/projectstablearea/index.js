@@ -12,12 +12,14 @@ export const ProjectsTableArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
     const categories = ["Project Title", "Allocation", "Status"];
+    const filterOptions = ["Ongoing", "Closed", "Terminated"];
 
     const navigate = useNavigate();
     const { entity, entityId } = useParams();
     const [projects, setProjects] = useState([]);
     // const [columns, setColumns] = useState(categories);
     const [uniqueCurrencies, setUniqueCurrencies] = useState([]);
+    const [filterOption, setFilterOption] = useState("");
 
     const token = cookie.TOKEN;
     const { role, organization, organizationId } = cookie.USER || {};
@@ -43,6 +45,13 @@ export const ProjectsTableArea = () => {
             console.error("Failed to export:", error);
         }
     };
+
+    const handleFilterOptionsChange = (e) => {
+        const { value } = e.target;
+        setFilterOption(value);
+    }
+
+    useEffect(() => console.log(filterOption), [filterOption]);
 
     useEffect(() => {
         if (token && entityId) {
@@ -84,6 +93,9 @@ export const ProjectsTableArea = () => {
                         uniqueCurrencies={uniqueCurrencies}
                         location={"projectsTableArea"}
                         exportToExcel={exportToExcel}
+                        options={filterOptions}
+                        filterOption={filterOption}
+                        handleFilterOptionsChange={handleFilterOptionsChange}
                     />
                 </EntitiesTableWrapper>
             </EntitiesAreaWrapper>

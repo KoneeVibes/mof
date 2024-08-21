@@ -34,6 +34,7 @@ export const ProjectDetailsArea = () => {
         ...(cookie.USER.role === "Individual" ? ["Action"] : []),
     ]);
     const actions = (cookie.USER.role === "SuperAdmin") ? ["Terminate", "Re-open"] : (cookie.USER.role === "SubAdmin") ? ["Close", "Re-open", "Terminate"] : [];
+    const filterOptions = ["date", "poster id", "status"]
 
     const modalRefs = {
         basic: useRef(null),
@@ -51,6 +52,7 @@ export const ProjectDetailsArea = () => {
     const [activeEditModal, setActiveEditModal] = useState(null);
     const [editArea, setEditArea] = useState(null);
     const [shouldShowDetailsEditArea, setShouldShowDetailsEditArea] = useState(false);
+    const [filterOption, setFilterOption] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -141,6 +143,13 @@ export const ProjectDetailsArea = () => {
             }
         }
     };
+
+    const handleFilterOptionsChange = (e) => {
+        const { value } = e.target;
+        setFilterOption(value);
+    }
+
+    useEffect(() => console.log(filterOption), [filterOption])
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -264,11 +273,13 @@ export const ProjectDetailsArea = () => {
                                         borderRadius: "8px",
                                     }}>
                                 </div>
-                                <i
-                                    className="fa-solid fa-ellipsis-vertical pad-up"
-                                    style={{ padding: "0.5rem", cursor: "pointer" }}
-                                    onClick={(e) => handleEditModalOpen(e, "basic")}
-                                />
+                                {(cookie.USER.role === "SubAdmin") &&
+                                    <i
+                                        className="fa-solid fa-ellipsis-vertical pad-up"
+                                        style={{ padding: "0.5rem", cursor: "pointer" }}
+                                        onClick={(e) => handleEditModalOpen(e, "basic")}
+                                    />
+                                }
                                 <ProjectDetailEditModal
                                     ref={modalRefs.basic}
                                     display={(activeEditModal === "basic") ? "block" : "none"}
@@ -289,11 +300,13 @@ export const ProjectDetailsArea = () => {
                         <ProjectDetailCardWrapper>
                             <ProjectDetailActionRow>
                                 <H3>Benefiting Institutions</H3>
-                                <i
-                                    className="fa-solid fa-ellipsis-vertical pad-up"
-                                    style={{ padding: "0.5rem", cursor: "pointer" }}
-                                    onClick={(e) => handleEditModalOpen(e, "beneficiaries")}
-                                />
+                                {(cookie.USER.role === "SubAdmin") &&
+                                    <i
+                                        className="fa-solid fa-ellipsis-vertical pad-up"
+                                        style={{ padding: "0.5rem", cursor: "pointer" }}
+                                        onClick={(e) => handleEditModalOpen(e, "beneficiaries")}
+                                    />
+                                }
                                 <ProjectDetailEditModal
                                     ref={modalRefs.beneficiaries}
                                     display={(activeEditModal === "beneficiaries") ? "block" : "none"}
@@ -311,11 +324,13 @@ export const ProjectDetailsArea = () => {
                     <ProjectDetailCardWrapper>
                         <ProjectDetailActionRow>
                             <FundingSourceIcon />
-                            <i
-                                className="fa-solid fa-ellipsis-vertical pad-up"
-                                style={{ padding: "0.5rem", cursor: "pointer" }}
-                                onClick={(e) => handleEditModalOpen(e, "funding")}
-                            />
+                            {(cookie.USER.role === "SubAdmin") &&
+                                <i
+                                    className="fa-solid fa-ellipsis-vertical pad-up"
+                                    style={{ padding: "0.5rem", cursor: "pointer" }}
+                                    onClick={(e) => handleEditModalOpen(e, "funding")}
+                                />
+                            }
                             <ProjectDetailEditModal
                                 ref={modalRefs.funding}
                                 display={(activeEditModal === "funding") ? "block" : "none"}
@@ -375,6 +390,9 @@ export const ProjectDetailsArea = () => {
                         performAction={handleDeleteDisbursement}
                         role={cookie.USER.role}
                         exportToExcel={handleExportToExcel}
+                        options={filterOptions}
+                        filterOption={filterOption}
+                        handleFilterOptionsChange={handleFilterOptionsChange}
                     />
                 </div>
                 {(cookie.USER.role === "Individual") && (

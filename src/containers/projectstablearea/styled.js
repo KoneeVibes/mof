@@ -17,6 +17,9 @@ export const EntitiesTableWrapper = styled.div(({ cardPadding = "var(--cardPaddi
             display: "flex",
             justifyContent: "flex-end",
         },
+        ".filterField": {
+            width: "auto",
+        },
         "table": {
             width: "100%",
             backgroundColor: "#FFFFFF",

@@ -15,6 +15,7 @@ export const DataOverviewArea = () => {
     const cookie = cookies.getAll();
     const token = cookie.TOKEN;
     const orgTypes = ["Ministry", "Department", "Agency"];
+    const filterOptions = ["Ongoing", "Closed", "Terminated"];
     const categories = [
         "Project Title",
         ...(cookie.USER.role === "SuperAdmin" ? ["MDA"] : []),
@@ -23,16 +24,24 @@ export const DataOverviewArea = () => {
         "Funding Balance",
         "Status"
     ];
-    let orgId = cookie.USER.role === "SuperAdmin" ? "" : cookie.USER.organizationId;
+    let orgId = cookie.USER.role === "SuperAdmin" ? "" : cookie.USER.organizationId
 
     const [selectedOrg, setSelectedOrg] = useState(orgTypes[0]);
     const [dashboardOverview, setDashboardOverview] = useState(null);
     const [projects, setProjects] = useState([]);
+    const [filterOption, setFilterOption] = useState("");
 
     const onSelectofOrgType = (e) => {
         const { value } = e.target;
         setSelectedOrg(value);
     }
+
+    const handleFilterOptionsChange = (e) => {
+        const { value } = e.target;
+        setFilterOption(value);
+    }
+
+    useEffect(() => console.log(filterOption), [filterOption]);
 
     const exportToExcel = async (e) => {
         e.preventDefault();
@@ -231,6 +240,9 @@ export const DataOverviewArea = () => {
                     role={cookie.USER.role}
                     onSelectOption={(_, __, e) => e.preventDefault()}
                     exportToExcel={exportToExcel}
+                    options={filterOptions}
+                    filterOption={filterOption}
+                    handleFilterOptionsChange={handleFilterOptionsChange}
                 />
             </DataOverviewTableWrapper>
         </DataOverviewAreaWrapper>

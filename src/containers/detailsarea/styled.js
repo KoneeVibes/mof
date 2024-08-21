@@ -16,6 +16,9 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
             display: "flex",
             justifyContent: "flex-end",
         },
+        ".filterField": {
+            width: "auto",
+        },
         "table": {
             width: "100%",
             backgroundColor: "#FFFFFF",
