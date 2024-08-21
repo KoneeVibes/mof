@@ -29,23 +29,36 @@ export const Table = ({
         <SelectFieldWrapper
           name="filterOption"
           value={filterOption}
-          onChange={handleFilterOptionsChange}
+          onChange={(e) => handleFilterOptionsChange(e)}
           className="filterField"
         >
+          <option value="">Select a filter</option>
           {options?.map((option, key) => (
             <option key={key} value={option}>
               {option}
             </option>
           ))}
         </SelectFieldWrapper>
-        <BaseInputWrapper
-          as="input"
-          type="text"
-          name="filterValue"
-          placeholder="Enter Filter Value"
-          value={filterValue}
-          onChange={handleFilterValueChange}
-        />
+        {filterOption === "date" && (
+          <Row>
+            <BaseInputWrapper
+              as="input"
+              type="date"
+              name="startDate"
+              placeholder="Start Date"
+              value={filterValue}
+              onChange={handleFilterValueChange}
+            />
+            <BaseInputWrapper
+              as="input"
+              type="date"
+              name="endDate"
+              placeholder="End Date"
+              value={filterValue}
+              onChange={handleFilterValueChange}
+            />
+          </Row>
+        )}
         <div className="exportButton">
           <BaseButton width={"fit-content"} onClick={exportToExcel}>
             Export to Excel

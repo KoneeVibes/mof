@@ -34,6 +34,7 @@ export const ProjectDetailsArea = () => {
         ...(cookie.USER.role === "Individual" ? ["Action"] : []),
     ]);
     const actions = (cookie.USER.role === "SuperAdmin") ? ["Terminate", "Re-open"] : (cookie.USER.role === "SubAdmin") ? ["Close", "Re-open", "Terminate"] : [];
+    const filterOptions = ["date", "poster id", "status"]
 
     const modalRefs = {
         basic: useRef(null),
@@ -51,6 +52,7 @@ export const ProjectDetailsArea = () => {
     const [activeEditModal, setActiveEditModal] = useState(null);
     const [editArea, setEditArea] = useState(null);
     const [shouldShowDetailsEditArea, setShouldShowDetailsEditArea] = useState(false);
+    const [filterOption, setFilterOption] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -141,6 +143,13 @@ export const ProjectDetailsArea = () => {
             }
         }
     };
+
+    const handleFilterOptionsChange = (e) => {
+        const { value } = e.target;
+        setFilterOption(value);
+    }
+
+    useEffect(() => console.log(filterOption), [filterOption])
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -381,6 +390,9 @@ export const ProjectDetailsArea = () => {
                         performAction={handleDeleteDisbursement}
                         role={cookie.USER.role}
                         exportToExcel={handleExportToExcel}
+                        options={filterOptions}
+                        filterOption={filterOption}
+                        handleFilterOptionsChange={handleFilterOptionsChange}
                     />
                 </div>
                 {(cookie.USER.role === "Individual") && (
