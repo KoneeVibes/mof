@@ -171,6 +171,7 @@ export const SideNav = () => {
                                 onClick={getSideNavItems}
                             >
                                 <P
+                                    className= "entityItem"
                                     onClick={getSideNavItems}
                                     data-organization-key={
                                         role === "SuperAdmin" ? entity : orgType
@@ -179,7 +180,7 @@ export const SideNav = () => {
                                     {entity}
                                 </P>
                                 {/* Mirabel, add a drop down symbol here */}
-                                <Row>
+                                <Row  classname= "dotloaderItem">
                                     {loading && entity === activeEntity ?
                                         <DotLoader
                                             size={20}
@@ -187,7 +188,12 @@ export const SideNav = () => {
                                             className="dotLoader"
                                         />
                                         :
-                                        <i class="fa-solid fa-caret-down" style={{ transform: loading ? "translate(0)" : "translate(180)" }}></i>
+                                        <i class="fa-solid fa-caret-down" style={{
+                                            transform: 
+                                                entity === activeEntity
+                                                ? "rotate(270deg)" : "rotate(0deg)",
+                                            
+                                         }}></i>
                                     }
                                 </Row>
                             </Row>
