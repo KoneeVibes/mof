@@ -264,11 +264,13 @@ export const ProjectDetailsArea = () => {
                                         borderRadius: "8px",
                                     }}>
                                 </div>
-                                <i
-                                    className="fa-solid fa-ellipsis-vertical pad-up"
-                                    style={{ padding: "0.5rem", cursor: "pointer" }}
-                                    onClick={(e) => handleEditModalOpen(e, "basic")}
-                                />
+                                {(cookie.USER.role === "SubAdmin") &&
+                                    <i
+                                        className="fa-solid fa-ellipsis-vertical pad-up"
+                                        style={{ padding: "0.5rem", cursor: "pointer" }}
+                                        onClick={(e) => handleEditModalOpen(e, "basic")}
+                                    />
+                                }
                                 <ProjectDetailEditModal
                                     ref={modalRefs.basic}
                                     display={(activeEditModal === "basic") ? "block" : "none"}
@@ -289,11 +291,13 @@ export const ProjectDetailsArea = () => {
                         <ProjectDetailCardWrapper>
                             <ProjectDetailActionRow>
                                 <H3>Benefiting Institutions</H3>
-                                <i
-                                    className="fa-solid fa-ellipsis-vertical pad-up"
-                                    style={{ padding: "0.5rem", cursor: "pointer" }}
-                                    onClick={(e) => handleEditModalOpen(e, "beneficiaries")}
-                                />
+                                {(cookie.USER.role === "SubAdmin") &&
+                                    <i
+                                        className="fa-solid fa-ellipsis-vertical pad-up"
+                                        style={{ padding: "0.5rem", cursor: "pointer" }}
+                                        onClick={(e) => handleEditModalOpen(e, "beneficiaries")}
+                                    />
+                                }
                                 <ProjectDetailEditModal
                                     ref={modalRefs.beneficiaries}
                                     display={(activeEditModal === "beneficiaries") ? "block" : "none"}
@@ -311,11 +315,13 @@ export const ProjectDetailsArea = () => {
                     <ProjectDetailCardWrapper>
                         <ProjectDetailActionRow>
                             <FundingSourceIcon />
-                            <i
-                                className="fa-solid fa-ellipsis-vertical pad-up"
-                                style={{ padding: "0.5rem", cursor: "pointer" }}
-                                onClick={(e) => handleEditModalOpen(e, "funding")}
-                            />
+                            {(cookie.USER.role === "SubAdmin") &&
+                                <i
+                                    className="fa-solid fa-ellipsis-vertical pad-up"
+                                    style={{ padding: "0.5rem", cursor: "pointer" }}
+                                    onClick={(e) => handleEditModalOpen(e, "funding")}
+                                />
+                            }
                             <ProjectDetailEditModal
                                 ref={modalRefs.funding}
                                 display={(activeEditModal === "funding") ? "block" : "none"}

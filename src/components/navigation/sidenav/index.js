@@ -187,7 +187,7 @@ export const SideNav = () => {
                                             className="dotLoader"
                                         />
                                         :
-                                        <i class="fa-solid fa-caret-down" style={{ transform: loading ? "translate(0)" : "translate(180)" }}></i>
+                                        <i className="fa-solid fa-caret-down" style={{ transform: loading ? "rotate(0deg)" : "rotate(270deg)" }}></i>
                                     }
                                 </Row>
                             </Row>

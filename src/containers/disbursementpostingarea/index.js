@@ -8,7 +8,7 @@ import { DisbursementRequestAreaWrapper, DisbursementRequestBaseButton, Disburse
 import { useEffect, useState } from "react";
 import { getCurrencies } from "../../util/apis/getCurrencies";
 import Cookies from "universal-cookie";
-import { makeDisbursementRequest } from "../../util/apis/makeDisbursementRequest";
+import { makeDisbursement } from "../../util/apis/makeDisbursement";
 import { DotLoader } from "react-spinners";
 
 export const DisbursementRequestArea = () => {
@@ -22,10 +22,10 @@ export const DisbursementRequestArea = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [formDetails, setFormDetails] = useState({
-        projectId: projectId,
-        Purpose: "",
+        projectId: parseInt(projectId),
+        purpose: "",
         amount: "",
-        CurrencyName: "",
+        currencyName: "",
         attachments: [{ file: "" }]
     })
 
@@ -33,8 +33,8 @@ export const DisbursementRequestArea = () => {
         const { name, value } = e.target;
         setFormDetails((prev) => ({
             ...prev,
-            [name]: value
-        }))
+            [name]: name === "amount" ? parseFloat(value) : value
+        }));
     }
 
     const handleNestedChange = (section, index, event) => {
@@ -73,22 +73,30 @@ export const DisbursementRequestArea = () => {
         e.preventDefault();
         setError(null);
         setLoading(true);
-        console.log(formDetails);
+        const formData = new FormData();
+        formData.append("projectId", formDetails.projectId);
+        formData.append("purpose", formDetails.purpose);
+        formData.append("amount", formDetails.amount);
+        formData.append("currencyName", formDetails.currencyName);
+        formDetails.attachments.forEach((attachment, index) => {
+            if (attachment.file) {
+                formData.append(`attachments[${index}]`, attachment.file);
+            }
+        });
         try {
-            const response = await makeDisbursementRequest(TOKEN, formDetails);
+            const response = await makeDisbursement(TOKEN, formData);
             if (response.status === "Success") {
-                setLoading(false);
                 navigate(-1);
             } else {
-                setLoading(false);
                 setError("Submission failed. Please check your inputs and try again.");
             }
-        } catch (error) {
+        } catch (err) {
+            setError(`Submission failed. ${err.message}`);
+            console.error("Submission failed:", err);
+        } finally {
             setLoading(false);
-            setError(`Submission failed. ${error.message}`);
-            console.error("Submission failed:", error);
         }
-    }
+    };
 
     useEffect(() => {
         getCurrencies(TOKEN)
@@ -108,10 +116,10 @@ export const DisbursementRequestArea = () => {
                     <BaseInputWrapper
                         as="input"
                         type="text"
-                        name="Purpose"
+                        name="purpose"
                         placeholder="Enter Purpose of Disbursement"
                         required
-                        value={formDetails.Purpose}
+                        value={formDetails.purpose}
                         onChange={handleChange}
                     />
                     <Label>Amount</Label>
@@ -127,8 +135,8 @@ export const DisbursementRequestArea = () => {
                     <Label>Select Currency:</Label>
                     <SelectFieldWrapper
                         as="select"
-                        name="CurrencyName"
-                        value={formDetails.CurrencyName}
+                        name="currencyName"
+                        value={formDetails.currencyName}
                         onChange={handleChange}
                     >
                         <option value="">Select a currency</option>
