@@ -60,7 +60,7 @@ export const CurrencyOnboardingArea = () => {
                     <BaseInputWrapper
                         as="input"
                         type="text"
-                        name="currency"
+                        name="name"
                         placeholder="Enter Name of Currency"
                         required
                         value={formDetails.name}
@@ -70,7 +70,7 @@ export const CurrencyOnboardingArea = () => {
                     <BaseInputWrapper
                         as="input"
                         type="text"
-                        name="currency"
+                        name="abbreviation"
                         placeholder="Enter Currency Abbreviation"
                         required
                         value={formDetails.abbreviation}
@@ -80,7 +80,7 @@ export const CurrencyOnboardingArea = () => {
                     <BaseInputWrapper
                         as="input"
                         type="text"
-                        name="Symbol"
+                        name="symbol"
                         placeholder="Enter Symbol of Currency"
                         required
                         value={formDetails.symbol}
