@@ -38,7 +38,7 @@ export const AuthWrapper = styled("div")(() => ({
         color: "#102C57",
         fontWeight: "bold",
     },
-    ".showPassword":{
+    ".showPassword": {
         display: "flex",
         alignItems: "center",
         position: 'absolute',
@@ -50,16 +50,16 @@ export const AuthWrapper = styled("div")(() => ({
         fontWeight: 'bold',
         color: "#102C57",
     },
-    ".forgotPassword":{
+    ".forgotPassword": {
         color: "#102C57",
         textDecoration: "none",
     },
-    ".dotLoader":{
-            marginLeft: "auto",
-            marginRight: "auto",
-        },
-    
-    
+    ".dotLoader": {
+        marginLeft: "auto",
+        marginRight: "auto",
+    },
+
+
 }))
 
 export const AuthRow = styled(Row)(() => {

@@ -3,7 +3,7 @@ import { BaseButton } from "../../components/buttons/styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { H2, Label, P } from "../../components/typography/styled";
 import { Layout } from "../layout";
-import {CurrencyOnboardingAreaWrapper} from "./styled";
+import { CurrencyOnboardingAreaWrapper } from "./styled";
 import { useNavigate } from "react-router-dom";
 import { DotLoader } from "react-spinners";
 import { onboardCurrency } from "../../util/apis/onboardCurrency";

@@ -8,6 +8,7 @@ export const ProjectDetailsAreaWrapper = styled.div(({ cardPadding = "var(--card
         display: "flex",
         flexDirection: "column",
         gap: "var(--flexGap)",
+        position: "relative",
         ".tableWrapper": {
             overflow: "auto",
         },
@@ -68,15 +69,27 @@ export const ProjectDetailActionRow = styled(Row)(() => {
     return {
         alignItems: "center",
         justifyContent: "space-between",
-        position: "relative"
+        position: "relative",
+        flexWrap: "wrap",
     }
 })
 
-export const ProjectDetailEditModal = styled(CardWrapper)(({ display }) => {
+export const ProjectDetailEditModal = styled(CardWrapper)(({ display, cardPadding = "var(--cardPadding)" }) => {
     return {
         position: "absolute",
         top: "100%",
         right: 0,
         display: display,
+        zIndex: 10,
+        padding: `calc(${cardPadding}/2)`,
+        cursor: "pointer",
+        backgroundColor: "#FFFFFF",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        "p": {
+            color: "#059212",
+        },
+        "p:hover": {
+            color: "red"
+        }
     }
 })

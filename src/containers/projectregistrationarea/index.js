@@ -19,12 +19,12 @@ import { DotLoader } from "react-spinners";
 import { getOrganizationMembers } from "../../util/apis/getOrganizationMembers";
 import { getFundingSources } from "../../util/apis/getFundingSources";
 
+export const tiersOfGovernment = ["Federal", "State", "LGA"];
 export const ProjectRegistrationArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
     const token = cookies.get("TOKEN");
     const { organizationId } = cookie.USER;
-    const tiersOfGovernment = ["Federal", "State", "LGA"];
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -65,8 +65,8 @@ export const ProjectRegistrationArea = () => {
         getOrganizationMembers(token, organizationId)
             .then((data) => setMembers(data))
             .catch((err) => {
-                console.error("Failed to fetch currencies:", err);
-                setError("Failed to fetch currencies. Please try again later.");
+                console.error("Failed to fetch project members:", err);
+                setError("Failed to fetch project members. Please try again later.");
             });
     }, [organizationId, token]);
 
