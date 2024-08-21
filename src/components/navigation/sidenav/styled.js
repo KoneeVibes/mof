@@ -105,6 +105,18 @@ export const SideNavItemsListWrapper = styled(Column)(
         .entity{
             align-items: center;
         }
+        .entityItem {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-start;
+          width: 50%;
+         }
+       .dotloaderItem {
+          display: flex;
+          align-items: center; 
+          gap: 10px; 
+         width: 50%; 
+        }
     `;
   }
 );
