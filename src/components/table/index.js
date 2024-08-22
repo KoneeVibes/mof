@@ -15,50 +15,95 @@ export const Table = ({
   role,
   performAction,
   exportToExcel,
-  options,
-  filterOption,
-  handleFilterOptionsChange,
-  filterValue,
+  orgNames,
+  status,
+  postersId,
   handleFilterValueChange
 }) => {
   return (
     <React.Fragment>
       <Row
-        style={{ justifyContent: "flex-end", gap: 0 }}
+        style={{ justifyContent: "flex-end", gap: "0.5rem", marginBottom: "0.5rem" }}
       >
-        <SelectFieldWrapper
-          name="filterOption"
-          value={filterOption}
-          onChange={(e) => handleFilterOptionsChange(e)}
-          className="filterField"
-        >
-          <option value="">Select a filter</option>
-          {options?.map((option, key) => (
-            <option key={key} value={option}>
-              {option}
-            </option>
-          ))}
-        </SelectFieldWrapper>
-        {filterOption === "date" && (
-          <Row>
-            <BaseInputWrapper
-              as="input"
-              type="date"
-              name="startDate"
-              placeholder="Start Date"
-              value={filterValue}
+        <Row style={{ gap: "0.5rem" }}>
+          {location === "dataOverviewArea" && (
+            <React.Fragment>
+              {(role === "SuperAdmin") && (
+                <SelectFieldWrapper
+                  name="orgType"
+                  onChange={handleFilterValueChange}
+                >
+                  <option value="">Filter by MDA/State</option>
+                  {orgNames?.map((option, key) => (
+                    <option key={key} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </SelectFieldWrapper>
+              )}
+              <SelectFieldWrapper
+                name="status"
+                onChange={handleFilterValueChange}
+              >
+                <option value="">Filter by Status</option>
+                {status?.map((option, key) => (
+                  <option key={key} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </SelectFieldWrapper>
+            </React.Fragment>
+          )}
+          {location === "projectsTableArea" && (
+            <SelectFieldWrapper
+              name="status"
               onChange={handleFilterValueChange}
-            />
-            <BaseInputWrapper
-              as="input"
-              type="date"
-              name="endDate"
-              placeholder="End Date"
-              value={filterValue}
-              onChange={handleFilterValueChange}
-            />
-          </Row>
-        )}
+            >
+              <option value="">Filter by Status</option>
+              {status?.map((option, key) => (
+                <option key={key} value={option}>
+                  {option}
+                </option>
+              ))}
+            </SelectFieldWrapper>
+          )}
+          {location === "detailsArea" && (
+            <React.Fragment>
+              <BaseInputWrapper
+                type="date"
+                name="startDate"
+                onChange={handleFilterValueChange}
+              />
+              {/* <BaseInputWrapper
+                type="date"
+                name="endDate"
+                onChange={handleFilterValueChange}
+              /> */}
+              <SelectFieldWrapper
+                name="posterEmail"
+                onChange={handleFilterValueChange}
+              >
+                <option value="">Filter by Disburser</option>
+                {postersId?.map((option, key) => (
+                  <option key={key} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </SelectFieldWrapper>
+              <SelectFieldWrapper
+                name="status"
+                onChange={handleFilterValueChange}
+              >
+                <option value="">Filter by Status</option>
+                {status?.map((option, key) => (
+                  <option key={key} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </SelectFieldWrapper>
+            </React.Fragment>
+          )}
+        </Row>
         <div className="exportButton">
           <BaseButton width={"fit-content"} onClick={exportToExcel}>
             Export to Excel
@@ -208,6 +253,7 @@ export const Table = ({
                         )}
                       </Td>
                     )}
+                    <Td>{rowItem?.attachments[0] || ""}</Td>
                     <Td>{rowItem?.disbursementStatus || ""}</Td>
                     {role === "Individual" && (
                       <Td

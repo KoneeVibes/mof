@@ -10,15 +10,14 @@ import { H1, H2, H3, Li, P } from "../../components/typography/styled";
 import { useEffect, useRef, useState } from "react";
 import { getProject } from "../../util/apis/getProject";
 import Cookies from "universal-cookie";
-import { getDisbursements } from "../../util/apis/getDisbursements";
 import { BarChart } from "../../components/barchart";
 import { deleteDisbursement } from "../../util/apis/deleteDisbursement";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { updateProjectStatus } from "../../util/apis/updateProjectStatus";
 import { getExcelSheet } from "../../util/apis/getExcelSheet";
 import { DetailsEditArea } from "../detailseditarea";
-// import { NewProjectCardWrapper } from "../metricsarea/styled";
-// import { BaseButton } from "../../components/buttons/styled";
+import { status } from "../dataoverviewarea";
+import { getFilteredDisbursements } from "../../util/apis/getFilteredDisbursements";
 
 export const ProjectDetailsArea = () => {
     const cookies = new Cookies();
@@ -30,11 +29,11 @@ export const ProjectDetailsArea = () => {
         "Posted By",
         "Purpose",
         "Amount",
+        "Attachment",
         "Status",
         ...(cookie.USER.role === "Individual" ? ["Action"] : []),
     ]);
     const actions = (cookie.USER.role === "SuperAdmin") ? ["Terminate", "Re-open"] : (cookie.USER.role === "SubAdmin") ? ["Close", "Re-open", "Terminate"] : [];
-    const filterOptions = ["date", "poster id", "status"]
 
     const modalRefs = {
         basic: useRef(null),
@@ -52,7 +51,12 @@ export const ProjectDetailsArea = () => {
     const [activeEditModal, setActiveEditModal] = useState(null);
     const [editArea, setEditArea] = useState(null);
     const [shouldShowDetailsEditArea, setShouldShowDetailsEditArea] = useState(false);
-    const [filterOption, setFilterOption] = useState("");
+    const [formDetails, setFormDetails] = useState({
+        startDate: "",
+        endDate: "",
+        posterEmail: "",
+        status: "",
+    });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -144,12 +148,13 @@ export const ProjectDetailsArea = () => {
         }
     };
 
-    const handleFilterOptionsChange = (e) => {
-        const { value } = e.target;
-        setFilterOption(value);
-    }
-
-    useEffect(() => console.log(filterOption), [filterOption])
+    const handleFilterValueChange = (e) => {
+        const { name, value } = e.target;
+        setFormDetails((prevDetails) => ({
+            ...prevDetails,
+            [name]: value,
+        }));
+    };
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -180,8 +185,8 @@ export const ProjectDetailsArea = () => {
     }, [projectId, token, shouldShowDetailsEditArea]);
 
     useEffect(() => {
-        getDisbursements(token, projectId).then((requests) => setRequests(requests))
-    });
+        getFilteredDisbursements(token, projectId, formDetails).then((requests) => setRequests(requests))
+    }, [token, projectId, formDetails]);
 
     useEffect(() => {
         setProjectStatus(project?.status);
@@ -222,18 +227,6 @@ export const ProjectDetailsArea = () => {
                 }
                 <Jumbotron entity={project?.organization} />
                 <Row tocolumn={1}>
-                    {/* {cookie.USER.role === "SubAdmin" && (
-                        <NewProjectCardWrapper>
-                            <H2>New User</H2>
-                            <br />
-                            <BaseButton
-                                width={"-webkit-fill-available"}
-                                onClick={() => navigate(`/registration/${projectId}/user`)}
-                            >
-                                Add new user to Project
-                            </BaseButton>
-                        </NewProjectCardWrapper>
-                    )} */}
                     <ProjectDetailCardWrapper>
                         <ProjectDetailActionRow>
                             <InitiativeIcon />
@@ -390,9 +383,9 @@ export const ProjectDetailsArea = () => {
                         performAction={handleDeleteDisbursement}
                         role={cookie.USER.role}
                         exportToExcel={handleExportToExcel}
-                        options={filterOptions}
-                        filterOption={filterOption}
-                        handleFilterOptionsChange={handleFilterOptionsChange}
+                        status={status}
+                        postersId={["demouser@ministryoffinance.com", "subadmin@ministryoffinance.com"]}
+                        handleFilterValueChange={handleFilterValueChange}
                     />
                 </div>
                 {(cookie.USER.role === "Individual") && (

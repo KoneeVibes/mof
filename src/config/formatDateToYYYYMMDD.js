@@ -1,7 +1,12 @@
+import { parse, isValid } from 'date-fns';
+
 export const formatDateToYYYYMMDD = (dateString) => {
-    if (!dateString || dateString.split('/').length !== 3) {
-        return dateString; // Return the original value if it's not a valid date
+    const formats = ['dd/MM/yyyy', 'MM/dd/yyyy', 'yyyy-MM-dd'];
+    for (let format of formats) {
+        const parsedDate = parse(dateString, format, new Date());
+        if (isValid(parsedDate)) {
+            return parsedDate.toISOString().split('T')[0];
+        }
     }
-    const [day, month, year] = dateString.split('/');
-    return `${year}-${month}-${day}`;
+    return dateString;
 };
