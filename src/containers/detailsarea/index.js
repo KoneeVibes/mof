@@ -16,8 +16,8 @@ import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { updateProjectStatus } from "../../util/apis/updateProjectStatus";
 import { getExcelSheet } from "../../util/apis/getExcelSheet";
 import { DetailsEditArea } from "../detailseditarea";
-import { status } from "../dataoverviewarea";
 import { getFilteredDisbursements } from "../../util/apis/getFilteredDisbursements";
+import { getProjectMembers } from "../../util/apis/getProjectMembers";
 
 export const ProjectDetailsArea = () => {
     const cookies = new Cookies();
@@ -34,6 +34,7 @@ export const ProjectDetailsArea = () => {
         ...(cookie.USER.role === "Individual" ? ["Action"] : []),
     ]);
     const actions = (cookie.USER.role === "SuperAdmin") ? ["Terminate", "Re-open"] : (cookie.USER.role === "SubAdmin") ? ["Close", "Re-open", "Terminate"] : [];
+    const status = ["Paid", "Not Paid"];
 
     const modalRefs = {
         basic: useRef(null),
@@ -59,12 +60,13 @@ export const ProjectDetailsArea = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [projectMembers, setProjectMembers] = useState([]);
 
     const handleDeleteDisbursement = async (e, disbursementId) => {
         try {
             const response = await deleteDisbursement(token, disbursementId);
             if (response.status === "Success") {
-                setError("Successful");
+                setError("Successfully deleted disbursement");
             } else {
                 setError("Failed to delete. You are not authorized to delete this disbursement.");
             }
@@ -134,13 +136,17 @@ export const ProjectDetailsArea = () => {
         setShouldShowDetailsEditArea(false);
     };
 
-    const handleEditModalClose = (e, isInsideClick, modalType) => {
+    const handleEditModalClose = (e, isInsideClick, modalType, action) => {
         const modalRef = modalRefs[modalType]?.current;
         if (isInsideClick) {
-            setEditArea(activeEditModal);
+            setEditArea(action);
             setActiveEditModal(null);
             setShouldShowDetailsEditArea(true);
         } else {
+            // To further ensure that this block only handles outside clicks
+            // when modalRef is defined, considering that the first
+            // if/else in handleClickOutside will actually listen for
+            // all manner of outside-modal clicks. So this is just a 2F check.
             if (modalRef && !modalRef.contains(e.target)) {
                 setActiveEditModal(null);
                 setShouldShowDetailsEditArea(false);
@@ -161,10 +167,10 @@ export const ProjectDetailsArea = () => {
             const isClickOutsideModals = Object.values(modalRefs).every(ref => !ref.current || !ref.current.contains(e.target));
             const isClickOutsideDetailsEditArea = detailsEditAreaRef.current && !detailsEditAreaRef.current.contains(e.target);
             if (!detailsEditAreaRef.current && isClickOutsideModals) {
-                handleEditModalClose(e, false, activeEditModal);
+                handleEditModalClose(e, false, activeEditModal, null);
             }
             if (isClickOutsideModals && isClickOutsideDetailsEditArea) {
-                handleEditModalClose(e, false, activeEditModal);
+                handleEditModalClose(e, false, activeEditModal, null);
                 setShouldShowDetailsEditArea(false);
             }
         };
@@ -186,11 +192,20 @@ export const ProjectDetailsArea = () => {
 
     useEffect(() => {
         getFilteredDisbursements(token, projectId, formDetails).then((requests) => setRequests(requests))
-    }, [token, projectId, formDetails]);
+    }, [token, projectId, formDetails, error]);
 
     useEffect(() => {
         setProjectStatus(project?.status);
     }, [project?.status]);
+
+    useEffect(() => {
+        getProjectMembers(token, projectId)
+            .then((data) => setProjectMembers(data.map((member) => member.email)))
+            .catch((err) => {
+                console.error("Failed to fetch project members:", err);
+                setError("Failed to fetch project members. Please try again later.");
+            });
+    }, [token, projectId]);
 
     if (loading) {
         return (
@@ -277,7 +292,8 @@ export const ProjectDetailsArea = () => {
                                     ref={modalRefs.basic}
                                     display={(activeEditModal === "basic") ? "block" : "none"}
                                 >
-                                    <P onClick={(e) => handleEditModalClose(e, true, "basic")}>Edit Basic Details</P>
+                                    <P onClick={(e) => handleEditModalClose(e, true, "basic", "basic")}>Edit Basic Details</P>
+                                    <P onClick={(e) => handleEditModalClose(e, true, "basic", "members")}>Edit Project Members</P>
                                 </ProjectDetailEditModal>
                             </Row>
                         </ProjectDetailActionRow>
@@ -304,7 +320,7 @@ export const ProjectDetailsArea = () => {
                                     ref={modalRefs.beneficiaries}
                                     display={(activeEditModal === "beneficiaries") ? "block" : "none"}
                                 >
-                                    <P onClick={(e) => handleEditModalClose(e, true, "beneficiaries")}>Edit Beneficiaries List</P>
+                                    <P onClick={(e) => handleEditModalClose(e, true, "beneficiaries", "beneficiaries")}>Edit Beneficiaries List</P>
                                 </ProjectDetailEditModal>
                             </ProjectDetailActionRow>
                             <ul>
@@ -328,7 +344,7 @@ export const ProjectDetailsArea = () => {
                                 ref={modalRefs.funding}
                                 display={(activeEditModal === "funding") ? "block" : "none"}
                             >
-                                <P onClick={(e) => handleEditModalClose(e, true, "funding")}>Edit Funding Sources</P>
+                                <P onClick={(e) => handleEditModalClose(e, true, "funding", "funding")}>Edit Funding Sources</P>
                             </ProjectDetailEditModal>
                         </ProjectDetailActionRow>
                         <H3>Funding Source and Amount</H3>
@@ -384,7 +400,7 @@ export const ProjectDetailsArea = () => {
                         role={cookie.USER.role}
                         exportToExcel={handleExportToExcel}
                         status={status}
-                        postersId={["demouser@ministryoffinance.com", "subadmin@ministryoffinance.com"]}
+                        postersId={projectMembers}
                         handleFilterValueChange={handleFilterValueChange}
                     />
                 </div>

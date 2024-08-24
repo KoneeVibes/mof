@@ -178,7 +178,7 @@ export const SideNav = () => {
                                     {entity}
                                 </P>
                                 {/* Mirabel, add a drop down symbol here */}
-                                <Row classname="dotloaderItem">
+                                <Row className="dotloaderItem">
                                     {(loading && (entity === activeEntity || role !== "SuperAdmin")) ?
                                         <DotLoader
                                             size={20}

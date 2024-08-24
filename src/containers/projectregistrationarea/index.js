@@ -65,8 +65,8 @@ export const ProjectRegistrationArea = () => {
         getOrganizationMembers(token, organizationId)
             .then((data) => setMembers(data))
             .catch((err) => {
-                console.error("Failed to fetch project members:", err);
-                setError("Failed to fetch project members. Please try again later.");
+                console.error("Failed to fetch organization members:", err);
+                setError("Failed to fetch organization members. Please try again later.");
             });
     }, [organizationId, token]);
 

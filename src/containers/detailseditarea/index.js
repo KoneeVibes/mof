@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Label, P } from "../../components/typography/styled";
 import { DetailsEditAreaWrapper } from "./styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
@@ -13,6 +13,7 @@ import { formatDateToYYYYMMDD } from "../../config/formatDateToYYYYMMDD";
 import { getFundingSources } from "../../util/apis/getFundingSources";
 import { getCurrencies } from "../../util/apis/getCurrencies";
 import { toTitleCase } from "../../config/formatCase";
+import { getOrganizationMembers } from "../../util/apis/getOrganizationMembers";
 
 export const DetailsEditArea = React.forwardRef((props, ref) => {
     const { modalId, project } = props;
@@ -22,46 +23,48 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
     const [formDetails, setFormDetails] = useState({});
     const [currencies, setCurrencies] = useState([]);
     const [fundingSources, setFundingSources] = useState([]);
+    const [organizationMembers, setOrganizationMembers] = useState([]);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchInitialValues = async () => {
-            try {
-                let details = {};
-                switch (modalId) {
-                    case "basic":
-                        details = {
-                            projectTitle: project?.projectTitle || "",
-                            description: project?.description || "",
-                            dateEffective: project?.dateEffective || "",
-                            governmentTier: project?.governmentTier || "",
-                        };
-                        break;
-                    case "beneficiaries":
-                        details = {
-                            beneficiaries: project?.beneficiaries || [{ name: "" }],
-                        };
-                        break;
-                    case "funding":
-                        details = {
-                            fundingSources: project?.fundingSources.map((fundingSource) => ({
-                                funderName: fundingSource.funder,
-                                amount: fundingSource.amount,
-                                currencyName: fundingSource.currencyName
-                            })) || [{ funderName: "", amount: 0, currencyName: "" }],
-                        };
-                        break;
-                    default:
-                        return;
+    const memoizedFormDetails = useMemo(() => {
+        let initialDetails = {};
+        switch (modalId) {
+            case "basic":
+                initialDetails = {
+                    projectTitle: project?.projectTitle || "",
+                    description: project?.description || "",
+                    dateEffective: formatDateToYYYYMMDD(project?.dateEffective) || "",
+                    governmentTier: project?.governmentTier || "",
+                };
+                break;
+            case "members":
+                initialDetails = {
+                    members: project?.team.map((member) => ({ email: member.email })) || [{ email: "" }],
                 }
-                setFormDetails(details);
-            } catch (error) {
-                console.error('Error fetching initial values:', error);
-                setFormDetails({});
-            }
-        };
-        fetchInitialValues();
+                break;
+            case "beneficiaries":
+                initialDetails = {
+                    beneficiaries: project?.beneficiaries || [{ name: "" }],
+                };
+                break;
+            case "funding":
+                initialDetails = {
+                    fundingSources: project?.fundingSources.map((fundingSource) => ({
+                        funderName: fundingSource.funder,
+                        amount: fundingSource.amount,
+                        currencyName: fundingSource.currencyName
+                    })) || [{ funderName: "", amount: 0, currencyName: "" }],
+                };
+                break;
+            default:
+                return {};
+        }
+        return initialDetails;
     }, [modalId, project]);
+
+    useEffect(() => {
+        setFormDetails(memoizedFormDetails);
+    }, [memoizedFormDetails]);
 
     useEffect(() => {
         getFundingSources(token)
@@ -71,6 +74,16 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                 setError("Failed to fetch funding sources. Please try again later.");
             });
     }, [token]);
+
+    useEffect(() => {
+        // update the hardcode 12 to project.OrganisationId
+        getOrganizationMembers(token, 12)
+            .then((data) => setOrganizationMembers(data))
+            .catch((err) => {
+                console.error("Failed to fetch organization members:", err);
+                setError("Failed to fetch organization members. Please try again later.");
+            });
+    }, [token, project.OrganisationId]);
 
     useEffect(() => {
         getCurrencies(token)
@@ -107,7 +120,9 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                 ? { funderName: "", amount: 0, currencyName: "" }
                 : section === "beneficiaries"
                     ? { name: "" }
-                    : null;
+                    : section === "members"
+                        ? { email: "" }
+                        : null;
         if (newItem) {
             setFormDetails(prevDetails => ({
                 ...prevDetails,
@@ -133,15 +148,19 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
             switch (modalId) {
                 case "basic":
                     subRoute = 'api/projects/details/edit';
-                    method = 'PATCH'
+                    method = 'PATCH';
+                    break;
+                case "members":
+                    subRoute = 'api/projects/team';
+                    method = 'PUT';
                     break;
                 case "beneficiaries":
                     subRoute = 'api/projects/beneficiaries';
-                    method = 'PUT'
+                    method = 'PUT';
                     break;
                 case "funding":
                     subRoute = 'api/projects/fundings';
-                    method = 'PUT'
+                    method = 'PUT';
                     break;
                 default:
                     throw new Error('Invalid modalId');
@@ -201,18 +220,21 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                         }
                     </React.Fragment>
                 ));
+            case "members":
             case "funding":
             case "beneficiaries":
-                const section = modalId === "funding" ? "fundingSources" : "beneficiaries";
+                const isMembers = modalId === "members";
+                const section = isMembers ? "members" : modalId === "funding" ? "fundingSources" : "beneficiaries";
+                const labelPrefix = isMembers ? "Member" : modalId === "funding" ? "Funding Source" : "Beneficiary";
                 return (
                     <>
                         {(formDetails[section] || []).map((item, index) => (
                             <React.Fragment key={index}>
-                                <Label>{modalId === "funding" ? `Funding Source ${index + 1}:` : `Beneficiary ${index + 1}:`}</Label>
+                                <Label>{`${labelPrefix} ${index + 1}`}</Label>
                                 {Object.entries(item).map(([field, value], subIndex) => (
                                     <React.Fragment key={subIndex}>
                                         <Label>{toTitleCase(field.replace(/([A-Z])/g, ' $1').trim())}</Label>
-                                        {(field === "funderName") ?
+                                        {(field === "funderName" && modalId === "funding") ? (
                                             <SelectFieldWrapper
                                                 as="select"
                                                 name={field}
@@ -227,30 +249,46 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                                                     </option>
                                                 ))}
                                             </SelectFieldWrapper>
-                                            : (field === "currencyName") ?
-                                                <SelectFieldWrapper
-                                                    as="select"
-                                                    name={field}
-                                                    required
-                                                    value={value || ""}
-                                                    onChange={(e) => handleNestedChange(section, index, e)}
-                                                >
-                                                    <option value="">Select a currency</option>
-                                                    {currencies.map((currency, key) => (
-                                                        <option key={key} value={currency.name}>
-                                                            {currency.name}
-                                                        </option>
-                                                    ))}
-                                                </SelectFieldWrapper>
-                                                :
-                                                <BaseInputWrapper
-                                                    as="input"
-                                                    type="text"
-                                                    name={field}
-                                                    value={value || ''}
-                                                    onChange={(e) => handleNestedChange(section, index, e)}
-                                                />
-                                        }
+                                        ) : (field === "currencyName" && modalId === "funding") ? (
+                                            <SelectFieldWrapper
+                                                as="select"
+                                                name={field}
+                                                required
+                                                value={value || ""}
+                                                onChange={(e) => handleNestedChange(section, index, e)}
+                                            >
+                                                <option value="">Select a currency</option>
+                                                {currencies.map((currency, key) => (
+                                                    <option key={key} value={currency.name}>
+                                                        {currency.name}
+                                                    </option>
+                                                ))}
+                                            </SelectFieldWrapper>
+                                        ) : (isMembers && field === "email") ? (
+                                            <SelectFieldWrapper
+                                                as="select"
+                                                name={field}
+                                                required
+                                                value={value || ""}
+                                                onChange={(e) => handleNestedChange(section, index, e)}
+                                            >
+                                                <option value="">Select member</option>
+                                                {organizationMembers.map((member, key) => (
+                                                    <option key={key} value={member.email}>
+                                                        {member.email}
+                                                    </option>
+                                                ))}
+                                            </SelectFieldWrapper>
+                                        ) : (
+                                            // handles beneficiaries form
+                                            <BaseInputWrapper
+                                                as="input"
+                                                type="text"
+                                                name={field}
+                                                value={value || ''}
+                                                onChange={(e) => handleNestedChange(section, index, e)}
+                                            />
+                                        )}
                                     </React.Fragment>
                                 ))}
                                 <ProjectRegistrationBaseButton
