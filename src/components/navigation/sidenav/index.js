@@ -89,15 +89,13 @@ export const SideNav = () => {
         if (role === "SuperAdmin") {
             setOrganizationProjects(listOfProjectPerOrganization[key]);
             await updateListOfOrganizations();
-            setLoading(false);
         } else {
-            setOrganizationProjects(
-                listOfProjectPerOrganization[key]?.filter(
-                    (project) => project.organization === organization
-                )
+            const filteredProjects = listOfProjectPerOrganization[key]?.filter(
+                (project) => project.organization === organization
             );
-            setLoading(false);
+            setOrganizationProjects(filteredProjects);
         }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -180,7 +178,7 @@ export const SideNav = () => {
                                     {entity}
                                 </P>
                                 {/* Mirabel, add a drop down symbol here */}
-                                <Row classname="dotloaderItem">
+                                <Row className="dotloaderItem">
                                     {(loading && (entity === activeEntity || role !== "SuperAdmin")) ?
                                         <DotLoader
                                             size={20}
