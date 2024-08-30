@@ -89,15 +89,13 @@ export const SideNav = () => {
         if ([role === "SuperAdmin", "SubAdmin", "DemoUser"].includes(role)) {
             setOrganizationProjects(listOfProjectPerOrganization[key]);
             await updateListOfOrganizations();
-            setLoading(false);
         } else {
-            setOrganizationProjects(
-                listOfProjectPerOrganization[key]?.filter(
-                    (project) => project.organization === organization
-                )
+            const filteredProjects = listOfProjectPerOrganization[key]?.filter(
+                (project) => project.organization === organization
             );
-            setLoading(false);
+            setOrganizationProjects(filteredProjects);
         }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -171,7 +169,7 @@ export const SideNav = () => {
                                 onClick={getSideNavItems}
                             >
                                 <P
-                                    className= "entityItem"
+                                    className="entityItem"
                                     onClick={getSideNavItems}
                                     data-organization-key={
                                         [role === "SuperAdmin", "SubAdmin","DemoUser"].includes(role) ? entity : orgType
@@ -180,20 +178,19 @@ export const SideNav = () => {
                                     {entity}
                                 </P>
                                 {/* Mirabel, add a drop down symbol here */}
-                                <Row  classname= "dotloaderItem">
-                                    {loading && entity === activeEntity ?
+                                <Row className="dotloaderItem">
+                                    {(loading && (entity === activeEntity || role !== "SuperAdmin")) ?
                                         <DotLoader
                                             size={20}
                                             color="green"
                                             className="dotLoader"
                                         />
                                         :
-                                        <i class="fa-solid fa-caret-down" style={{
-                                            transform: 
+                                        <i className="fa-solid fa-caret-down" style={{
+                                            transform:
                                                 entity === activeEntity
-                                                ? "rotate(270deg)" : "rotate(0deg)",
-                                            
-                                         }}></i>
+                                                    ? "rotate(270deg)" : "rotate(0deg)",
+                                        }}></i>
                                     }
                                 </Row>
                             </Row>

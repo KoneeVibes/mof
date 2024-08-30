@@ -9,12 +9,16 @@ import { getDashboardMetrics } from "../../util/apis/getDashboardMetrics";
 import { SelectFieldWrapper } from '../../components/formfields/select/styled';
 import { Table } from '../../components/table';
 import { getExcelSheet } from '../../util/apis/getExcelSheet';
+import { getFilteredDashboard } from '../../util/apis/getFilteredDashboard';
+import { getAllOrganizations } from '../../util/apis/getAllOrganizations';
+import { flattenOrganizations } from '../../config/flattenOrganizations';
 
+export const status = ["Ongoing", "Closed", "Terminated"];
 export const DataOverviewArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
     const token = cookie.TOKEN;
-    const orgTypes = ["Ministry", "Department", "Agency"];
+    const orgTypes = ["Ministry", "Department", "Agency", "State"];
     const categories = [
         "Project Title",
         ...(cookie.USER.role === "SuperAdmin" ? ["MDA"] : []),
@@ -23,16 +27,32 @@ export const DataOverviewArea = () => {
         "Funding Balance",
         "Status"
     ];
-    let orgId = cookie.USER.role === "SuperAdmin" ? "" : cookie.USER.organizationId;
+    let orgId = cookie.USER.role === "SuperAdmin" ? "" : cookie.USER.organizationId
 
     const [selectedOrg, setSelectedOrg] = useState(orgTypes[0]);
     const [dashboardOverview, setDashboardOverview] = useState(null);
+    const [filteredDashboard, setFilteredDashboard] = useState(null);
+    // eslint-disable-next-line no-unused-vars
     const [projects, setProjects] = useState([]);
+    const [filteredProjects, setFilteredProjects] = useState([]);
+    const [organizations, setOrganizations] = useState([]);
+    const [formDetails, setFormDetails] = useState({
+        orgType: "",
+        status: "",
+    });
 
     const onSelectofOrgType = (e) => {
         const { value } = e.target;
         setSelectedOrg(value);
     }
+
+    const handleFilterValueChange = (e) => {
+        const { name, value } = e.target;
+        setFormDetails((prevDetails) => ({
+            ...prevDetails,
+            [name]: value,
+        }));
+    };
 
     const exportToExcel = async (e) => {
         e.preventDefault();
@@ -57,6 +77,17 @@ export const DataOverviewArea = () => {
     };
 
     useEffect(() => {
+        if (token) {
+            getAllOrganizations(token).then((listOfOrganizations) => {
+                const collapsedList = flattenOrganizations(listOfOrganizations);
+                setOrganizations(collapsedList.map((organizationInfo) => organizationInfo.name));
+            }).catch((error) => {
+                console.error("Failed to fetch organizations:", error);
+            });
+        }
+    }, [token]);
+
+    useEffect(() => {
         getDashboardMetrics(token, orgId)
             .then((data) => {
                 setDashboardOverview(data);
@@ -66,6 +97,17 @@ export const DataOverviewArea = () => {
                 console.error('Failed to fetch dashboard metrics:', err);
             })
     }, [orgId, token]);
+
+    useEffect(() => {
+        getFilteredDashboard(token, formDetails)
+            .then((data) => {
+                setFilteredDashboard(data);
+                setFilteredProjects(data.projectsAllocationMetrics);
+            })
+            .catch((err) => {
+                console.error('Failed to fetch dashboard metrics:', err);
+            })
+    }, [orgId, token, formDetails]);
 
     return (
         <DataOverviewAreaWrapper>
@@ -222,15 +264,18 @@ export const DataOverviewArea = () => {
                 <Table
                     location={"dataOverviewArea"}
                     categories={categories}
-                    rowItems={projects}
+                    rowItems={filteredProjects}
                     uniqueCurrencies={[...new Set(
-                        dashboardOverview?.projectsAllocationMetrics?.flatMap(project =>
+                        filteredDashboard?.projectsAllocationMetrics?.flatMap(project =>
                             project.totalAllocations.map(allocation => allocation.currencyName)
                         ) || []
                     )]}
                     role={cookie.USER.role}
                     onSelectOption={(_, __, e) => e.preventDefault()}
                     exportToExcel={exportToExcel}
+                    orgNames={organizations}
+                    status={status}
+                    handleFilterValueChange={handleFilterValueChange}
                 />
             </DataOverviewTableWrapper>
         </DataOverviewAreaWrapper>

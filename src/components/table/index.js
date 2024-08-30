@@ -1,6 +1,9 @@
 import React from "react";
 import { Td, Th } from "../typography/styled";
 import { BaseButton } from "../../components/buttons/index";
+import { SelectFieldWrapper } from "../formfields/select/styled";
+import { Row } from "../flex/styled";
+import { BaseInputWrapper } from "../formfields/input/styled";
 
 export const Table = ({
   categories,
@@ -12,20 +15,107 @@ export const Table = ({
   role,
   performAction,
   exportToExcel,
+  orgNames,
+  status,
+  postersId,
+  handleFilterValueChange
 }) => {
   return (
     <React.Fragment>
-      <div className="exportButton">
-        <BaseButton width={"fit-content"} onClick={exportToExcel}>
-          Export to Excel
-        </BaseButton>
-      </div>
+      <Row
+        style={{ justifyContent: "flex-end", gap: "0.5rem", marginBottom: "0.5rem" }}
+      >
+        <Row style={{ gap: "0.5rem" }}>
+          {location === "dataOverviewArea" && (
+            <React.Fragment>
+              {(role === "SuperAdmin") && (
+                <SelectFieldWrapper
+                  name="orgType"
+                  onChange={handleFilterValueChange}
+                >
+                  <option value="">Filter by MDA/State</option>
+                  {orgNames?.map((option, key) => (
+                    <option key={key} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </SelectFieldWrapper>
+              )}
+              <SelectFieldWrapper
+                name="status"
+                onChange={handleFilterValueChange}
+              >
+                <option value="">Filter by Status</option>
+                {status?.map((option, key) => (
+                  <option key={key} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </SelectFieldWrapper>
+            </React.Fragment>
+          )}
+          {location === "projectsTableArea" && (
+            <SelectFieldWrapper
+              name="status"
+              onChange={handleFilterValueChange}
+            >
+              <option value="">Filter by Status</option>
+              {status?.map((option, key) => (
+                <option key={key} value={option}>
+                  {option}
+                </option>
+              ))}
+            </SelectFieldWrapper>
+          )}
+          {location === "detailsArea" && (
+            <React.Fragment>
+              <BaseInputWrapper
+                type="date"
+                name="startDate"
+                onChange={handleFilterValueChange}
+              />
+              {/* <BaseInputWrapper
+                type="date"
+                name="endDate"
+                onChange={handleFilterValueChange}
+              /> */}
+              <SelectFieldWrapper
+                name="posterEmail"
+                onChange={handleFilterValueChange}
+              >
+                <option value="">Filter by Disburser</option>
+                {postersId?.map((option, key) => (
+                  <option key={key} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </SelectFieldWrapper>
+              <SelectFieldWrapper
+                name="status"
+                onChange={handleFilterValueChange}
+              >
+                <option value="">Filter by Status</option>
+                {status?.map((option, key) => (
+                  <option key={key} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </SelectFieldWrapper>
+            </React.Fragment>
+          )}
+        </Row>
+        <div className="exportButton">
+          <BaseButton width={"fit-content"} onClick={exportToExcel}>
+            Export to Excel
+          </BaseButton>
+        </div>
+      </Row>
       <div className="tableWrapper">
         <table>
           <thead>
             {location === "dataOverviewArea" ||
-            location === "projectsTableArea" ||
-            location === "archivesArea" ? (
+              location === "projectsTableArea" ||
+              location === "archivesArea" ? (
               <React.Fragment>
                 <tr>
                   {categories?.map((category, index) => (
@@ -33,33 +123,33 @@ export const Table = ({
                       key={index}
                       colSpan={
                         category === "Fundings" ||
-                        category === "Allocation" ||
-                        category === "Funding Balance" ||
-                        category === "Disbursement"
+                          category === "Allocation" ||
+                          category === "Funding Balance" ||
+                          category === "Disbursement"
                           ? uniqueCurrencies?.length
                           : 1
                       }
                       style={{
                         textAlign:
                           category === "Fundings" ||
-                          category === "Allocation" ||
-                          category === "Funding Balance" ||
-                          category === "Disbursement"
+                            category === "Allocation" ||
+                            category === "Funding Balance" ||
+                            category === "Disbursement"
                             ? "center"
                             : "left",
                         border: "1px solid rgba(33, 63, 125, 0.10)",
                         borderLeft:
                           category === "Fundings" ||
-                          category === "Allocation" ||
-                          category === "Funding Balance" ||
-                          category === "Disbursement"
+                            category === "Allocation" ||
+                            category === "Funding Balance" ||
+                            category === "Disbursement"
                             ? "5px solid grey"
                             : "1px solid rgba(33, 63, 125, 0.10)",
                         borderRight:
                           category === "Fundings" ||
-                          category === "Allocation" ||
-                          category === "Funding Balance" ||
-                          category === "Disbursement"
+                            category === "Allocation" ||
+                            category === "Funding Balance" ||
+                            category === "Disbursement"
                             ? "5px solid grey"
                             : "1px solid rgba(33, 63, 125, 0.10)",
                       }}
@@ -70,7 +160,7 @@ export const Table = ({
                 </tr>
                 <tr>
                   {location === "dataOverviewArea" ||
-                  location === "archivesArea" ? (
+                    location === "archivesArea" ? (
                     <React.Fragment>
                       {/* Empty cell for "Project Title" and "MDA" */}
                       <Th colSpan={role === "SuperAdmin" ? 2 : 1}></Th>
@@ -163,10 +253,11 @@ export const Table = ({
                         )}
                       </Td>
                     )}
+                    <Td>{rowItem?.attachments[0] || ""}</Td>
                     <Td>{rowItem?.disbursementStatus || ""}</Td>
                     {role === "Individual" && (
                       <Td
-                        style={{ color: "grey" }}
+                        style={{ color: "red" }}
                         onClick={(e) =>
                           performAction(e, rowItem.disbursementId)
                         }
@@ -200,158 +291,158 @@ export const Table = ({
                 )}
                 {(location === "dataOverviewArea" ||
                   location === "archivesArea") && (
-                  <React.Fragment>
-                    {role === "SuperAdmin" && <Td>{rowItem.organization}</Td>}
-                    {rowItem.totalAllocations.map((allocation, index) => (
-                      <Td
-                        key={index}
-                        style={{
-                          textAlign: "center",
-                          borderLeft:
-                            index === 0
-                              ? "5px solid grey"
-                              : "1px solid rgba(33, 63, 125, 0.10)",
-                          borderRight:
-                            index === rowItem.totalAllocations.length - 1
-                              ? "5px solid grey"
-                              : "1px solid rgba(33, 63, 125, 0.10)",
-                        }}
-                      >
-                        {new Intl.NumberFormat().format(
-                          allocation.amountAllocated
-                        ) || ""}
-                      </Td>
-                    ))}
-                    {rowItem.totalAllocations.map((allocation, index) => (
-                      <Td key={index} style={{ textAlign: "center" }}>
-                        {new Intl.NumberFormat().format(
-                          allocation.amountDisbursed
-                        ) || ""}
-                      </Td>
-                    ))}
-                    {rowItem.totalAllocations.map((allocation, index) => (
-                      <Td
-                        key={index}
-                        style={{
-                          textAlign: "center",
-                          borderLeft:
-                            index === 0
-                              ? "5px solid grey"
-                              : "1px solid rgba(33, 63, 125, 0.10)",
-                          borderRight:
-                            index === rowItem.totalAllocations.length - 1
-                              ? "5px solid grey"
-                              : "1px solid rgba(33, 63, 125, 0.10)",
-                        }}
-                      >
-                        {new Intl.NumberFormat().format(allocation.balance) ||
-                          ""}
-                      </Td>
-                    ))}
-                    <Td>{rowItem.status || ""}</Td>
-                  </React.Fragment>
-                )}
+                    <React.Fragment>
+                      {role === "SuperAdmin" && <Td>{rowItem.organization}</Td>}
+                      {rowItem.totalAllocations.map((allocation, index) => (
+                        <Td
+                          key={index}
+                          style={{
+                            textAlign: "center",
+                            borderLeft:
+                              index === 0
+                                ? "5px solid grey"
+                                : "1px solid rgba(33, 63, 125, 0.10)",
+                            borderRight:
+                              index === rowItem.totalAllocations.length - 1
+                                ? "5px solid grey"
+                                : "1px solid rgba(33, 63, 125, 0.10)",
+                          }}
+                        >
+                          {new Intl.NumberFormat().format(
+                            allocation.amountAllocated
+                          ) || ""}
+                        </Td>
+                      ))}
+                      {rowItem.totalAllocations.map((allocation, index) => (
+                        <Td key={index} style={{ textAlign: "center" }}>
+                          {new Intl.NumberFormat().format(
+                            allocation.amountDisbursed
+                          ) || ""}
+                        </Td>
+                      ))}
+                      {rowItem.totalAllocations.map((allocation, index) => (
+                        <Td
+                          key={index}
+                          style={{
+                            textAlign: "center",
+                            borderLeft:
+                              index === 0
+                                ? "5px solid grey"
+                                : "1px solid rgba(33, 63, 125, 0.10)",
+                            borderRight:
+                              index === rowItem.totalAllocations.length - 1
+                                ? "5px solid grey"
+                                : "1px solid rgba(33, 63, 125, 0.10)",
+                          }}
+                        >
+                          {new Intl.NumberFormat().format(allocation.balance) ||
+                            ""}
+                        </Td>
+                      ))}
+                      <Td>{rowItem.status || ""}</Td>
+                    </React.Fragment>
+                  )}
               </tr>
             ))}
             {(location === "dataOverviewArea" ||
               location === "archivesArea") && (
-              <tr>
-                <Td style={{ fontWeight: 600 }}>Total</Td>
-                {/* Empty cell for organization name */}
-                {role === "SuperAdmin" && <Td></Td>}
-                {/* Sum total allocation for each unique currency */}
-                {uniqueCurrencies?.map((uniqueCurrency, index) => {
-                  // Initialize a sum variable
-                  let currencyTotal = 0;
-                  // Loop through rowItems and sum the totalAllocations for the current uniqueCurrency
-                  rowItems?.forEach((rowItem) => {
-                    rowItem?.totalAllocations?.forEach((totalAllocation) => {
-                      if (totalAllocation.currencyName === uniqueCurrency) {
-                        currencyTotal += totalAllocation.amountAllocated;
-                      }
+                <tr>
+                  <Td style={{ fontWeight: 600 }}>Total</Td>
+                  {/* Empty cell for organization name */}
+                  {role === "SuperAdmin" && <Td></Td>}
+                  {/* Sum total allocation for each unique currency */}
+                  {uniqueCurrencies?.map((uniqueCurrency, index) => {
+                    // Initialize a sum variable
+                    let currencyTotal = 0;
+                    // Loop through rowItems and sum the totalAllocations for the current uniqueCurrency
+                    rowItems?.forEach((rowItem) => {
+                      rowItem?.totalAllocations?.forEach((totalAllocation) => {
+                        if (totalAllocation.currencyName === uniqueCurrency) {
+                          currencyTotal += totalAllocation.amountAllocated;
+                        }
+                      });
                     });
-                  });
-                  // Return the <Td> element with the summed total for the currency
-                  return (
-                    <Td
-                      key={uniqueCurrency}
-                      style={{
-                        textAlign: "center",
-                        fontWeight: 600,
-                        borderLeft:
-                          index === 0
-                            ? "5px solid grey"
-                            : "1px solid rgba(33, 63, 125, 0.10)",
-                      }}
-                    >
-                      {new Intl.NumberFormat().format(currencyTotal)}
-                    </Td>
-                  );
-                })}
-                {/* Sum total disbursements for each unique currency */}
-                {uniqueCurrencies?.map((uniqueCurrency, index) => {
-                  // Initialize a sum variable
-                  let currencyTotal = 0;
-                  // Loop through rowItems and sum the disbursements for the current uniqueCurrency
-                  rowItems?.forEach((rowItem) => {
-                    rowItem?.totalAllocations.forEach((totalAllocation) => {
-                      if (totalAllocation.currencyName === uniqueCurrency) {
-                        currencyTotal += totalAllocation.amountDisbursed;
-                      }
+                    // Return the <Td> element with the summed total for the currency
+                    return (
+                      <Td
+                        key={uniqueCurrency}
+                        style={{
+                          textAlign: "center",
+                          fontWeight: 600,
+                          borderLeft:
+                            index === 0
+                              ? "5px solid grey"
+                              : "1px solid rgba(33, 63, 125, 0.10)",
+                        }}
+                      >
+                        {new Intl.NumberFormat().format(currencyTotal)}
+                      </Td>
+                    );
+                  })}
+                  {/* Sum total disbursements for each unique currency */}
+                  {uniqueCurrencies?.map((uniqueCurrency, index) => {
+                    // Initialize a sum variable
+                    let currencyTotal = 0;
+                    // Loop through rowItems and sum the disbursements for the current uniqueCurrency
+                    rowItems?.forEach((rowItem) => {
+                      rowItem?.totalAllocations.forEach((totalAllocation) => {
+                        if (totalAllocation.currencyName === uniqueCurrency) {
+                          currencyTotal += totalAllocation.amountDisbursed;
+                        }
+                      });
                     });
-                  });
-                  // Return the <Td> element with the summed total for the currency
-                  return (
-                    <Td
-                      key={uniqueCurrency}
-                      style={{
-                        textAlign: "center",
-                        fontWeight: 600,
-                        borderLeft:
-                          index === 0
-                            ? "5px solid grey"
-                            : "1px solid rgba(33, 63, 125, 0.10)",
-                      }}
-                    >
-                      {new Intl.NumberFormat().format(currencyTotal)}
-                    </Td>
-                  );
-                })}
-                {/* Sum total balance for each unique currency */}
-                {uniqueCurrencies?.map((uniqueCurrency, index) => {
-                  // Initialize a sum variable
-                  let currencyTotal = 0;
-                  // Loop through rowItems and sum the balance for the current uniqueCurrency
-                  rowItems?.forEach((rowItem) => {
-                    rowItem?.totalAllocations.forEach((totalAllocation) => {
-                      if (totalAllocation.currencyName === uniqueCurrency) {
-                        currencyTotal += totalAllocation.balance;
-                      }
+                    // Return the <Td> element with the summed total for the currency
+                    return (
+                      <Td
+                        key={uniqueCurrency}
+                        style={{
+                          textAlign: "center",
+                          fontWeight: 600,
+                          borderLeft:
+                            index === 0
+                              ? "5px solid grey"
+                              : "1px solid rgba(33, 63, 125, 0.10)",
+                        }}
+                      >
+                        {new Intl.NumberFormat().format(currencyTotal)}
+                      </Td>
+                    );
+                  })}
+                  {/* Sum total balance for each unique currency */}
+                  {uniqueCurrencies?.map((uniqueCurrency, index) => {
+                    // Initialize a sum variable
+                    let currencyTotal = 0;
+                    // Loop through rowItems and sum the balance for the current uniqueCurrency
+                    rowItems?.forEach((rowItem) => {
+                      rowItem?.totalAllocations.forEach((totalAllocation) => {
+                        if (totalAllocation.currencyName === uniqueCurrency) {
+                          currencyTotal += totalAllocation.balance;
+                        }
+                      });
                     });
-                  });
-                  // Return the <Td> element with the summed total for the currency
-                  return (
-                    <Td
-                      key={uniqueCurrency}
-                      style={{
-                        textAlign: "center",
-                        fontWeight: 600,
-                        borderLeft:
-                          index === 0
-                            ? "5px solid grey"
-                            : " 1px solid rgba(33, 63, 125, 0.10)",
-                        borderRight:
-                          index === uniqueCurrencies.length - 1
-                            ? "5px solid grey"
-                            : "1px solid rgba(33, 63, 125, 0.10) ",
-                      }}
-                    >
-                      {new Intl.NumberFormat().format(currencyTotal)}
-                    </Td>
-                  );
-                })}
-              </tr>
-            )}
+                    // Return the <Td> element with the summed total for the currency
+                    return (
+                      <Td
+                        key={uniqueCurrency}
+                        style={{
+                          textAlign: "center",
+                          fontWeight: 600,
+                          borderLeft:
+                            index === 0
+                              ? "5px solid grey"
+                              : " 1px solid rgba(33, 63, 125, 0.10)",
+                          borderRight:
+                            index === uniqueCurrencies.length - 1
+                              ? "5px solid grey"
+                              : "1px solid rgba(33, 63, 125, 0.10) ",
+                        }}
+                      >
+                        {new Intl.NumberFormat().format(currencyTotal)}
+                      </Td>
+                    );
+                  })}
+                </tr>
+              )}
           </tbody>
         </table>
       </div>

@@ -1,12 +1,13 @@
+import { useEffect, useState } from "react";
+import Cookies from "universal-cookie";
 import { Layout } from "../layout";
 import { EntitiesAreaWrapper, EntitiesTableWrapper } from "./styled";
 import { Jumbotron } from "../../components/jumbotron/index";
 import { useNavigate, useParams } from "react-router-dom";
 import { Table } from "../../components/table";
-import { useEffect, useState } from "react";
-import { getProjectsPerOrganization } from "../../util/apis/getProjectsPerOrganization";
-import Cookies from "universal-cookie";
 import { getExcelSheet } from "../../util/apis/getExcelSheet";
+import { status } from "../dataoverviewarea"
+import { getFilteredProjectsPerOrganization } from "../../util/apis/getFilteredProjectsPerOrganization";
 
 export const ProjectsTableArea = () => {
     const cookies = new Cookies();
@@ -18,6 +19,10 @@ export const ProjectsTableArea = () => {
     const [projects, setProjects] = useState([]);
     // const [columns, setColumns] = useState(categories);
     const [uniqueCurrencies, setUniqueCurrencies] = useState([]);
+    const [formDetails, setFormDetails] = useState({
+        orgType: "",
+        status: "",
+    });
 
     const token = cookie.TOKEN;
     const { role, organization, organizationId } = cookie.USER || {};
@@ -44,13 +49,21 @@ export const ProjectsTableArea = () => {
         }
     };
 
+    const handleFilterValueChange = (e) => {
+        const { name, value } = e.target;
+        setFormDetails((prevDetails) => ({
+            ...prevDetails,
+            [name]: value,
+        }));
+    };
+
     useEffect(() => {
         if (token && entityId) {
-            getProjectsPerOrganization(token, entityId)
+            getFilteredProjectsPerOrganization(token, entityId, formDetails)
                 .then((response) => {
                     setProjects(response);
 
-                    const fundingSources = projects.flatMap(project => project.fundings);
+                    const fundingSources = response.flatMap(project => project.fundings);
                     const currencyNames = [...new Set(fundingSources.map(funding => funding.currencyName))];
                     setUniqueCurrencies(currencyNames);
 
@@ -59,7 +72,7 @@ export const ProjectsTableArea = () => {
                 })
                 .catch((err) => console.error("Failed to fetch projects:", err));
         }
-    }, [token, entityId, projects]);
+    }, [token, entityId, formDetails]);
 
     useEffect(() => {
         if ((role !== "SuperAdmin") && (entity !== organization.replace(/\s+/g, '').toLowerCase() || entityId !== organizationId)) {
@@ -84,6 +97,8 @@ export const ProjectsTableArea = () => {
                         uniqueCurrencies={uniqueCurrencies}
                         location={"projectsTableArea"}
                         exportToExcel={exportToExcel}
+                        status={status}
+                        handleFilterValueChange={handleFilterValueChange}
                     />
                 </EntitiesTableWrapper>
             </EntitiesAreaWrapper>
