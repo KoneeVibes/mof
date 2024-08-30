@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Row } from "../../components/flex/styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { BaseButton } from "../../components/buttons/styled";
+import { Colors } from "chart.js";
 
 export const ProjectRegistrationAreaWrapper = styled.div(() => {
   return `
@@ -32,6 +33,7 @@ export const ProjectRegistrationBaseInput = styled(BaseInputWrapper)(
       padding: `calc(${cardPadding}/2) calc(${cardPadding})`,
       boxSizing: "border-box",
       display: "flex",
+      flexWrap: "wrap",
     };
   }
 );
@@ -39,14 +41,15 @@ export const ProjectRegistrationBaseInput = styled(BaseInputWrapper)(
 export const ProjectRegistrationBaseInputWrapper = styled(Row)(
   ({ flexGap = "var(--flexGap)" }) => {
     return {
+      flexWrap: "wrap",
       "@media screen and (max-width: 425px)": {
-        display: "inline-flex",
+        display: "flex",
         flexDirection: "column",
         gap: `calc(${flexGap}/2)`,
-        flexWrap: "wrap",
+        
       },
       "@media screen and (max-width: 1280px)": {
-        flexWrap: "wrap",
+        flexDirection: "column",
       },
     };
   }

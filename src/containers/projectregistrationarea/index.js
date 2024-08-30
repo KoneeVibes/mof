@@ -25,6 +25,7 @@ export const ProjectRegistrationArea = () => {
   const cookie = cookies.getAll();
   const token = cookies.get("TOKEN");
   const { organizationId } = cookie.USER;
+  const creditTypes = ["Loan", "Grant", "Loan/Grant"];
 
   const navigate = useNavigate();
   const [error, setError] = useState(null);
@@ -127,23 +128,23 @@ export const ProjectRegistrationArea = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formDetails)
-    // setError(null);
-    // setLoading(true);
-    // try {
-    //   const response = await addProject(token, formDetails);
-    //   if (response.status === "Success") {
-    //     setLoading(false);
-    //     navigate("/dashboard");
-    //   } else {
-    //     setLoading(false);
-    //     setError("Submission failed. Please check your inputs and try again.");
-    //   }
-    // } catch (error) {
-    //   setLoading(false);
-    //   setError(`Submission failed. ${error.message}`);
-    //   console.error("Submission failed:", error);
-    // }
+    console.log(formDetails);
+    setError(null);
+    setLoading(true);
+    try {
+      const response = await addProject(token, formDetails);
+      if (response.status === "Success") {
+        setLoading(false);
+        navigate("/dashboard");
+      } else {
+        setLoading(false);
+        setError("Submission failed. Please check your inputs and try again.");
+      }
+    } catch (error) {
+      setLoading(false);
+      setError(`Submission failed. ${error.message}`);
+      console.error("Submission failed:", error);
+    }
   };
 
   return (
@@ -198,92 +199,84 @@ export const ProjectRegistrationArea = () => {
 
           <Label>Funding Sources</Label>
           {formDetails?.fundingSources?.map((source, index) => (
-              <ProjectRegistrationBaseInputWrapper key={index}>
-                <SelectFieldWrapper
-                  as="select"
-                  name="funderName"
-                  required
-                  value={source.funderName}
-                  onChange={(e) =>
-                    handleNestedChange("fundingSources", index, e)
-                  }
-                >
-                  <option value="">Select a funding source</option>
-                  {fundingSources.map((fundingSource, key) => (
-                    <option key={key} value={fundingSource.name}>
-                      {fundingSource.name}
+            <ProjectRegistrationBaseInputWrapper key={index}>
+              <SelectFieldWrapper
+                as="select"
+                name="funderName"
+                required
+                value={source.funderName}
+                onChange={(e) => handleNestedChange("fundingSources", index, e)}
+              >
+                <option value="">Select a funding source</option>
+                {fundingSources.map((fundingSource, key) => (
+                  <option key={key} value={fundingSource.name}>
+                    {fundingSource.name}
+                  </option>
+                ))}
+              </SelectFieldWrapper>
+              <ProjectRegistrationBaseInput
+                type="number"
+                name="amount"
+                placeholder="Amount"
+                required
+                value={source.amount}
+                onChange={(e) => handleNestedChange("fundingSources", index, e)}
+              />
+              <SelectFieldWrapper
+                as="select"
+                name="currencyName"
+                required
+                value={source.currencyName}
+                onChange={(e) => handleNestedChange("fundingSources", index, e)}
+              >
+                <option value="">Select a currency</option>
+                {currencies.map((currency, key) => (
+                  <option key={key} value={currency.name}>
+                    {currency.name}
+                  </option>
+                ))}
+              </SelectFieldWrapper>
+              <ProjectRegistrationBaseInput
+                type="string"
+                name="loanNo"
+                placeholder=" Enter loan number"
+                required
+                value={source.loanNumber}
+                onChange={(e) => handleNestedChange("fundingSources", index, e)}
+              />
+              <ProjectRegistrationBaseInput
+                type="string"
+                name="creditNo"
+                placeholder="Enter credit number"
+                required
+                value={source.creditNumber}
+                onChange={(e) => handleNestedChange("fundingSources", index, e)}
+              />
+              <SelectFieldWrapper
+                as="select"
+                name="creditType"
+                required
+                value={source.creditType}
+                onChange={(e) => handleNestedChange("fundingSources", index, e)}
+              >
+                <option value="">Select a credit type</option>
+                {creditTypes.map((creditType, index) => {
+                  return (
+                    <option key={index} value={creditType}>
+                      {creditType}
                     </option>
-                  ))}
-                </SelectFieldWrapper>
-                <ProjectRegistrationBaseInput
-                  type="number"
-                  name="amount"
-                  placeholder="Amount"
-                  required
-                  value={source.amount}
-                  onChange={(e) =>
-                    handleNestedChange("fundingSources", index, e)
-                  }
-                />
-                <SelectFieldWrapper
-                  as="select"
-                  name="currencyName"
-                  required
-                  value={source.currencyName}
-                  onChange={(e) =>
-                    handleNestedChange("fundingSources", index, e)
-                  }
-                >
-                  <option value="">Select a currency</option>
-                  {currencies.map((currency, key) => (
-                    <option key={key} value={currency.name}>
-                      {currency.name}
-                    </option>
-                  ))}
-                </SelectFieldWrapper>
-                <ProjectRegistrationBaseInput
-                  type="string"
-                  name="loanNo"
-                  placeholder=" Enter loan number"
-                  required
-                  value={source.loanNumber}
-                  onChange={(e) =>
-                    handleNestedChange("fundingSources", index, e)
-                  }
-                />
-                <ProjectRegistrationBaseInput
-                  type="string"
-                  name="creditNo"
-                  placeholder="Enter credit number"
-                  required
-                  value={source.creditNumber}
-                  onChange={(e) =>
-                    handleNestedChange("fundingSources", index, e)
-                  }
-                />
-                <SelectFieldWrapper
-                  as="select"
-                  type="creditType"
-                  required
-                  value={source.funderName}
-                  onChange={(e) =>
-                    handleNestedChange("fundingSources", index, e)
-                  }
-                >
-                  <option value="">Select a credit type</option>
-                  <option>Loan</option>
-                  <option>Grant</option>
-                  <option>Loan/Grant</option>
-                </SelectFieldWrapper>
+                  );
+                })}
+              </SelectFieldWrapper>
 
-                <ProjectRegistrationBaseButton
-                  type="button"
-                  onClick={() => handleRemoveEntry("fundingSources", index)}
-                >
-                  -
-                </ProjectRegistrationBaseButton>
-              </ProjectRegistrationBaseInputWrapper>
-              ))}
+              <ProjectRegistrationBaseButton
+                type="button"
+                onClick={() => handleRemoveEntry("fundingSources", index)}
+              >
+                -
+              </ProjectRegistrationBaseButton>
+            </ProjectRegistrationBaseInputWrapper>
+          ))}
           <ProjectRegistrationBaseButton
             type="button"
             onClick={() => handleAddNewEntry("fundingSources")}
