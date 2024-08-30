@@ -36,7 +36,8 @@ export const ProjectRegistrationArea = () => {
     const [formDetails, setFormDetails] = useState({
         projectTitle: "",
         description: "",
-        dateEffective: "",
+        startDate: "",
+        endDate: "",
         governmentTier: "",
         fundingSources: [{ funderName: "", amount: 0, currencyName: "" }],
         projectMembers: [{ email: "" }],
@@ -159,13 +160,20 @@ export const ProjectRegistrationArea = () => {
                         onChange={handleChange}
                     />
 
-                    <Label htmlFor="">Effective Date and Tier of Government</Label>
+                    <Label htmlFor="">Effective Start and End Date and Tier of Government</Label>
                     <ProjectRegistrationBaseInputWrapper>
                         <BaseInputWrapper
                             as="input"
                             type="date"
-                            name="dateEffective"
-                            placeholder="Effective Date"
+                            name="startDate"
+                            required
+                            value={formDetails.dateEffective}
+                            onChange={handleChange}
+                        />
+                        <BaseInputWrapper
+                            as="input"
+                            type="date"
+                            name="endDate"
                             required
                             value={formDetails.dateEffective}
                             onChange={handleChange}
