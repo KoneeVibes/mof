@@ -46,7 +46,6 @@ export const ProjectRegistrationBaseInputWrapper = styled(Row)(
         display: "flex",
         flexDirection: "column",
         gap: `calc(${flexGap}/2)`,
-        
       },
       "@media screen and (max-width: 1280px)": {
         flexDirection: "column",
