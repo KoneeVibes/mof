@@ -199,6 +199,7 @@ export const ProjectDetailsArea = () => {
     const remark = e.target.elements.remark.value; // Get the remark from form field
     try {
       const response = await postRemark(token, projectId, remark);
+
       if (response.status === "Success") {
         setLatestRemark(remark); // Update the latestRemark state
         setError("Remark successful");
