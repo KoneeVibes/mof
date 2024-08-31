@@ -37,8 +37,9 @@ export const DataOverviewArea = () => {
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [organizations, setOrganizations] = useState([]);
     const [formDetails, setFormDetails] = useState({
-        orgType: "",
+        orgName: "",
         status: "",
+        collection: "",
     });
 
     const onSelectofOrgType = (e) => {
@@ -274,6 +275,7 @@ export const DataOverviewArea = () => {
                     onSelectOption={(_, __, e) => e.preventDefault()}
                     exportToExcel={exportToExcel}
                     orgNames={organizations}
+                    collections={["Hope", "Stream"]}
                     status={status}
                     handleFilterValueChange={handleFilterValueChange}
                 />

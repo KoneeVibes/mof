@@ -36,6 +36,9 @@ export const Avatar = ({ location }) => {
             case "onboardCurrency":
                 navigate(`/registration/${userId}/currency`);
                 break;
+            case "addCollection":
+                navigate(`/registration/${userId}/collection`);
+                break;
             default:
                 break;
         }
@@ -63,6 +66,7 @@ export const Avatar = ({ location }) => {
                     <React.Fragment>
                         <P onClick={(e) => handleRedirect(e, "onboardSubAdmin")}>Add SubAdmin</P>
                         <P onClick={(e) => handleRedirect(e, "onboardOrganization")}>Add Organization</P>
+                        <P onClick={(e) => handleRedirect(e, "addCollection")}>Add New Collection</P>
                     </React.Fragment>
                 )}
                 {(role === "SubAdmin") && (

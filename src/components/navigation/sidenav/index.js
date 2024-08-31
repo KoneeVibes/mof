@@ -37,7 +37,7 @@ export const SideNav = () => {
     const [loading, setLoading] = useState(false);
 
     const { role, orgType, organizationId, organization, userId } = cookie.USER || {};
-    const entities = [(role === "SuperAdmin", "Subadmin", "DemoUser")].includes(role) ? Object.keys(listOfProjectPerOrganization) : ["Projects"];
+    const entities = (role === "SuperAdmin") ? Object.keys(listOfProjectPerOrganization) : ["Projects"];
 
     const navigateFromSideBar = (organization, id, e) => {
         setIsMenuOpen(false);
@@ -86,7 +86,7 @@ export const SideNav = () => {
         // update organizationProjects state with different projects array for
         // a superadmin (an array of all projects per orgType) or subadmin (an array of
         // all projects in the logged in user's organization) respectively.
-        if ([role === "SuperAdmin", "SubAdmin", "DemoUser"].includes(role)) {
+        if (role === "SuperAdmin") {
             setOrganizationProjects(listOfProjectPerOrganization[key]);
             await updateListOfOrganizations();
         } else {
@@ -165,14 +165,14 @@ export const SideNav = () => {
                         <div key={key}>
                             <Row
                                 className="navItem"
-                                data-organization-key={[role === "SuperAdmin", "SubAdmin", "DemoUser"].includes(role) ? entity : orgType}
+                                data-organization-key={role === "SuperAdmin" ? entity : orgType}
                                 onClick={getSideNavItems}
                             >
                                 <P
                                     className="entityItem"
                                     onClick={getSideNavItems}
                                     data-organization-key={
-                                        [role === "SuperAdmin", "SubAdmin","DemoUser"].includes(role) ? entity : orgType
+                                        role === "SuperAdmin" ? entity : orgType
                                     }
                                 >
                                     {entity}
@@ -196,7 +196,7 @@ export const SideNav = () => {
                             </Row>
                             {(activeEntity === entity || entities.length === 1) && (
                                 <ul>
-                                    {[role === "SuperAdmin", "SubAdmin", "DemoUser"].includes(role)
+                                    {role === "SuperAdmin"
                                         ? organizations?.map((organization, k) => (
                                             <Li
                                                 key={k}

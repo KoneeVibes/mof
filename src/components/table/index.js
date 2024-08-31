@@ -16,6 +16,7 @@ export const Table = ({
   performAction,
   exportToExcel,
   orgNames,
+  collections,
   status,
   postersId,
   handleFilterValueChange
@@ -30,7 +31,7 @@ export const Table = ({
             <React.Fragment>
               {(role === "SuperAdmin") && (
                 <SelectFieldWrapper
-                  name="orgType"
+                  name="orgName"
                   onChange={handleFilterValueChange}
                 >
                   <option value="">Filter by MDA/State</option>
@@ -41,6 +42,17 @@ export const Table = ({
                   ))}
                 </SelectFieldWrapper>
               )}
+              <SelectFieldWrapper
+                name="collection"
+                onChange={handleFilterValueChange}
+              >
+                <option value="">Filter by Collection</option>
+                {collections?.map((collection, key) => (
+                  <option key={key} value={collection}>
+                    {collection}
+                  </option>
+                ))}
+              </SelectFieldWrapper>
               <SelectFieldWrapper
                 name="status"
                 onChange={handleFilterValueChange}

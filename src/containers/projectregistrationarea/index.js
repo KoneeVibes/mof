@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 import { Layout } from "../layout";
 import {
@@ -34,16 +34,18 @@ export const ProjectRegistrationArea = () => {
   const [fundingSources, setFundingSources] = useState([]);
   const [members, setMembers] = useState([]);
 
-    const [formDetails, setFormDetails] = useState({
-        projectTitle: "",
-        description: "",
-        startDate: "",
-        endDate: "",
-        governmentTier: "",
-        fundingSources: [{ funderName: "", amount: 0, currencyName: "" }],
-        projectMembers: [{ email: "" }],
-        beneficiaries: [{ name: "" }]
-    });
+  const [formDetails, setFormDetails] = useState({
+    collection: "",
+    projectTitle: "",
+    description: "",
+    dateEffective: "",
+    startDate: "",
+    endDate: "",
+    governmentTier: "",
+    fundingSources: [{ funderName: "", amount: 0, currencyName: "" }],
+    projectMembers: [{ email: "" }],
+    beneficiaries: [{ name: "" }]
+  });
 
   useEffect(() => {
     getFundingSources(token)
@@ -97,10 +99,10 @@ export const ProjectRegistrationArea = () => {
       section === "fundingSources"
         ? { funderName: "", amount: 0, currencyName: "" }
         : section === "projectMembers"
-        ? { email: "" }
-        : section === "beneficiaries"
-        ? { name: "" }
-        : null;
+          ? { email: "" }
+          : section === "beneficiaries"
+            ? { name: "" }
+            : null;
 
     if (newItem) {
       setFormDetails((prevDetails) => ({
@@ -145,6 +147,20 @@ export const ProjectRegistrationArea = () => {
         <H2>PROJECT DETAILS</H2>
         <P>PLEASE ENTER THE PROJECT INFORMATION</P>
         <form onSubmit={handleSubmit}>
+          <Label htmlFor="projectCollection">Project Collection</Label>
+          <SelectFieldWrapper
+            as="select"
+            name="collection"
+            value={formDetails.collection}
+            onChange={handleChange}
+          >
+            <option value="">Select a collection</option>
+            {["HOPE", "GRACE"].map((collection, key) => (
+              <option key={key} value={collection}>
+                {collection}
+              </option>
+            ))}
+          </SelectFieldWrapper>
           <Label htmlFor="projectTitle">Project Title</Label>
           <BaseInputWrapper
             as="input"
@@ -161,44 +177,66 @@ export const ProjectRegistrationArea = () => {
             value={formDetails.description}
             onChange={handleChange}
           />
-
-                    <Label htmlFor="">Effective Start and End Date and Tier of Government</Label>
-                    <ProjectRegistrationBaseInputWrapper>
-                        <BaseInputWrapper
-                            as="input"
-                            type="date"
-                            name="startDate"
-                            required
-                            value={formDetails.startDate}
-                            onChange={handleChange}
-                        />
-                        <BaseInputWrapper
-                            as="input"
-                            type="date"
-                            name="endDate"
-                            required
-                            value={formDetails.endDate}
-                            onChange={handleChange}
-                        />
-                        <SelectFieldWrapper
-                            as="select"
-                            name="governmentTier"
-                            required
-                            value={formDetails.governmentTier}
-                            onChange={handleChange}
-                        >
-                            <option value="">Select a government tier</option>
-                            {tiersOfGovernment.map((tier, key) => (
-                                <option key={key} value={tier}>
-                                    {tier}
-                                </option>
-                            ))}
-                        </SelectFieldWrapper>
-                    </ProjectRegistrationBaseInputWrapper>
-
+          <ProjectRegistrationBaseInputWrapper
+            className="project-dates"
+          >
+            <ProjectRegistrationBaseInputWrapper
+              className="row-date"
+            >
+              <Label htmlFor="dateEffective">Effective Start Date</Label>
+              <BaseInputWrapper
+                as="input"
+                type="date"
+                name="dateEffective"
+                required
+                value={formDetails.dateEffective}
+                onChange={handleChange}
+              />
+            </ProjectRegistrationBaseInputWrapper>
+            <ProjectRegistrationBaseInputWrapper
+              className="row-date"
+            >
+              <Label htmlFor="startDate">Start Date</Label>
+              <BaseInputWrapper
+                as="input"
+                type="date"
+                name="startDate"
+                required
+                value={formDetails.startDate}
+                onChange={handleChange}
+              />
+            </ProjectRegistrationBaseInputWrapper>
+            <ProjectRegistrationBaseInputWrapper
+              className="row-date"
+            >
+              <Label htmlFor="endDate">End Date</Label>
+              <BaseInputWrapper
+                as="input"
+                type="date"
+                name="endDate"
+                required
+                value={formDetails.endDate}
+                onChange={handleChange}
+              />
+            </ProjectRegistrationBaseInputWrapper>
+            <SelectFieldWrapper
+              as="select"
+              name="governmentTier"
+              required
+              value={formDetails.governmentTier}
+              onChange={handleChange}
+            >
+              <option value="">Select a government tier</option>
+              {tiersOfGovernment.map((tier, key) => (
+                <option key={key} value={tier}>
+                  {tier}
+                </option>
+              ))}
+            </SelectFieldWrapper>
+          </ProjectRegistrationBaseInputWrapper>
           <Label>Funding Sources</Label>
           {formDetails?.fundingSources?.map((source, index) => (
-            <ProjectRegistrationBaseInputWrapper key={index}>
+            <ProjectRegistrationBaseInputWrapper key={index} className="funding-source">
               <SelectFieldWrapper
                 as="select"
                 name="funderName"
