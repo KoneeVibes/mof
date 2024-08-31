@@ -13,6 +13,7 @@ import { EntityOnboardingArea } from './containers/entityonboardingarea';
 import { ArchivesArea } from './containers/archivesarea';
 import { FundingSourceOnboardingArea } from './containers/fundingsourceonboardingarea';
 import { CurrencyOnboardingArea } from './containers/currencyonboardingarea';
+import { CollectionRegistrationArea } from './containers/collectionregistrationarea';
 
 function App() {
   return (
@@ -38,6 +39,8 @@ function App() {
         <Route path='/registration/:superAdminId/subadmin' element={<SubAdminOnboardingArea />} />
         {/* Route to onboard an organization */}
         <Route path='/registration/:superAdminId/entity' element={<EntityOnboardingArea />} />
+        {/* Route to add a project collection */}
+        <Route path='/registration/:superAdminId/collection' element={<CollectionRegistrationArea />} />
 
         {/* Fallback route*/}
         <Route path='/*' element={<Dashboard>Invalid URL</Dashboard>} />
