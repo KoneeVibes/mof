@@ -34,24 +34,16 @@ export const ProjectRegistrationArea = () => {
   const [fundingSources, setFundingSources] = useState([]);
   const [members, setMembers] = useState([]);
 
-  const [formDetails, setFormDetails] = useState({
-    projectTitle: "",
-    description: "",
-    dateEffective: "",
-    governmentTier: "",
-    fundingSources: [
-      {
-        funderName: "",
-        amount: 0,
-        currencyName: "",
-        loanNo: "",
-        creditNo: "",
-        creditType: "",
-      },
-    ],
-    projectMembers: [{ email: "" }],
-    beneficiaries: [{ name: "" }],
-  });
+    const [formDetails, setFormDetails] = useState({
+        projectTitle: "",
+        description: "",
+        startDate: "",
+        endDate: "",
+        governmentTier: "",
+        fundingSources: [{ funderName: "", amount: 0, currencyName: "" }],
+        projectMembers: [{ email: "" }],
+        beneficiaries: [{ name: "" }]
+    });
 
   useEffect(() => {
     getFundingSources(token)
@@ -170,32 +162,39 @@ export const ProjectRegistrationArea = () => {
             onChange={handleChange}
           />
 
-          <Label htmlFor="">Effective Date and Tier of Government</Label>
-          <ProjectRegistrationBaseInputWrapper>
-            <BaseInputWrapper
-              as="input"
-              type="date"
-              name="dateEffective"
-              placeholder="Effective Date"
-              required
-              value={formDetails.dateEffective}
-              onChange={handleChange}
-            />
-            <SelectFieldWrapper
-              as="select"
-              name="governmentTier"
-              required
-              value={formDetails.governmentTier}
-              onChange={handleChange}
-            >
-              <option value="">Select a government tier</option>
-              {tiersOfGovernment.map((tier, key) => (
-                <option key={key} value={tier}>
-                  {tier}
-                </option>
-              ))}
-            </SelectFieldWrapper>
-          </ProjectRegistrationBaseInputWrapper>
+                    <Label htmlFor="">Effective Start and End Date and Tier of Government</Label>
+                    <ProjectRegistrationBaseInputWrapper>
+                        <BaseInputWrapper
+                            as="input"
+                            type="date"
+                            name="startDate"
+                            required
+                            value={formDetails.startDate}
+                            onChange={handleChange}
+                        />
+                        <BaseInputWrapper
+                            as="input"
+                            type="date"
+                            name="endDate"
+                            required
+                            value={formDetails.endDate}
+                            onChange={handleChange}
+                        />
+                        <SelectFieldWrapper
+                            as="select"
+                            name="governmentTier"
+                            required
+                            value={formDetails.governmentTier}
+                            onChange={handleChange}
+                        >
+                            <option value="">Select a government tier</option>
+                            {tiersOfGovernment.map((tier, key) => (
+                                <option key={key} value={tier}>
+                                    {tier}
+                                </option>
+                            ))}
+                        </SelectFieldWrapper>
+                    </ProjectRegistrationBaseInputWrapper>
 
           <Label>Funding Sources</Label>
           {formDetails?.fundingSources?.map((source, index) => (
