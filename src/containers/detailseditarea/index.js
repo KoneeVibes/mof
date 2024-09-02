@@ -6,7 +6,7 @@ import { ProjectRegistrationBaseButton } from "../projectregistrationarea/styled
 import { BaseButton } from "../../components/buttons";
 import { DotLoader } from "react-spinners";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
-import { tiersOfGovernment } from "../projectregistrationarea";
+import { creditTypes, tiersOfGovernment } from "../projectregistrationarea";
 import { BASE_ENDPOINT } from "../../util/endpoint";
 import Cookies from "universal-cookie";
 import { formatDateToYYYYMMDD } from "../../config/formatDateToYYYYMMDD";
@@ -52,8 +52,11 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                     fundingSources: project?.fundingSources.map((fundingSource) => ({
                         funderName: fundingSource.funder,
                         amount: fundingSource.amount,
-                        currencyName: fundingSource.currencyName
-                    })) || [{ funderName: "", amount: 0, currencyName: "" }],
+                        currencyName: fundingSource.currencyName,
+                        creditNo: fundingSource.creditNo,
+                        creditType: fundingSource.creditType,
+                        loanNo: fundingSource.loanNo
+                    })) || [{ funderName: "", amount: 0, currencyName: "", creditNo: "", creditType: "", loanNo: "" }],
                 };
                 break;
             default:
@@ -76,14 +79,13 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
     }, [token]);
 
     useEffect(() => {
-        // update the hardcode 12 to project.OrganisationId
-        getOrganizationMembers(token, 12)
+        getOrganizationMembers(token, project.organizationId)
             .then((data) => setOrganizationMembers(data))
             .catch((err) => {
                 console.error("Failed to fetch organization members:", err);
                 setError("Failed to fetch organization members. Please try again later.");
             });
-    }, [token, project.OrganisationId]);
+    }, [token, project.organizationId]);
 
     useEffect(() => {
         getCurrencies(token)
@@ -117,7 +119,7 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
         e.stopPropagation();
         const newItem =
             section === "fundingSources"
-                ? { funderName: "", amount: 0, currencyName: "" }
+                ? { funderName: "", amount: 0, currencyName: "", creditNo: "", creditType: "", loanNo: "" }
                 : section === "beneficiaries"
                     ? { name: "" }
                     : section === "members"
@@ -173,17 +175,17 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                 },
                 body: JSON.stringify({ ...formDetails, projectId: project.projectId }),
             });
+            const res = await response.json();
             if (!response.ok) {
                 setLoading(false);
-                setError(`Update failed`);
-                throw new Error('Form submission failed');
+                setError(`Update failed, ${res.title}`);
+                throw new Error(`${res.title}`);
             }
             setLoading(false);
-            const result = await response.json();
-            setError(`${result.message}`);
+            setError(`${res.message}`);
         } catch (error) {
             setLoading(false);
-            setError(`Update failed. ${error.message}`);
+            setError(`Update failed. ${error}`);
             console.error('Error submitting form:', error);
         }
     };
@@ -261,6 +263,21 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                                                 {currencies.map((currency, key) => (
                                                     <option key={key} value={currency.name}>
                                                         {currency.name}
+                                                    </option>
+                                                ))}
+                                            </SelectFieldWrapper>
+                                        ) : (field === "creditType" && modalId === "funding") ? (
+                                            <SelectFieldWrapper
+                                                as="select"
+                                                name={field}
+                                                required
+                                                value={value || ""}
+                                                onChange={(e) => handleNestedChange(section, index, e)}
+                                            >
+                                                <option value="">Select a credit type</option>
+                                                {creditTypes.map((creditType, key) => (
+                                                    <option key={key} value={creditType}>
+                                                        {creditType}
                                                     </option>
                                                 ))}
                                             </SelectFieldWrapper>

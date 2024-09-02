@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Layout } from "../layout";
-import { Row } from "../../components/flex/styled";
+import { Column, Row } from "../../components/flex/styled";
 import {
   ProjectDetailActionRow,
   ProjectDetailCardWrapper,
@@ -26,7 +26,7 @@ import { getProjectMembers } from "../../util/apis/getProjectMembers";
 import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 import { DotLoader } from "react-spinners";
 import { BaseButton } from "../../components/buttons/index";
-export const postRemark = () => {};
+import { postRemark } from "../../util/apis/postRemark";
 
 export const ProjectDetailsArea = () => {
   const cookies = new Cookies();
@@ -44,10 +44,10 @@ export const ProjectDetailsArea = () => {
   ]);
   const actions =
     cookie.USER.role === "SuperAdmin"
-      ? ["Terminate", "Re-open"]
+      ? ["Approve", "Terminate", "Re-open"]
       : cookie.USER.role === "SubAdmin"
-      ? ["Close", "Re-open", "Terminate"]
-      : [];
+        ? ["Close", "Re-open", "Terminate"]
+        : [];
   const status = ["Paid", "Not Paid"];
 
   const modalRefs = {
@@ -64,10 +64,6 @@ export const ProjectDetailsArea = () => {
   const [project, setProject] = useState(null);
   const [projectStatus, setProjectStatus] = useState(project?.status);
   const [activeEditModal, setActiveEditModal] = useState(null);
-  const [latestRemark, setLatestRemark] =
-    useState(
-      ""
-    ); /* Adding a new state variable latestRemark to track the most recent remark. */
   const [editArea, setEditArea] = useState(null);
   const [shouldShowDetailsEditArea, setShouldShowDetailsEditArea] =
     useState(false);
@@ -99,7 +95,6 @@ export const ProjectDetailsArea = () => {
 
   const handleExportToExcel = async (e) => {
     e.preventDefault();
-    // Loader starts
     try {
       const blob = await getExcelSheet(token, `disbursements/${projectId}`);
       const url = window.URL.createObjectURL(blob);
@@ -120,11 +115,18 @@ export const ProjectDetailsArea = () => {
   };
 
   const handleStatusChange = async (event) => {
+    setLoading(true);
     const value = event?.target?.value;
     try {
       let response;
       switch (value) {
         // First case may be dormant if subadmin cannot terminate project
+        case "Approve":
+          response = await updateProjectStatus(token, {
+            projectId: parseInt(projectId),
+            option: "approve",
+          });
+          break;
         case "Terminate":
           response = await updateProjectStatus(token, {
             projectId: parseInt(projectId),
@@ -146,18 +148,18 @@ export const ProjectDetailsArea = () => {
         default:
           return;
       }
-      if (response.status !== "success") {
+      if (response.status !== "Success") {
+        setLoading(false)
         console.error(
           "Error in calling update project status inside project details area"
         );
       } else {
         // Update the local state to reflect the new status
         setProjectStatus(value);
-        // force reload to update the projectStatus state. I may have
-        // to look at this again.
-        window.location.reload(true);
+        setLoading(false)
       }
     } catch (error) {
+      setLoading(false)
       console.error("Failed to update:", error);
     }
   };
@@ -195,18 +197,22 @@ export const ProjectDetailsArea = () => {
   };
 
   const handleSubmitRemark = async (e) => {
-    e.preventDefault(); // Prevent the default form submission
-    const remark = e.target.elements.remark.value; // Get the remark from form field
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    const remark = e.target.elements.remark.value;
+    if (!remark) return;
     try {
-      const response = await postRemark(token, projectId, remark);
-
+      const response = await postRemark(token, { projectId: projectId, text: remark });
       if (response.status === "Success") {
-        setLatestRemark(remark); // Update the latestRemark state
-        setError("Remark successful");
+        setLoading(false);
+        setError("Posted Remark");
       } else {
+        setLoading(false);
         setError("Failed to submit remark.");
       }
     } catch (error) {
+      setLoading(false);
       console.error("Failed to submit remark:", error);
       setError(`Failed to submit remark: ${error.message}`);
     }
@@ -243,7 +249,7 @@ export const ProjectDetailsArea = () => {
       .catch(() => {
         setLoading(false);
       });
-  }, [projectId, token, shouldShowDetailsEditArea]);
+  }, [projectId, token, shouldShowDetailsEditArea, error, loading]);
 
   useEffect(() => {
     getFilteredDisbursements(token, projectId, formDetails).then((requests) =>
@@ -345,8 +351,8 @@ export const ProjectDetailsArea = () => {
                       projectStatus === "Closed"
                         ? "green"
                         : projectStatus === "Ongoing"
-                        ? "yellow"
-                        : "red",
+                          ? "yellow"
+                          : "red",
                     padding: "0.5rem",
                     borderRadius: "8px",
                   }}
@@ -362,17 +368,11 @@ export const ProjectDetailsArea = () => {
                   ref={modalRefs.basic}
                   display={activeEditModal === "basic" ? "block" : "none"}
                 >
-                  <P
-                    onClick={(e) =>
-                      handleEditModalClose(e, true, "basic", "basic")
-                    }
-                  >
+                  <P onClick={(e) => handleEditModalClose(e, true, "basic", "basic")}>
                     Edit Basic Details
                   </P>
                   <P
-                    onClick={(e) =>
-                      handleEditModalClose(e, true, "basic", "members")
-                    }
+                    onClick={(e) => handleEditModalClose(e, true, "basic", "members")}
                   >
                     Edit Project Members
                   </P>
@@ -465,9 +465,6 @@ export const ProjectDetailsArea = () => {
                   </span>
                 </Li>
               ))}
-              {/* {project?.allocations?.map((allocation, key) => (
-                                <Li key={key}><span>{allocation.currencySymbol}{new Intl.NumberFormat().format(allocation.amountAllocated)}</span></Li>
-                            ))} */}
             </ul>
           </ProjectDetailCardWrapper>
           <BarChart
@@ -539,38 +536,43 @@ export const ProjectDetailsArea = () => {
             Post a disbursement
           </ProjectDetailBaseButton>
         )}
-        {error && <P style={{ color: "red" }}>{error}</P>}
-        {(cookie.USER.role === "SubAdmin" ||
-          cookie.USER.role === "SuperAdmin") && (
-          <ProjectDetailCardWrapper>
-            {latestRemark && (
-              <P style={{ fontWeight: "bold", marginBottom: "10px" }}>
-                Latest Remark: {latestRemark}
-              </P>
-            )}
-            <H2>Submit a Remark</H2>
-            {/* remarks */}
-            <form onSubmit={handleSubmitRemark}>
-              <TextAreaWrapper
-                name="remark"
-                placeholder="Enter your remark here"
-                style={{
-                  width: "100%",
-                  border: "1.5px solid",
-                  marginBottom: "10px",
-                }}
-              />
-              <BaseButton type="submit">
-                {loading ? (
-                  <DotLoader size={20} color="white" className="dotLoader" />
-                ) : (
-                  "Submit Remark"
-                )}
-              </BaseButton>
-            </form>
-          </ProjectDetailCardWrapper>
-        )}
 
+        <ProjectDetailCardWrapper>
+          <H2>Remarks</H2>
+          <Column>
+            {project.remarks.map((remark, index) => {
+              return (
+                <Column key={index} style={{ gap: "calc(var(--flexGap)/4)" }} >
+                  <P style={{ marginBlock: 0, color: "#059212" }}>{remark.text}</P>
+                  <Column style={{ fontStyle: "italic", gap: "calc(var(--flexGap)/4)" }}>
+                    <P style={{ marginBlock: 0 }}>{remark.creator}</P>
+                    <P style={{ marginBlock: 0 }}>{remark.dateCreated}</P>
+                  </Column>
+                </Column>
+              )
+            })}
+          </Column>
+          {(cookie.USER.role === "SubAdmin" ||
+            cookie.USER.role === "SuperAdmin") && (
+              <form onSubmit={handleSubmitRemark}>
+                <TextAreaWrapper
+                  name="remark"
+                  placeholder="Enter your remark here"
+                  style={{
+                    border: "1.5px solid",
+                    marginBlock: "var(--sectionMargin)",
+                  }}
+                />
+                <BaseButton type="submit">
+                  {loading ? (
+                    <DotLoader size={20} color="white" className="dotLoader" />
+                  ) : (
+                    "Submit Remark"
+                  )}
+                </BaseButton>
+              </form>
+            )}
+        </ProjectDetailCardWrapper>
         {error && <P style={{ color: "red" }}>{error}</P>}
       </ProjectDetailsAreaWrapper>
     </Layout>

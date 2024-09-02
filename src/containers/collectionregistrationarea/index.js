@@ -6,8 +6,8 @@ import { Layout } from "../layout";
 import { CollectionRegistrationAreaWrapper } from "./styled";
 import { useNavigate } from "react-router-dom";
 import { DotLoader } from "react-spinners";
-import { onboardCurrency } from "../../util/apis/onboardCurrency";
 import Cookies from "universal-cookie";
+import { addCollection } from "../../util/apis/addCollection";
 
 export const CollectionRegistrationArea = () => {
     const cookies = new Cookies();
@@ -19,7 +19,6 @@ export const CollectionRegistrationArea = () => {
     const [loading, setLoading] = useState(false);
     const [formDetails, setFormDetails] = useState({
         name: "",
-        abbreviation: "",
     });
 
     const handleChange = (e) => {
@@ -35,7 +34,7 @@ export const CollectionRegistrationArea = () => {
         setError(null);
         setLoading(true);
         try {
-            const response = await onboardCurrency(token, formDetails);
+            const response = await addCollection(token, formDetails);
             if (response.status === "Success") {
                 setLoading(false);
                 navigate("/dashboard")
@@ -63,16 +62,6 @@ export const CollectionRegistrationArea = () => {
                         placeholder="Enter Name of Collection"
                         required
                         value={formDetails.name}
-                        onChange={handleChange}
-                    />
-                    <Label>Collection Abbreviation</Label>
-                    <BaseInputWrapper
-                        as="input"
-                        type="text"
-                        name="abbreviation"
-                        placeholder="Enter Collection Abbreviation"
-                        required
-                        value={formDetails.abbreviation}
                         onChange={handleChange}
                     />
                     <BaseButton type="submit">

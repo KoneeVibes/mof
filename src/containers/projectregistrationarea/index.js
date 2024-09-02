@@ -18,14 +18,16 @@ import { getCurrencies } from "../../util/apis/getCurrencies";
 import { DotLoader } from "react-spinners";
 import { getOrganizationMembers } from "../../util/apis/getOrganizationMembers";
 import { getFundingSources } from "../../util/apis/getFundingSources";
+import { getAllCollections } from "../../util/apis/getAllCollections";
 
 export const tiersOfGovernment = ["Federal", "State", "LGA"];
+export const creditTypes = ["Loan", "Grant", "Loan/Grant"];
+
 export const ProjectRegistrationArea = () => {
   const cookies = new Cookies();
   const cookie = cookies.getAll();
   const token = cookies.get("TOKEN");
   const { organizationId } = cookie.USER;
-  const creditTypes = ["Loan", "Grant", "Loan/Grant"];
 
   const navigate = useNavigate();
   const [error, setError] = useState(null);
@@ -33,6 +35,7 @@ export const ProjectRegistrationArea = () => {
   const [currencies, setCurrencies] = useState([]);
   const [fundingSources, setFundingSources] = useState([]);
   const [members, setMembers] = useState([]);
+  const [collections, setCollections] = useState([]);
 
   const [formDetails, setFormDetails] = useState({
     collection: "",
@@ -73,6 +76,15 @@ export const ProjectRegistrationArea = () => {
         setError("Failed to fetch project members. Please try again later.");
       });
   }, [organizationId, token]);
+
+  useEffect(() => {
+    getAllCollections(token)
+      .then((data) => setCollections(data.map((collection) => collection.name)))
+      .catch((err) => {
+        console.error("Failed to fetch collections:", err);
+        setError("Failed to fetch collections. Please try again later.");
+      })
+  })
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -122,7 +134,6 @@ export const ProjectRegistrationArea = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formDetails);
     setError(null);
     setLoading(true);
     try {
@@ -155,7 +166,7 @@ export const ProjectRegistrationArea = () => {
             onChange={handleChange}
           >
             <option value="">Select a collection</option>
-            {["HOPE", "GRACE"].map((collection, key) => (
+            {collections?.map((collection, key) => (
               <option key={key} value={collection}>
                 {collection}
               </option>
