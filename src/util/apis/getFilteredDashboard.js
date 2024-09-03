@@ -1,8 +1,8 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const getFilteredDashboard = async (token, { orgType, status, collection }) => {
+export const getFilteredDashboard = async (token, { orgName, status, collection }) => {
     try {
-        const endpoint = `${BASE_ENDPOINT}/api/Dashboard/filter?status=${encodeURIComponent(status)}&orgName=${encodeURIComponent(orgType)}&collection=${encodeURIComponent(collection)}`;
+        const endpoint = `${BASE_ENDPOINT}/api/Dashboard/filter?status=${encodeURIComponent(status)}&orgName=${encodeURIComponent(orgName)}&collection=${encodeURIComponent(collection)}`;
         const response = await fetch(endpoint, {
             method: 'GET',
             headers: {
