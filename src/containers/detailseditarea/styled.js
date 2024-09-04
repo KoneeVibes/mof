@@ -6,6 +6,10 @@ export const DetailsEditAreaWrapper = styled(CardWrapper)(({ cardPadding = "var(
         position: "fixed",
         top: "50%",
         left: "50%",
+        width: "40vw",
+        height: "60vh",
+        overflow: "auto",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         transform: "translate(-50%, -50%)",
         padding: `calc(${cardPadding}/1)`,
         cursor: "pointer",
@@ -15,6 +19,10 @@ export const DetailsEditAreaWrapper = styled(CardWrapper)(({ cardPadding = "var(
             display: "flex",
             flexDirection: "column",
             gap: "var(--flexGap)",
-        }
+        },
+        ".dotLoader": {
+            marginLeft: "auto",
+            marginRight: "auto",
+        },
     }
 })

@@ -9,7 +9,7 @@ export const TopNavWrapper = styled(Row)`
             top: 0;
             width: -webkit-fill-available;
             background-color: #FFFFFF;
-            z-index: 1;
+            z-index: 2;
 
             @media screen and (min-width: 0px){
                 justify-content: center;
@@ -38,6 +38,19 @@ export const LeftSideTopNavWrapper = styled(Row)(() => {
                 width: 100%;
                 height: auto;
             }
+
+            .search-results{
+                position: absolute;
+                top: var(--navHeight);
+                left: calc(var(--navWidth));
+                right: var(--cardPadding);
+                padding: var(--cardPadding);
+                z-index: 1;
+                background: #FFFFFF;
+                border: 3px solid #F0F0F0;
+                border-radius: 8px;
+                display: none;
+            }
         }
 
         @media screen and (min-width: 280px){
@@ -47,6 +60,14 @@ export const LeftSideTopNavWrapper = styled(Row)(() => {
         @media screen and (min-width: 768px){
             .input-field-div{
                 display: block;
+            }
+
+            .hide-element{
+                display: none !important;
+            }
+
+            .search-results{
+                display: block
             }
         }
 

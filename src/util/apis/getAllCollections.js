@@ -1,14 +1,13 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const makeDisbursementRequest = async (token, requestDetails) => {
+export const getAllCollections = async (token) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements`, {
-            method: 'POST',
+        const response = await fetch(`${BASE_ENDPOINT}/api/collections`, {
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(requestDetails),
+                'Content-Type': 'application/json'
+            }
         });
         const res = await response.json();
         if (!response.ok) {
@@ -17,7 +16,7 @@ export const makeDisbursementRequest = async (token, requestDetails) => {
         }
         return res;
     } catch (error) {
-        console.error('API fetch error:', error.message);
+        console.error('API fetch error:', error);
         throw error;
     }
 };

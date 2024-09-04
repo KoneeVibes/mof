@@ -1,45 +1,100 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Label } from "../../components/typography/styled";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { Label, P } from "../../components/typography/styled";
 import { DetailsEditAreaWrapper } from "./styled";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { ProjectRegistrationBaseButton } from "../projectregistrationarea/styled";
 import { BaseButton } from "../../components/buttons";
 import { DotLoader } from "react-spinners";
+import { SelectFieldWrapper } from "../../components/formfields/select/styled";
+import { creditTypes, tiersOfGovernment } from "../projectregistrationarea";
+import { BASE_ENDPOINT } from "../../util/endpoint";
+import Cookies from "universal-cookie";
+import { formatDateToYYYYMMDD } from "../../config/formatDateToYYYYMMDD";
+import { getFundingSources } from "../../util/apis/getFundingSources";
+import { getCurrencies } from "../../util/apis/getCurrencies";
+import { toTitleCase } from "../../config/formatCase";
+import { getOrganizationMembers } from "../../util/apis/getOrganizationMembers";
 
 export const DetailsEditArea = React.forwardRef((props, ref) => {
     const { modalId, project } = props;
+    const cookies = new Cookies();
+    const token = cookies.get("TOKEN");
     const [loading, setLoading] = useState(false);
-    const [formDetails, setFormDetails] = useState([]);
+    const [formDetails, setFormDetails] = useState({});
+    const [currencies, setCurrencies] = useState([]);
+    const [fundingSources, setFundingSources] = useState([]);
+    const [organizationMembers, setOrganizationMembers] = useState([]);
+    const [error, setError] = useState(null);
+
+    const memoizedFormDetails = useMemo(() => {
+        let initialDetails = {};
+        switch (modalId) {
+            case "basic":
+                initialDetails = {
+                    projectTitle: project?.projectTitle || "",
+                    description: project?.description || "",
+                    dateEffective: formatDateToYYYYMMDD(project?.dateEffective) || "",
+                    governmentTier: project?.governmentTier || "",
+                };
+                break;
+            case "members":
+                initialDetails = {
+                    members: project?.team.map((member) => ({ email: member.email })) || [{ email: "" }],
+                }
+                break;
+            case "beneficiaries":
+                initialDetails = {
+                    beneficiaries: project?.beneficiaries || [{ name: "" }],
+                };
+                break;
+            case "funding":
+                initialDetails = {
+                    fundingSources: project?.fundingSources.map((fundingSource) => ({
+                        funderName: fundingSource.funder,
+                        amount: fundingSource.amount,
+                        currencyName: fundingSource.currencyName,
+                        creditNo: fundingSource.creditNo,
+                        creditType: fundingSource.creditType,
+                        loanNo: fundingSource.loanNo
+                    })) || [{ funderName: "", amount: 0, currencyName: "", creditNo: "", creditType: "", loanNo: "" }],
+                };
+                break;
+            default:
+                return {};
+        }
+        return initialDetails;
+    }, [modalId, project]);
 
     useEffect(() => {
-        const fetchInitialValues = async () => {
-            try {
-                let details;
-                switch (modalId) {
-                    case "basic":
-                        details = {
-                            projectTitle: project?.projectTitle,
-                            description: project?.description,
-                            effectiveDate: project?.dateEffective,
-                        }
-                        break;
-                    case "beneficiaries":
-                        details = project?.beneficiaries || [];
-                        break;
-                    case "funding":
-                        details = project?.fundingSources || [];
-                        break;
-                    default:
-                        return;
-                }
-                setFormDetails(details);
-            } catch (error) {
-                console.error('Error fetching initial values:', error);
-                setFormDetails([]);
-            }
-        };
-        fetchInitialValues();
-    }, [modalId, project]);
+        setFormDetails(memoizedFormDetails);
+    }, [memoizedFormDetails]);
+
+    useEffect(() => {
+        getFundingSources(token)
+            .then((data) => setFundingSources(data))
+            .catch((err) => {
+                console.error("Failed to fetch funding sources:", err);
+                setError("Failed to fetch funding sources. Please try again later.");
+            });
+    }, [token]);
+
+    useEffect(() => {
+        getOrganizationMembers(token, project.organizationId)
+            .then((data) => setOrganizationMembers(data))
+            .catch((err) => {
+                console.error("Failed to fetch organization members:", err);
+                setError("Failed to fetch organization members. Please try again later.");
+            });
+    }, [token, project.organizationId]);
+
+    useEffect(() => {
+        getCurrencies(token)
+            .then((data) => setCurrencies(data))
+            .catch((err) => {
+                console.error("Failed to fetch currencies:", err);
+                setError("Failed to fetch currencies. Please try again later.");
+            });
+    }, [token]);
 
     const handleChange = useCallback((event) => {
         const { name, value } = event.target;
@@ -60,13 +115,16 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
         }));
     }, [formDetails]);
 
-    const handleAddNewEntry = useCallback((section) => {
+    const handleAddNewEntry = useCallback((e, section) => {
+        e.stopPropagation();
         const newItem =
             section === "fundingSources"
-                ? { funderName: "", amount: 0, currencyName: "" }
+                ? { funderName: "", amount: 0, currencyName: "", creditNo: "", creditType: "", loanNo: "" }
                 : section === "beneficiaries"
                     ? { name: "" }
-                    : null;
+                    : section === "members"
+                        ? { email: "" }
+                        : null;
         if (newItem) {
             setFormDetails(prevDetails => ({
                 ...prevDetails,
@@ -75,52 +133,55 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
         }
     }, []);
 
-    const handleRemoveEntry = useCallback((section, index) => {
+    const handleRemoveEntry = useCallback((e, section, index) => {
+        e.stopPropagation();
         setFormDetails(prevDetails => ({
             ...prevDetails,
             [section]: (prevDetails[section] || []).filter((_, i) => i !== index),
         }));
     }, []);
 
-    useEffect(() => console.log(formDetails));
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
-            let apiUrl = '';
+            let subRoute = '';
             switch (modalId) {
                 case "basic":
-                    apiUrl = '/api/basicDetails';
+                    subRoute = 'api/projects/details/edit';
+                    break;
+                case "members":
+                    subRoute = 'api/projects/team';
                     break;
                 case "beneficiaries":
-                    apiUrl = '/api/projects/beneficiaries';
+                    subRoute = 'api/projects/beneficiaries';
                     break;
                 case "funding":
-                    apiUrl = '/api/projects/fundings';
+                    subRoute = 'api/projects/fundings';
                     break;
                 default:
                     throw new Error('Invalid modalId');
             }
-            const response = await fetch(apiUrl, {
-                method: 'PUT',
+            const response = await fetch(`${BASE_ENDPOINT}/${subRoute}`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify(formDetails),
+                body: JSON.stringify({ ...formDetails, projectId: project.projectId }),
             });
+            const res = await response.json();
             if (!response.ok) {
                 setLoading(false);
-                throw new Error('Network response was not ok');
+                setError(`Update failed, ${res.title}`);
+                throw new Error(`${res.title}`);
             }
             setLoading(false);
-            const result = await response.json();
-            console.log('Form submitted successfully:', result);
-            // Handle further actions here (e.g., show success message, reset form)
+            setError(`${res.message}`);
         } catch (error) {
             setLoading(false);
+            setError(`Update failed. ${error}`);
             console.error('Error submitting form:', error);
-            // Optionally, handle the error (e.g., show an error message to the user)
         }
     };
 
@@ -129,38 +190,122 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
             case "basic":
                 return Object.entries(formDetails).map(([key, value], index) => (
                     <React.Fragment key={index}>
-                        <Label>{key.replace(/([A-Z])/g, ' $1').trim()}</Label>
-                        <BaseInputWrapper
-                            as="input"
-                            type="text"
-                            name={key}
-                            value={value || ''}
-                            onChange={handleChange}
-                        />
+                        <Label>{toTitleCase(key.replace(/([A-Z])/g, ' $1').trim())}</Label>
+                        {(key === "governmentTier") ?
+                            <SelectFieldWrapper
+                                as="select"
+                                name={key}
+                                required
+                                value={value || ""}
+                                onChange={handleChange}
+                            >
+                                <option value="">Select a government tier</option>
+                                {tiersOfGovernment.map((tier, key) => (
+                                    <option key={key} value={tier}>
+                                        {tier}
+                                    </option>
+                                ))}
+                            </SelectFieldWrapper>
+                            :
+                            <BaseInputWrapper
+                                as="input"
+                                type={(key === "dateEffective") ? "date" : "text"}
+                                name={key}
+                                value={(key === "dateEffective") ? formatDateToYYYYMMDD(value) : value || ''}
+                                onChange={handleChange}
+                            />
+                        }
                     </React.Fragment>
                 ));
+            case "members":
             case "funding":
             case "beneficiaries":
-                return Array.isArray(formDetails) ? (
+                const isMembers = modalId === "members";
+                const section = isMembers ? "members" : modalId === "funding" ? "fundingSources" : "beneficiaries";
+                const labelPrefix = isMembers ? "Member" : modalId === "funding" ? "Funding Source" : "Beneficiary";
+                return (
                     <>
-                        {formDetails.map((item, index) => (
+                        {(formDetails[section] || []).map((item, index) => (
                             <React.Fragment key={index}>
-                                <Label>{modalId === "funding" ? `Funding Source ${index + 1}` : `Beneficiary ${index + 1}`}</Label>
+                                <Label>{`${labelPrefix} ${index + 1}`}</Label>
                                 {Object.entries(item).map(([field, value], subIndex) => (
                                     <React.Fragment key={subIndex}>
-                                        <Label>{field.replace(/([A-Z])/g, ' $1').trim()}</Label>
-                                        <BaseInputWrapper
-                                            as="input"
-                                            type="text"
-                                            name={field}
-                                            value={value || ''}
-                                            onChange={(e) => handleNestedChange(modalId, index, e)}
-                                        />
+                                        <Label>{toTitleCase(field.replace(/([A-Z])/g, ' $1').trim())}</Label>
+                                        {(field === "funderName" && modalId === "funding") ? (
+                                            <SelectFieldWrapper
+                                                as="select"
+                                                name={field}
+                                                required
+                                                value={value || ""}
+                                                onChange={(e) => handleNestedChange(section, index, e)}
+                                            >
+                                                <option value="">Select a funding source</option>
+                                                {fundingSources.map((fundingSource, key) => (
+                                                    <option key={key} value={fundingSource.name}>
+                                                        {fundingSource.name}
+                                                    </option>
+                                                ))}
+                                            </SelectFieldWrapper>
+                                        ) : (field === "currencyName" && modalId === "funding") ? (
+                                            <SelectFieldWrapper
+                                                as="select"
+                                                name={field}
+                                                required
+                                                value={value || ""}
+                                                onChange={(e) => handleNestedChange(section, index, e)}
+                                            >
+                                                <option value="">Select a currency</option>
+                                                {currencies.map((currency, key) => (
+                                                    <option key={key} value={currency.name}>
+                                                        {currency.name}
+                                                    </option>
+                                                ))}
+                                            </SelectFieldWrapper>
+                                        ) : (field === "creditType" && modalId === "funding") ? (
+                                            <SelectFieldWrapper
+                                                as="select"
+                                                name={field}
+                                                required
+                                                value={value || ""}
+                                                onChange={(e) => handleNestedChange(section, index, e)}
+                                            >
+                                                <option value="">Select a credit type</option>
+                                                {creditTypes.map((creditType, key) => (
+                                                    <option key={key} value={creditType}>
+                                                        {creditType}
+                                                    </option>
+                                                ))}
+                                            </SelectFieldWrapper>
+                                        ) : (isMembers && field === "email") ? (
+                                            <SelectFieldWrapper
+                                                as="select"
+                                                name={field}
+                                                required
+                                                value={value || ""}
+                                                onChange={(e) => handleNestedChange(section, index, e)}
+                                            >
+                                                <option value="">Select member</option>
+                                                {organizationMembers.map((member, key) => (
+                                                    <option key={key} value={member.email}>
+                                                        {member.email}
+                                                    </option>
+                                                ))}
+                                            </SelectFieldWrapper>
+                                        ) : (
+                                            // handles beneficiaries form
+                                            <BaseInputWrapper
+                                                as="input"
+                                                type="text"
+                                                name={field}
+                                                value={value || ''}
+                                                onChange={(e) => handleNestedChange(section, index, e)}
+                                            />
+                                        )}
                                     </React.Fragment>
                                 ))}
                                 <ProjectRegistrationBaseButton
                                     type="button"
-                                    onClick={() => handleRemoveEntry(modalId, index)}
+                                    onClick={(e) => handleRemoveEntry(e, section, index)}
                                 >
                                     -
                                 </ProjectRegistrationBaseButton>
@@ -168,12 +313,12 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                         ))}
                         <ProjectRegistrationBaseButton
                             type="button"
-                            onClick={() => handleAddNewEntry(modalId)}
+                            onClick={(e) => handleAddNewEntry(e, section)}
                         >
                             Add New Entry
                         </ProjectRegistrationBaseButton>
                     </>
-                ) : null;
+                );
             default:
                 return null;
         }
@@ -182,16 +327,21 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
     return (
         <DetailsEditAreaWrapper ref={ref}>
             <form onSubmit={handleSubmit}>
+                {modalId === "funding" && (
+                    <P style={{ color: "red" }}>
+                        Editing the project's funding details will result in the forfeiture of all disbursements and the removal of any existing funding records. Click out to cancel.
+                    </P>
+                )}
                 {renderInputs()}
                 <BaseButton type="submit">
-                    {loading ?
-                        <DotLoader
-                            size={20}
-                            color="white"
-                            className="dotLoader"
-                        /> : "Continue"}
+                    {loading ? (
+                        <DotLoader size={20} color="white" className="dotLoader" />
+                    ) : (
+                        "Save"
+                    )}
                 </BaseButton>
             </form>
+            {error && <P style={{ color: 'red' }}>{error}</P>}
         </DetailsEditAreaWrapper>
     );
 });
