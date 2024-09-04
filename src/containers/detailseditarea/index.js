@@ -146,29 +146,24 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
         setLoading(true);
         try {
             let subRoute = '';
-            let method = '';
             switch (modalId) {
                 case "basic":
                     subRoute = 'api/projects/details/edit';
-                    method = 'PATCH';
                     break;
                 case "members":
                     subRoute = 'api/projects/team';
-                    method = 'PUT';
                     break;
                 case "beneficiaries":
                     subRoute = 'api/projects/beneficiaries';
-                    method = 'PUT';
                     break;
                 case "funding":
                     subRoute = 'api/projects/fundings';
-                    method = 'PUT';
                     break;
                 default:
                     throw new Error('Invalid modalId');
             }
             const response = await fetch(`${BASE_ENDPOINT}/${subRoute}`, {
-                method: method,
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
