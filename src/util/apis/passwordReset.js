@@ -19,7 +19,7 @@ export const resetPassword = async (token, action, authDetails) => {
             break;
     }
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/accounts/${subRoute}`, {
+        const response = await fetch(`${BASE_ENDPOINT}/api/accounts/${subRoute}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

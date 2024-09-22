@@ -23,7 +23,7 @@ export const PasswordResetArea = () => {
     const [formDetails, setFormDetails] = useState({
         ...((action === "passwordreset" || action === "firsttimepasswordreset") && { oldPassword: "" }),
         newPassword: "",
-        confirmPassword: "",
+        confirmNewPassword: "",
     });
 
     useEffect(() => {
@@ -46,12 +46,12 @@ export const PasswordResetArea = () => {
         setLoading(true);
         if (queryToken) {
             token = queryToken;
-        }
+        };
         try {
             const response = await resetPassword(token, action, formDetails);
             if (response.status === "Success") {
                 setLoading(false);
-                navigate("/dashboard")
+                navigate("/");
             } else {
                 setLoading(false);
                 setError("Submission failed. Please check your inputs and try again.");
@@ -96,10 +96,10 @@ export const PasswordResetArea = () => {
                     <BaseInputWrapper
                         as="input"
                         type="text"
-                        name="confirmPassword"
+                        name="confirmNewPassword"
                         placeholder="Confirm New Password"
                         required
-                        value={formDetails.confirmPassword}
+                        value={formDetails.confirmNewPassword}
                         onChange={handleChange}
                     />
                     <BaseButton type="submit">

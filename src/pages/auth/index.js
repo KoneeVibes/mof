@@ -74,12 +74,7 @@ export const Auth = () => {
                     // should check this out pretty much later.
                     maxAge: 1000000,
                 })
-                cookies.set("USER", response.data, {
-                    path: "/",
-                    // should check this out pretty much later.
-                    maxAge: 1000000,
-                })
-                navigate(`/user/${response.data.userId}/firsttimepasswordreset`);
+                navigate(`/user/preauth/firsttimepasswordreset`);
             }
             else {
                 setLoading(false);
@@ -140,7 +135,9 @@ export const Auth = () => {
                                         SHOW
                                     </Label>
                                 </div>
-                                <P className="forgotPassword" onClick={() => setShowPasswordRecoveryForm(true)}>FORGOT PASSWORD?</P>
+                                {/* when this is fully ready to be setup, just replace the false in the setShowPasswordRecovery
+                                function to true. */}
+                                <P className="forgotPassword" onClick={() => setShowPasswordRecoveryForm(false)}>FORGOT PASSWORD?</P>
                             </React.Fragment>
                         )}
                         <BaseButton type="submit">
