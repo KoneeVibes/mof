@@ -120,7 +120,6 @@ export const ProjectRegistrationArea = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formDetails);
     setError(null);
     setLoading(true);
     try {
