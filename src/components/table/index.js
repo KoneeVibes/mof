@@ -11,11 +11,14 @@ export const Table = ({
   onSelectOption,
   rowItems,
   uniqueCurrencies,
+  actions,
+  handleStatusChange,
   location,
   role,
   performAction,
   exportToExcel,
   orgNames,
+  collections,
   status,
   postersId,
   handleFilterValueChange
@@ -23,14 +26,14 @@ export const Table = ({
   return (
     <React.Fragment>
       <Row
-        style={{ justifyContent: "flex-end", gap: "0.5rem", marginBottom: "0.5rem" }}
+        style={{ justifyContent: "flex-end", flexWrap: "wrap-reverse", gap: "0.5rem", marginBottom: "0.5rem" }}
       >
-        <Row style={{ gap: "0.5rem" }}>
+        <Row style={{ gap: "0.5rem", flexWrap: "wrap-reverse", overflow: "hidden" }}>
           {location === "dataOverviewArea" && (
             <React.Fragment>
               {(role === "SuperAdmin") && (
                 <SelectFieldWrapper
-                  name="orgType"
+                  name="orgName"
                   onChange={handleFilterValueChange}
                 >
                   <option value="">Filter by MDA/State</option>
@@ -41,6 +44,17 @@ export const Table = ({
                   ))}
                 </SelectFieldWrapper>
               )}
+              <SelectFieldWrapper
+                name="collection"
+                onChange={handleFilterValueChange}
+              >
+                <option value="">Filter by Collection</option>
+                {collections?.map((collection, key) => (
+                  <option key={key} value={collection}>
+                    {collection}
+                  </option>
+                ))}
+              </SelectFieldWrapper>
               <SelectFieldWrapper
                 name="status"
                 onChange={handleFilterValueChange}
@@ -339,7 +353,34 @@ export const Table = ({
                             ""}
                         </Td>
                       ))}
-                      <Td>{rowItem.status || ""}</Td>
+                      <Td>
+                        <SelectFieldWrapper
+                          as="select"
+                          name="projectStatus"
+                          value={
+                            role === "Individual"
+                              ? `Status: ${rowItem.status}`
+                              : "Update Status"
+                          }
+                          onChange={(e) => handleStatusChange(e, rowItem.projectId)}
+                          disabled={role === "Individual"}
+                          style={{
+                            appearance:
+                              role === "Individual" ? "none" : "auto",
+                            MozAppearance:
+                              role === "Individual" ? "none" : "auto",
+                            WebkitAppearance:
+                              role === "Individual" ? "none" : "auto",
+                          }}
+                        >
+                          <option value="Ongoing">Status: {rowItem.status}</option>
+                          {actions?.map((status, key) => (
+                            <option key={key} value={status}>
+                              {status}
+                            </option>
+                          ))}
+                        </SelectFieldWrapper>
+                      </Td>
                     </React.Fragment>
                   )}
               </tr>

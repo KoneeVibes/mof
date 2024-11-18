@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 import { Layout } from "../layout";
 import {
@@ -18,14 +18,16 @@ import { getCurrencies } from "../../util/apis/getCurrencies";
 import { DotLoader } from "react-spinners";
 import { getOrganizationMembers } from "../../util/apis/getOrganizationMembers";
 import { getFundingSources } from "../../util/apis/getFundingSources";
+import { getAllCollections } from "../../util/apis/getAllCollections";
 
 export const tiersOfGovernment = ["Federal", "State", "LGA"];
+export const creditTypes = ["Loan", "Grant", "Loan/Grant"];
+
 export const ProjectRegistrationArea = () => {
   const cookies = new Cookies();
   const cookie = cookies.getAll();
   const token = cookies.get("TOKEN");
   const { organizationId } = cookie.USER;
-  const creditTypes = ["Loan", "Grant", "Loan/Grant"];
 
   const navigate = useNavigate();
   const [error, setError] = useState(null);
@@ -33,17 +35,20 @@ export const ProjectRegistrationArea = () => {
   const [currencies, setCurrencies] = useState([]);
   const [fundingSources, setFundingSources] = useState([]);
   const [members, setMembers] = useState([]);
+  const [collections, setCollections] = useState([]);
 
-    const [formDetails, setFormDetails] = useState({
-        projectTitle: "",
-        description: "",
-        startDate: "",
-        endDate: "",
-        governmentTier: "",
-        fundingSources: [{ funderName: "", amount: 0, currencyName: "" }],
-        projectMembers: [{ email: "" }],
-        beneficiaries: [{ name: "" }]
-    });
+  const [formDetails, setFormDetails] = useState({
+    collection: "",
+    projectTitle: "",
+    description: "",
+    dateEffective: "",
+    startDate: "",
+    endDate: "",
+    governmentTier: "",
+    fundingSources: [{ funderName: "", amount: 0, currencyName: "" }],
+    projectMembers: [{ email: "" }],
+    beneficiaries: [{ name: "" }]
+  });
 
   useEffect(() => {
     getFundingSources(token)
@@ -72,6 +77,15 @@ export const ProjectRegistrationArea = () => {
       });
   }, [organizationId, token]);
 
+  useEffect(() => {
+    getAllCollections(token)
+      .then((data) => setCollections(data.map((collection) => collection.name)))
+      .catch((err) => {
+        console.error("Failed to fetch collections:", err);
+        setError("Failed to fetch collections. Please try again later.");
+      })
+  })
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormDetails((prevDetails) => ({
@@ -97,10 +111,10 @@ export const ProjectRegistrationArea = () => {
       section === "fundingSources"
         ? { funderName: "", amount: 0, currencyName: "" }
         : section === "projectMembers"
-        ? { email: "" }
-        : section === "beneficiaries"
-        ? { name: "" }
-        : null;
+          ? { email: "" }
+          : section === "beneficiaries"
+            ? { name: "" }
+            : null;
 
     if (newItem) {
       setFormDetails((prevDetails) => ({
@@ -144,6 +158,20 @@ export const ProjectRegistrationArea = () => {
         <H2>PROJECT DETAILS</H2>
         <P>PLEASE ENTER THE PROJECT INFORMATION</P>
         <form onSubmit={handleSubmit}>
+          <Label htmlFor="projectCollection">Project Collection</Label>
+          <SelectFieldWrapper
+            as="select"
+            name="collection"
+            value={formDetails.collection}
+            onChange={handleChange}
+          >
+            <option value="">Select a collection</option>
+            {collections?.map((collection, key) => (
+              <option key={key} value={collection}>
+                {collection}
+              </option>
+            ))}
+          </SelectFieldWrapper>
           <Label htmlFor="projectTitle">Project Title</Label>
           <BaseInputWrapper
             as="input"
@@ -160,44 +188,66 @@ export const ProjectRegistrationArea = () => {
             value={formDetails.description}
             onChange={handleChange}
           />
-
-                    <Label htmlFor="">Effective Start and End Date and Tier of Government</Label>
-                    <ProjectRegistrationBaseInputWrapper>
-                        <BaseInputWrapper
-                            as="input"
-                            type="date"
-                            name="startDate"
-                            required
-                            value={formDetails.startDate}
-                            onChange={handleChange}
-                        />
-                        <BaseInputWrapper
-                            as="input"
-                            type="date"
-                            name="endDate"
-                            required
-                            value={formDetails.endDate}
-                            onChange={handleChange}
-                        />
-                        <SelectFieldWrapper
-                            as="select"
-                            name="governmentTier"
-                            required
-                            value={formDetails.governmentTier}
-                            onChange={handleChange}
-                        >
-                            <option value="">Select a government tier</option>
-                            {tiersOfGovernment.map((tier, key) => (
-                                <option key={key} value={tier}>
-                                    {tier}
-                                </option>
-                            ))}
-                        </SelectFieldWrapper>
-                    </ProjectRegistrationBaseInputWrapper>
-
+          <ProjectRegistrationBaseInputWrapper
+            className="project-dates"
+          >
+            <ProjectRegistrationBaseInputWrapper
+              className="row-date"
+            >
+              <Label htmlFor="dateEffective">Effective Start Date</Label>
+              <BaseInputWrapper
+                as="input"
+                type="date"
+                name="dateEffective"
+                required
+                value={formDetails.dateEffective}
+                onChange={handleChange}
+              />
+            </ProjectRegistrationBaseInputWrapper>
+            <ProjectRegistrationBaseInputWrapper
+              className="row-date"
+            >
+              <Label htmlFor="startDate">Start Date</Label>
+              <BaseInputWrapper
+                as="input"
+                type="date"
+                name="startDate"
+                required
+                value={formDetails.startDate}
+                onChange={handleChange}
+              />
+            </ProjectRegistrationBaseInputWrapper>
+            <ProjectRegistrationBaseInputWrapper
+              className="row-date"
+            >
+              <Label htmlFor="endDate">End Date</Label>
+              <BaseInputWrapper
+                as="input"
+                type="date"
+                name="endDate"
+                required
+                value={formDetails.endDate}
+                onChange={handleChange}
+              />
+            </ProjectRegistrationBaseInputWrapper>
+            <SelectFieldWrapper
+              as="select"
+              name="governmentTier"
+              required
+              value={formDetails.governmentTier}
+              onChange={handleChange}
+            >
+              <option value="">Select a government tier</option>
+              {tiersOfGovernment.map((tier, key) => (
+                <option key={key} value={tier}>
+                  {tier}
+                </option>
+              ))}
+            </SelectFieldWrapper>
+          </ProjectRegistrationBaseInputWrapper>
           <Label>Funding Sources</Label>
           {formDetails?.fundingSources?.map((source, index) => (
-            <ProjectRegistrationBaseInputWrapper key={index}>
+            <ProjectRegistrationBaseInputWrapper key={index} className="funding-source">
               <SelectFieldWrapper
                 as="select"
                 name="funderName"

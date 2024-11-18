@@ -12,8 +12,10 @@ import { getExcelSheet } from '../../util/apis/getExcelSheet';
 import { getFilteredDashboard } from '../../util/apis/getFilteredDashboard';
 import { getAllOrganizations } from '../../util/apis/getAllOrganizations';
 import { flattenOrganizations } from '../../config/flattenOrganizations';
+import { updateProjectStatus } from '../../util/apis/updateProjectStatus';
+import { getAllCollections } from '../../util/apis/getAllCollections';
 
-export const status = ["Ongoing", "Closed", "Terminated"];
+export const status = ["Ongoing", "Pending", "Closed", "Terminated"];
 export const DataOverviewArea = () => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
@@ -34,11 +36,14 @@ export const DataOverviewArea = () => {
     const [filteredDashboard, setFilteredDashboard] = useState(null);
     // eslint-disable-next-line no-unused-vars
     const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [organizations, setOrganizations] = useState([]);
+    const [collections, setCollections] = useState([]);
     const [formDetails, setFormDetails] = useState({
-        orgType: "",
+        orgName: "",
         status: "",
+        collection: "",
     });
 
     const onSelectofOrgType = (e) => {
@@ -76,6 +81,53 @@ export const DataOverviewArea = () => {
         }
     };
 
+    const handleStatusChange = async (event, projectId) => {
+        const value = event?.target?.value;
+        setLoading(true)
+        try {
+            let response;
+            switch (value) {
+                case "Approve":
+                    response = await updateProjectStatus(token, {
+                        projectId: parseInt(projectId),
+                        option: "approve",
+                    });
+                    break;
+                case "Terminate":
+                    response = await updateProjectStatus(token, {
+                        projectId: parseInt(projectId),
+                        option: "terminate",
+                    });
+                    break;
+                case "Re-open":
+                    response = await updateProjectStatus(token, {
+                        projectId: parseInt(projectId),
+                        option: "reopen",
+                    });
+                    break;
+                case "Close":
+                    response = await updateProjectStatus(token, {
+                        projectId: parseInt(projectId),
+                        option: "close",
+                    });
+                    break;
+                default:
+                    return;
+            }
+            if (response.status !== "success") {
+                setLoading(false)
+                console.error(
+                    "Error in calling update project status inside dashboard overview area"
+                );
+            } else {
+                setLoading(false);
+            }
+        } catch (error) {
+            setLoading(false)
+            console.error("Failed to update:", error);
+        }
+    };
+
     useEffect(() => {
         if (token) {
             getAllOrganizations(token).then((listOfOrganizations) => {
@@ -107,7 +159,15 @@ export const DataOverviewArea = () => {
             .catch((err) => {
                 console.error('Failed to fetch dashboard metrics:', err);
             })
-    }, [orgId, token, formDetails]);
+    }, [orgId, token, formDetails, loading]);
+
+    useEffect(() => {
+        getAllCollections(token)
+            .then((data) => setCollections(data.map((collection) => collection.name)))
+            .catch((err) => {
+                console.error("Failed to fetch collections:", err);
+            })
+    })
 
     return (
         <DataOverviewAreaWrapper>
@@ -270,10 +330,17 @@ export const DataOverviewArea = () => {
                             project.totalAllocations.map(allocation => allocation.currencyName)
                         ) || []
                     )]}
+                    actions={cookie.USER.role === "SuperAdmin"
+                        ? ["Approve", "Terminate", "Re-open"]
+                        : cookie.USER.role === "SubAdmin"
+                            ? ["Close", "Re-open", "Terminate"]
+                            : []}
+                    handleStatusChange={handleStatusChange}
                     role={cookie.USER.role}
                     onSelectOption={(_, __, e) => e.preventDefault()}
                     exportToExcel={exportToExcel}
                     orgNames={organizations}
+                    collections={collections}
                     status={status}
                     handleFilterValueChange={handleFilterValueChange}
                 />

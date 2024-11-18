@@ -1,9 +1,8 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const getFilteredDashboard = async (token, { orgName, status, collection }) => {
+export const getAllCollections = async (token) => {
     try {
-        const endpoint = `${BASE_ENDPOINT}/api/Dashboard/filter?status=${encodeURIComponent(status)}&orgName=${encodeURIComponent(orgName)}&collection=${encodeURIComponent(collection)}`;
-        const response = await fetch(endpoint, {
+        const response = await fetch(`${BASE_ENDPOINT}/api/collections`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -15,7 +14,7 @@ export const getFilteredDashboard = async (token, { orgName, status, collection 
             console.error('Error:', res);
             throw new Error(res.message);
         }
-        return res.data;
+        return res;
     } catch (error) {
         console.error('API fetch error:', error);
         throw error;

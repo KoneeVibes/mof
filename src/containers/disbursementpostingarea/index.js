@@ -80,7 +80,7 @@ export const DisbursementRequestArea = () => {
         formData.append("currencyName", formDetails.currencyName);
         formDetails.attachments.forEach((attachment, index) => {
             if (attachment.file) {
-                formData.append(`attachments[${index}]`, attachment.file);
+                formData.append(`attachments`, attachment.file);
             }
         });
         try {
