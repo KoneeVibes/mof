@@ -1,6 +1,8 @@
 // import { ProfilePhoto } from "../../assets";
 import { AvatarModalWrapper, AvatarWrapper } from "./styled";
-import profilePhoto from "../../assets/topnav/topnavProfilePhoto.png"
+// import profilePhoto from "../../assets/topnav/topnavProfilePhoto.png"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Cookies from "universal-cookie";
 import { P } from "../typography/styled";
 import React, { useContext } from "react";
@@ -54,7 +56,7 @@ export const Avatar = ({ location }) => {
             onMouseLeave={() => setIsAvatarModalOpen(0)}
         >
             {/* <ProfilePhoto /> */}
-            <img src={profilePhoto} alt="profile-photo" />
+            <FontAwesomeIcon icon={faUser} />
             <span>{email}</span>
             <AvatarModalWrapper
                 isavatarmodalopen={isavatarmodalopen}
