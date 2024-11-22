@@ -263,12 +263,16 @@ export const ProjectRegistrationArea = () => {
                 ))}
               </SelectFieldWrapper>
               <ProjectRegistrationBaseInput
-                type="number"
                 name="amount"
                 placeholder="Amount"
                 required
                 value={source.amount}
-                onChange={(e) => handleNestedChange("fundingSources", index, e)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) { // Allow only digits
+                    handleNestedChange("fundingSources", index, e);
+                  }
+                }}
               />
               <SelectFieldWrapper
                 as="select"
