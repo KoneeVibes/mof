@@ -374,7 +374,7 @@ export const Table = ({
                           }}
                         >
                           <option value="Ongoing">Status: {rowItem.status}</option>
-                          {actions?.map((status, key) => (
+                          {actions(role, rowItem?.status)?.map((status, key) => (
                             <option key={key} value={status}>
                               {status}
                             </option>

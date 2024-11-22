@@ -27,6 +27,7 @@ import { TextAreaWrapper } from "../../components/formfields/textarea/styled";
 import { DotLoader } from "react-spinners";
 import { BaseButton } from "../../components/buttons/index";
 import { postRemark } from "../../util/apis/postRemark";
+import { getActions } from "../../config/actions";
 
 export const ProjectDetailsArea = () => {
   const cookies = new Cookies();
@@ -42,12 +43,6 @@ export const ProjectDetailsArea = () => {
     "Status",
     ...(cookie.USER.role === "Individual" ? ["Action"] : []),
   ]);
-  const actions =
-    cookie.USER.role === "SuperAdmin"
-      ? ["Approve", "Terminate", "Re-open"]
-      : cookie.USER.role === "SubAdmin"
-        ? ["Close", "Re-open", "Terminate"]
-        : [];
   const status = ["Paid", "Not Paid"];
 
   const modalRefs = {
@@ -76,6 +71,7 @@ export const ProjectDetailsArea = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [projectMembers, setProjectMembers] = useState([]);
+  const actions = getActions(cookie.USER.role, project?.status)
 
   const handleDeleteDisbursement = async (e, disbursementId) => {
     try {

@@ -3,8 +3,8 @@ import Cookies from 'universal-cookie';
 
 export const RouteProtector = () => {
     const cookies = new Cookies();
-    const { USER } = cookies.getAll();
+    const { TOKEN } = cookies.getAll();
     return (
-        USER ? <Outlet /> : <Navigate to='/' />
+        TOKEN ? <Outlet /> : <Navigate to='/' />
     )
 }

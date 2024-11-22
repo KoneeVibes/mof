@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { Jumbotron } from "../../components/jumbotron";
 import { H1, P } from "../../components/typography/styled";
 import { getExcelSheet } from "../../util/apis/getExcelSheet";
+import { getActions } from "../../config/actions";
+import { updateProjectStatus } from "../../util/apis/updateProjectStatus";
 
 export const ArchivesArea = () => {
     const cookies = new Cookies();
@@ -24,6 +26,7 @@ export const ArchivesArea = () => {
 
     const [dashboardOverview, setDashboardOverview] = useState(null);
     const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const exportToExcel = async (e) => {
         e.preventDefault();
@@ -47,16 +50,63 @@ export const ArchivesArea = () => {
         }
     };
 
+    const handleStatusChange = async (event, projectId) => {
+        const value = event?.target?.value;
+        setLoading(true)
+        try {
+            let response;
+            switch (value) {
+                case "Approve":
+                    response = await updateProjectStatus(token, {
+                        projectId: parseInt(projectId),
+                        option: "approve",
+                    });
+                    break;
+                case "Terminate":
+                    response = await updateProjectStatus(token, {
+                        projectId: parseInt(projectId),
+                        option: "terminate",
+                    });
+                    break;
+                case "Re-open":
+                    response = await updateProjectStatus(token, {
+                        projectId: parseInt(projectId),
+                        option: "reopen",
+                    });
+                    break;
+                case "Close":
+                    response = await updateProjectStatus(token, {
+                        projectId: parseInt(projectId),
+                        option: "close",
+                    });
+                    break;
+                default:
+                    return;
+            }
+            if (response.status !== "success") {
+                setLoading(false)
+                console.error(
+                    "Error in calling update project status inside dashboard overview area"
+                );
+            } else {
+                setLoading(false);
+            }
+        } catch (error) {
+            setLoading(false)
+            console.error("Failed to update:", error);
+        }
+    };
+
     useEffect(() => {
         getDashboardMetrics(token, orgId)
             .then((data) => {
                 setDashboardOverview(data);
-                setProjects(data.projectsAllocationMetrics.filter((project) => project.status !== "Ongoing"));
+                setProjects(data.projectsAllocationMetrics.filter((project) => project.status === "Terminated" || project.status === "Closed"));
             })
             .catch((err) => {
                 console.error('Failed to fetch dashboard metrics:', err);
             })
-    }, [orgId, token]);
+    }, [orgId, token, loading]);
 
     if (!cookie.USER.role === "SuperAdmin") {
         return (
@@ -84,6 +134,8 @@ export const ArchivesArea = () => {
                                 project.totalAllocations.map(allocation => allocation.currencyName)
                             ) || []
                         )]}
+                        actions={getActions}
+                        handleStatusChange={handleStatusChange}
                         role={cookie.USER.role}
                         onSelectOption={(_, __, e) => e.preventDefault()}
                         exportToExcel={exportToExcel}

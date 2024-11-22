@@ -14,6 +14,7 @@ import { getAllOrganizations } from '../../util/apis/getAllOrganizations';
 import { flattenOrganizations } from '../../config/flattenOrganizations';
 import { updateProjectStatus } from '../../util/apis/updateProjectStatus';
 import { getAllCollections } from '../../util/apis/getAllCollections';
+import { getActions } from '../../config/actions';
 
 export const status = ["Ongoing", "Pending", "Closed", "Terminated"];
 export const DataOverviewArea = () => {
@@ -174,12 +175,12 @@ export const DataOverviewArea = () => {
             <ChartsRowWrapper>
                 <PieChart
                     title={"Project Metrics"}
-                    values={[dashboardOverview?.projectsMetrics.completed, dashboardOverview?.projectsMetrics.ongoing, dashboardOverview?.projectsMetrics.terminated]}
+                    values={[dashboardOverview?.projectsMetrics.completed, dashboardOverview?.projectsMetrics.ongoing, dashboardOverview?.projectsMetrics.terminated, dashboardOverview?.projectsMetrics.pending]}
                     label={"% of Completion"}
-                    labels={['Completed', 'Ongoing', 'Terminated']}
+                    labels={['Completed', 'Ongoing', 'Terminated', 'Pending']}
                     maxHeight={"400px"}
-                    bgColor={['#059212', '#E9ECF1', '#FF0000']}
-                    borderColor={['#059212', '#E9ECF1', '#FF0000']}
+                    bgColor={['#059212', '#E9ECF1', '#FF0000', "#0000FF"]}
+                    borderColor={['#059212', '#E9ECF1', '#FF0000', "#0000FF"]}
                 />
                 <BarChart
                     axis={"y"}
@@ -330,11 +331,7 @@ export const DataOverviewArea = () => {
                             project.totalAllocations.map(allocation => allocation.currencyName)
                         ) || []
                     )]}
-                    actions={cookie.USER.role === "SuperAdmin"
-                        ? ["Approve", "Terminate", "Re-open"]
-                        : cookie.USER.role === "SubAdmin"
-                            ? ["Close", "Re-open", "Terminate"]
-                            : []}
+                    actions={getActions}
                     handleStatusChange={handleStatusChange}
                     role={cookie.USER.role}
                     onSelectOption={(_, __, e) => e.preventDefault()}

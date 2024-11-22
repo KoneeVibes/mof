@@ -53,13 +53,15 @@ export const AuthWrapper = styled("div")(() => ({
     ".forgotPassword": {
         color: "#102C57",
         textDecoration: "none",
+        fontWeight: 800,
+        fontSize: "12px",
+        marginBlock: 0,
+        cursor: "pointer",
     },
     ".dotLoader": {
         marginLeft: "auto",
         marginRight: "auto",
     },
-
-
 }))
 
 export const AuthRow = styled(Row)(() => {
