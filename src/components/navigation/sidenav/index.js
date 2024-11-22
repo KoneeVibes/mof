@@ -46,6 +46,10 @@ export const SideNav = () => {
         if (e.currentTarget.getAttribute("data-nav-key") === "archives") {
             return navigate(`/admin/${userId}/archives`);
         }
+        // handle click of reset password
+        if (e.currentTarget.getAttribute("data-nav-key") === "password") {
+            return navigate(`/user/${userId}/passwordreset`);
+        }
         // handle click of any of the projects
         if (role !== "SuperAdmin") {
             return navigate(`/${parsedOrganization}/${id}`);
@@ -240,18 +244,25 @@ export const SideNav = () => {
                 <div>
                     {role === "SuperAdmin" && (
                         <P
-                            style={{ color: "red" }}
+                            style={{ color: "red", padding: "var(--cardPadding) var(--cardPadding) 0 var(--cardPadding)" }}
                             data-nav-key={"archives"}
                             onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
                         >
                             Archives
                         </P>
                     )}
+                    <P
+                        style={{ color: "red" }}
+                        data-nav-key={"password"}
+                        onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
+                    >
+                        Password Reset
+                    </P>
                 </div>
                 <div className="avatar-div">
                     <Avatar location={"side-nav"} />
                 </div>
             </SideNavItemsListWrapper>
-        </SideNavWrapper>
+        </SideNavWrapper >
     );
 };

@@ -38,7 +38,7 @@ export const ProjectRegistrationArea = () => {
   const [collections, setCollections] = useState([]);
 
   const [formDetails, setFormDetails] = useState({
-    collection: "",
+    projectCollection: "",
     projectTitle: "",
     description: "",
     dateEffective: "",
@@ -161,8 +161,8 @@ export const ProjectRegistrationArea = () => {
           <Label htmlFor="projectCollection">Project Collection</Label>
           <SelectFieldWrapper
             as="select"
-            name="collection"
-            value={formDetails.collection}
+            name="projectCollection"
+            value={formDetails.projectCollection}
             onChange={handleChange}
           >
             <option value="">Select a collection</option>
