@@ -25,9 +25,9 @@ export const ArchivesArea = () => {
   let orgId =
     cookie.USER.role === "SuperAdmin" ? "" : cookie.USER.organizationId;
 
-<<<<<<< HEAD
   const [dashboardOverview, setDashboardOverview] = useState(null);
   const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const exportToExcel = async (e) => {
     e.preventDefault();
@@ -35,10 +35,10 @@ export const ArchivesArea = () => {
     try {
       const blob = await getExcelSheet(token, "dashboard");
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
       // may have to come back to reset this filename
-      a.download = "export.xlsx";
+      a.download = 'export.xlsx';
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -48,102 +48,53 @@ export const ArchivesArea = () => {
     } catch (error) {
       // Loader stops
       console.error("Failed to export:", error);
-=======
-    const [dashboardOverview, setDashboardOverview] = useState(null);
-    const [projects, setProjects] = useState([]);
-    const [loading, setLoading] = useState(false);
+    }
+  };
 
-    const exportToExcel = async (e) => {
-        e.preventDefault();
-        // Loader starts
-        try {
-            const blob = await getExcelSheet(token, "dashboard");
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            // may have to come back to reset this filename
-            a.download = 'export.xlsx';
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            window.URL.revokeObjectURL(url); // Clean up
-            // Loader stops
-            console.log("Successfully exported to an xlsx file");
-        } catch (error) {
-            // Loader stops
-            console.error("Failed to export:", error);
-        }
-    };
-
-    const handleStatusChange = async (event, projectId) => {
-        const value = event?.target?.value;
-        setLoading(true)
-        try {
-            let response;
-            switch (value) {
-                case "Approve":
-                    response = await updateProjectStatus(token, {
-                        projectId: parseInt(projectId),
-                        option: "approve",
-                    });
-                    break;
-                case "Terminate":
-                    response = await updateProjectStatus(token, {
-                        projectId: parseInt(projectId),
-                        option: "terminate",
-                    });
-                    break;
-                case "Re-open":
-                    response = await updateProjectStatus(token, {
-                        projectId: parseInt(projectId),
-                        option: "reopen",
-                    });
-                    break;
-                case "Close":
-                    response = await updateProjectStatus(token, {
-                        projectId: parseInt(projectId),
-                        option: "close",
-                    });
-                    break;
-                default:
-                    return;
-            }
-            if (response.status !== "success") {
-                setLoading(false)
-                console.error(
-                    "Error in calling update project status inside dashboard overview area"
-                );
-            } else {
-                setLoading(false);
-            }
-        } catch (error) {
-            setLoading(false)
-            console.error("Failed to update:", error);
-        }
-    };
-
-    useEffect(() => {
-        getDashboardMetrics(token, orgId)
-            .then((data) => {
-                setDashboardOverview(data);
-                setProjects(data.projectsAllocationMetrics.filter((project) => project.status === "Terminated" || project.status === "Closed"));
-            })
-            .catch((err) => {
-                console.error('Failed to fetch dashboard metrics:', err);
-            })
-    }, [orgId, token, loading]);
-
-    if (!cookie.USER.role === "SuperAdmin") {
-        return (
-            <Layout>
-                <ArchivesAreaWrapper>
-                    <Jumbotron />
-                    <H1>Unauthorized</H1>
-                    <P>You are not authorized to view this page</P>
-                </ArchivesAreaWrapper>
-            </Layout>
+  const handleStatusChange = async (event, projectId) => {
+    const value = event?.target?.value;
+    setLoading(true)
+    try {
+      let response;
+      switch (value) {
+        case "Approve":
+          response = await updateProjectStatus(token, {
+            projectId: parseInt(projectId),
+            option: "approve",
+          });
+          break;
+        case "Terminate":
+          response = await updateProjectStatus(token, {
+            projectId: parseInt(projectId),
+            option: "terminate",
+          });
+          break;
+        case "Re-open":
+          response = await updateProjectStatus(token, {
+            projectId: parseInt(projectId),
+            option: "reopen",
+          });
+          break;
+        case "Close":
+          response = await updateProjectStatus(token, {
+            projectId: parseInt(projectId),
+            option: "close",
+          });
+          break;
+        default:
+          return;
+      }
+      if (response.status !== "success") {
+        setLoading(false)
+        console.error(
+          "Error in calling update project status inside dashboard overview area"
         );
->>>>>>> 89ada3bb910f2ebe10249532c2e5395af5ef51c7
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false)
+      console.error("Failed to update:", error);
     }
   };
 
@@ -151,20 +102,15 @@ export const ArchivesArea = () => {
     getDashboardMetrics(token, orgId)
       .then((data) => {
         setDashboardOverview(data);
-        setProjects(
-          data.projectsAllocationMetrics.filter(
-            (project) => project.status !== "Ongoing"
-          )
-        );
+        setProjects(data.projectsAllocationMetrics.filter((project) => project.status === "Terminated" || project.status === "Closed"));
       })
       .catch((err) => {
-        console.error("Failed to fetch dashboard metrics:", err);
-      });
-  }, [orgId, token]);
+        console.error('Failed to fetch dashboard metrics:', err);
+      })
+  }, [orgId, token, loading]);
 
   if (!cookie.USER.role === "SuperAdmin") {
     return (
-<<<<<<< HEAD
       <Layout>
         <ArchivesAreaWrapper>
           <Jumbotron />
@@ -178,23 +124,19 @@ export const ArchivesArea = () => {
   return (
     <Layout>
       <ArchivesAreaWrapper>
-        <Jumbotron entity={"ARCHIVES"} />
+        <Jumbotron entity={"Archives"} />
         <ArchivesAreaTableWrapper>
           <Table
             location={"archivesArea"}
             categories={categories}
             rowItems={projects}
-            uniqueCurrencies={[
-              ...new Set(
-                dashboardOverview?.projectsAllocationMetrics
-                  ?.filter((project) => project.status !== "Ongoing")
-                  .flatMap((project) =>
-                    project.totalAllocations.map(
-                      (allocation) => allocation.currencyName
-                    )
-                  ) || []
-              ),
-            ]}
+            uniqueCurrencies={[...new Set(
+              dashboardOverview?.projectsAllocationMetrics?.filter((project) => project.status !== "Ongoing").flatMap(project =>
+                project.totalAllocations.map(allocation => allocation.currencyName)
+              ) || []
+            )]}
+            actions={getActions}
+            handleStatusChange={handleStatusChange}
             role={cookie.USER.role}
             onSelectOption={(_, __, e) => e.preventDefault()}
             exportToExcel={exportToExcel}
@@ -202,31 +144,5 @@ export const ArchivesArea = () => {
         </ArchivesAreaTableWrapper>
       </ArchivesAreaWrapper>
     </Layout>
-  );
-};
-=======
-        <Layout>
-            <ArchivesAreaWrapper>
-                <Jumbotron entity={cookie?.USER?.organization} />
-                <ArchivesAreaTableWrapper>
-                    <Table
-                        location={"archivesArea"}
-                        categories={categories}
-                        rowItems={projects}
-                        uniqueCurrencies={[...new Set(
-                            dashboardOverview?.projectsAllocationMetrics?.filter((project) => project.status !== "Ongoing").flatMap(project =>
-                                project.totalAllocations.map(allocation => allocation.currencyName)
-                            ) || []
-                        )]}
-                        actions={getActions}
-                        handleStatusChange={handleStatusChange}
-                        role={cookie.USER.role}
-                        onSelectOption={(_, __, e) => e.preventDefault()}
-                        exportToExcel={exportToExcel}
-                    />
-                </ArchivesAreaTableWrapper>
-            </ArchivesAreaWrapper>
-        </Layout>
-    )
+  )
 }
->>>>>>> 89ada3bb910f2ebe10249532c2e5395af5ef51c7
