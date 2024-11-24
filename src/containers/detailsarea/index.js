@@ -527,7 +527,7 @@ export const ProjectDetailsArea = () => {
             handleFilterValueChange={handleFilterValueChange}
           />
         </div>
-        {cookie.USER.role === "Individual" && (
+        {(cookie.USER.role === "Individual" && project.status === "Ongoing") && (
           <ProjectDetailBaseButton
             onClick={() => navigate(`/${entity}/${projectId}/request`)}
           >
