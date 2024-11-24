@@ -19,6 +19,7 @@ import { DotLoader } from "react-spinners";
 import { getOrganizationMembers } from "../../util/apis/getOrganizationMembers";
 import { getFundingSources } from "../../util/apis/getFundingSources";
 import { getAllCollections } from "../../util/apis/getAllCollections";
+import { BaseModal } from "../../components/modal";
 
 export const tiersOfGovernment = ["Federal", "State", "LGA"];
 export const creditTypes = ["Loan", "Grant", "Loan/Grant"];
@@ -36,6 +37,7 @@ export const ProjectRegistrationArea = () => {
   const [fundingSources, setFundingSources] = useState([]);
   const [members, setMembers] = useState([]);
   const [collections, setCollections] = useState([]);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
   const [formDetails, setFormDetails] = useState({
     projectCollection: "",
@@ -132,6 +134,15 @@ export const ProjectRegistrationArea = () => {
     }));
   };
 
+  const navigateToDashboard = async () => {
+    await setIsSuccessModalOpen(false);
+    return navigate("/dashboard");
+  }
+
+  const handleSuccessModalPersist = () => {
+    setIsSuccessModalOpen(true);
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -140,7 +151,7 @@ export const ProjectRegistrationArea = () => {
       const response = await addProject(token, formDetails);
       if (response.status === "Success") {
         setLoading(false);
-        navigate("/dashboard");
+        setIsSuccessModalOpen(true);
       } else {
         setLoading(false);
         setError("Submission failed. Please check your inputs and try again.");
@@ -155,6 +166,15 @@ export const ProjectRegistrationArea = () => {
   return (
     <Layout>
       <ProjectRegistrationAreaWrapper>
+        <BaseModal
+          open={isSuccessModalOpen}
+          width={"40%"}
+          height={"auto"}
+          callToAction={"Continue"}
+          message={"Project Created Successfully"}
+          onClose={handleSuccessModalPersist}
+          handleCallToActionClick={navigateToDashboard}
+        />
         <H2>PROJECT DETAILS</H2>
         <P>PLEASE ENTER THE PROJECT INFORMATION</P>
         <form onSubmit={handleSubmit}>

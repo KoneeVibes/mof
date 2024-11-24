@@ -7,9 +7,18 @@ export const TopNavWrapper = styled(Row)`
             padding: ${cardPadding};
             position: fixed;
             top: 0;
-            width: -webkit-fill-available;
+            left: 0;
+            right: 0;
             background-color: #FFFFFF;
             z-index: 2;
+
+            @supports (width: -webkit-fill-available) {
+                width: -webkit-fill-available;
+            }
+
+            @supports (width: -moz-available) {
+                width: -moz-available;
+            }
 
             @media screen and (min-width: 0px){
                 justify-content: center;

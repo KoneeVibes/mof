@@ -11,11 +11,19 @@ export const MainAreaWrapper = styled("div")(({ cardPadding = "var(--cardPadding
         position: absolute;
         top: calc(var(--navHeight));
         left: ${cardPadding};
-        padding: calc(${cardPadding}) calc(${cardPadding}) calc(${cardPadding} * 2.5)  0;
-        width: -webkit-fill-available;
+        right: ${cardPadding};
+        padding: calc(${cardPadding}) 0 calc(${cardPadding} * 2.5)  0;
 
         @media screen and (min-width: 768px){
             left: calc(var(--navWidth) + ${cardPadding});
+        }
+
+        @supports (width: -webkit-fill-available) {
+            width: -webkit-fill-available;
+        }
+
+        @supports (width: -moz-available) {
+            width: -moz-available;
         }
     `
 })

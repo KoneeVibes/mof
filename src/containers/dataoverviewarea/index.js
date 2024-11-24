@@ -15,6 +15,7 @@ import { flattenOrganizations } from '../../config/flattenOrganizations';
 import { updateProjectStatus } from '../../util/apis/updateProjectStatus';
 import { getAllCollections } from '../../util/apis/getAllCollections';
 import { getActions } from '../../config/actions';
+import { getUniqueColors } from '../../config/generateUniqueColors';
 
 export const status = ["Ongoing", "Pending", "Closed", "Terminated"];
 export const DataOverviewArea = () => {
@@ -38,6 +39,7 @@ export const DataOverviewArea = () => {
     // eslint-disable-next-line no-unused-vars
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [colors, setColors] = useState([]);
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [organizations, setOrganizations] = useState([]);
     const [collections, setCollections] = useState([]);
@@ -130,6 +132,20 @@ export const DataOverviewArea = () => {
     };
 
     useEffect(() => {
+        const storedColors = localStorage.getItem("colors");
+        if (!storedColors) {
+            getUniqueColors(100)
+                .then((data) => {
+                    setColors(data);
+                    localStorage.setItem("colors", JSON.stringify(data));
+                })
+                .catch((error) => console.error("Error fetching colors:", error));
+        } else {
+            setColors(JSON.parse(storedColors));
+        }
+    }, []);
+
+    useEffect(() => {
         if (token) {
             getAllOrganizations(token).then((listOfOrganizations) => {
                 const collapsedList = flattenOrganizations(listOfOrganizations);
@@ -168,7 +184,7 @@ export const DataOverviewArea = () => {
             .catch((err) => {
                 console.error("Failed to fetch collections:", err);
             })
-    })
+    });
 
     return (
         <DataOverviewAreaWrapper>
@@ -226,7 +242,6 @@ export const DataOverviewArea = () => {
                                         organization.totalAllocations.map(allocation => allocation.currencyName)
                                     ) || []
                                 )];
-                                const colors = ["#059212", "#E9ECF1", "#FFA500", "#0000FF", "#FF0000"];
                                 return currencyNames.map((currencyName, index) => {
                                     return {
                                         label: currencyName,
@@ -235,8 +250,8 @@ export const DataOverviewArea = () => {
                                             const totalAllocation = allocationMetric.totalAllocations.find((totalAllocations) => totalAllocations.currencyName === currencyName);
                                             return totalAllocation ? totalAllocation.amountAllocated : 0;
                                         }),
-                                        borderColor: colors[index % colors.length],
-                                        backgroundColor: colors[index % colors.length],
+                                        borderColor: colors[index],
+                                        backgroundColor: colors[index]
                                     };
                                 });
                             })()}
@@ -252,7 +267,6 @@ export const DataOverviewArea = () => {
                                     project.totalAllocations.map(allocation => allocation.currencyName)
                                 ) || []
                             )];
-                            const colors = ["#059212", "#E9ECF1", "#FFA500", "#0000FF", "#FF0000"];
                             return currencyNames.map((currencyName, index) => {
                                 return {
                                     label: currencyName,
@@ -260,8 +274,8 @@ export const DataOverviewArea = () => {
                                         const totalAllocation = project.totalAllocations.find((totalAllocations) => totalAllocations.currencyName === currencyName);
                                         return totalAllocation ? totalAllocation.amountAllocated : 0;
                                     }),
-                                    borderColor: colors[index % colors.length],
-                                    backgroundColor: colors[index % colors.length],
+                                    borderColor: colors[index],
+                                    backgroundColor: colors[index],
                                 }
                             })
                         })()}
@@ -280,7 +294,6 @@ export const DataOverviewArea = () => {
                                     organization.disbursements.map(disbursement => disbursement.currencyName)
                                 ) || []
                             )];
-                            const colors = ["#059212", "#E9ECF1", "#FFA500", "#0000FF", "#FF0000"];
                             return currencyNames.map((currencyName, index) => {
                                 return {
                                     label: currencyName,
@@ -289,8 +302,8 @@ export const DataOverviewArea = () => {
                                         const disbursement = disbursementMetric.disbursements.find((disbursement) => disbursement.currencyName === currencyName);
                                         return disbursement.amount;
                                     }),
-                                    borderColor: colors[index % colors.length],
-                                    backgroundColor: colors[index % colors.length],
+                                    borderColor: colors[index],
+                                    backgroundColor: colors[index],
                                 };
                             });
                         })()}
@@ -305,7 +318,6 @@ export const DataOverviewArea = () => {
                                     project.disbursements.map(disbursement => disbursement.currencyName)
                                 ) || []
                             )];
-                            const colors = ["#059212", "#E9ECF1", "#FFA500", "#0000FF", "#FF0000"];
                             return currencyNames.map((currencyName, index) => {
                                 return {
                                     label: currencyName,
@@ -313,8 +325,8 @@ export const DataOverviewArea = () => {
                                         const disbursement = project.disbursements.find((disbursement) => disbursement.currencyName === currencyName);
                                         return disbursement.amount;
                                     }),
-                                    borderColor: colors[index % colors.length],
-                                    backgroundColor: colors[index % colors.length],
+                                    borderColor: colors[index],
+                                    backgroundColor: colors[index],
                                 };
                             });
                         })()}

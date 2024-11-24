@@ -21,8 +21,16 @@ export const ProjectRegistrationAreaWrapper = styled.div(() => {
             margin-right: auto;
         }
 
-        input{
-          width: -webkit-fill-available !important;
+        @supports (width: -webkit-fill-available) {
+          input{
+            width: -webkit-fill-available !important;
+          }
+        }
+
+        @supports (width: -moz-available) {
+          input{
+            width: -moz-available;
+          }
         }
     `;
 });
