@@ -15,6 +15,7 @@ import { FundingSourceOnboardingArea } from './containers/fundingsourceonboardin
 import { CurrencyOnboardingArea } from './containers/currencyonboardingarea';
 import { CollectionRegistrationArea } from './containers/collectionregistrationarea';
 import { RouteProtector } from './routeprotector';
+import { PasswordResetArea } from './containers/passwordresetarea';
 
 function App() {
   return (
@@ -43,6 +44,8 @@ function App() {
           <Route path='/registration/:superAdminId/entity' element={<EntityOnboardingArea />} />
           {/* Route to add a project collection */}
           <Route path='/registration/:superAdminId/collection' element={<CollectionRegistrationArea />} />
+          {/* Route to reset password */}
+          <Route path='/user/:userId/:action' element={<PasswordResetArea />} />
         </Route>
         {/* Fallback route*/}
         <Route path='/*' element={<Dashboard>Invalid URL</Dashboard>} />

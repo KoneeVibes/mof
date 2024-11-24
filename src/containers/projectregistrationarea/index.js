@@ -38,7 +38,7 @@ export const ProjectRegistrationArea = () => {
   const [collections, setCollections] = useState([]);
 
   const [formDetails, setFormDetails] = useState({
-    collection: "",
+    projectCollection: "",
     projectTitle: "",
     description: "",
     dateEffective: "",
@@ -47,7 +47,7 @@ export const ProjectRegistrationArea = () => {
     governmentTier: "",
     fundingSources: [{ funderName: "", amount: 0, currencyName: "" }],
     projectMembers: [{ email: "" }],
-    beneficiaries: [{ name: "" }]
+    beneficiaries: [{ name: "" }],
   });
 
   useEffect(() => {
@@ -83,8 +83,8 @@ export const ProjectRegistrationArea = () => {
       .catch((err) => {
         console.error("Failed to fetch collections:", err);
         setError("Failed to fetch collections. Please try again later.");
-      })
-  })
+      });
+  });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -111,10 +111,10 @@ export const ProjectRegistrationArea = () => {
       section === "fundingSources"
         ? { funderName: "", amount: 0, currencyName: "" }
         : section === "projectMembers"
-          ? { email: "" }
-          : section === "beneficiaries"
-            ? { name: "" }
-            : null;
+        ? { email: "" }
+        : section === "beneficiaries"
+        ? { name: "" }
+        : null;
 
     if (newItem) {
       setFormDetails((prevDetails) => ({
@@ -161,8 +161,8 @@ export const ProjectRegistrationArea = () => {
           <Label htmlFor="projectCollection">Project Collection</Label>
           <SelectFieldWrapper
             as="select"
-            name="collection"
-            value={formDetails.collection}
+            name="projectCollection"
+            value={formDetails.projectCollection}
             onChange={handleChange}
           >
             <option value="">Select a collection</option>
@@ -188,12 +188,8 @@ export const ProjectRegistrationArea = () => {
             value={formDetails.description}
             onChange={handleChange}
           />
-          <ProjectRegistrationBaseInputWrapper
-            className="project-dates"
-          >
-            <ProjectRegistrationBaseInputWrapper
-              className="row-date"
-            >
+          <ProjectRegistrationBaseInputWrapper className="project-dates">
+            <ProjectRegistrationBaseInputWrapper className="row-date">
               <Label htmlFor="dateEffective">Effective Start Date</Label>
               <BaseInputWrapper
                 as="input"
@@ -204,9 +200,7 @@ export const ProjectRegistrationArea = () => {
                 onChange={handleChange}
               />
             </ProjectRegistrationBaseInputWrapper>
-            <ProjectRegistrationBaseInputWrapper
-              className="row-date"
-            >
+            <ProjectRegistrationBaseInputWrapper className="row-date">
               <Label htmlFor="startDate">Start Date</Label>
               <BaseInputWrapper
                 as="input"
@@ -217,9 +211,7 @@ export const ProjectRegistrationArea = () => {
                 onChange={handleChange}
               />
             </ProjectRegistrationBaseInputWrapper>
-            <ProjectRegistrationBaseInputWrapper
-              className="row-date"
-            >
+            <ProjectRegistrationBaseInputWrapper className="row-date">
               <Label htmlFor="endDate">End Date</Label>
               <BaseInputWrapper
                 as="input"
@@ -247,7 +239,10 @@ export const ProjectRegistrationArea = () => {
           </ProjectRegistrationBaseInputWrapper>
           <Label>Funding Sources</Label>
           {formDetails?.fundingSources?.map((source, index) => (
-            <ProjectRegistrationBaseInputWrapper key={index} className="funding-source">
+            <ProjectRegistrationBaseInputWrapper
+              key={index}
+              className="funding-source"
+            >
               <SelectFieldWrapper
                 as="select"
                 name="funderName"
@@ -286,7 +281,7 @@ export const ProjectRegistrationArea = () => {
               </SelectFieldWrapper>
               <ProjectRegistrationBaseInput
                 type="string"
-                name="loanNo"
+                name="loanNumber"
                 placeholder=" Enter loan number"
                 required
                 value={source.loanNumber}
@@ -294,7 +289,7 @@ export const ProjectRegistrationArea = () => {
               />
               <ProjectRegistrationBaseInput
                 type="string"
-                name="creditNo"
+                name="creditNumber"
                 placeholder="Enter credit number"
                 required
                 value={source.creditNumber}
