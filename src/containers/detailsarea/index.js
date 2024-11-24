@@ -259,6 +259,8 @@ export const ProjectDetailsArea = () => {
     setProjectStatus(project?.status);
   }, [project?.status]);
 
+  useEffect(() => console.log(project), [project])
+
   useEffect(() => {
     getProjectMembers(token, projectId)
       .then((data) => setProjectMembers(data.map((member) => member.email)))

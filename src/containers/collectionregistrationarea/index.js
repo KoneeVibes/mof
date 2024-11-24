@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { DotLoader } from "react-spinners";
 import Cookies from "universal-cookie";
 import { addCollection } from "../../util/apis/addCollection";
+import { BaseModal } from "../../components/modal";
 
 export const CollectionRegistrationArea = () => {
     const cookies = new Cookies();
@@ -17,6 +18,7 @@ export const CollectionRegistrationArea = () => {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [formDetails, setFormDetails] = useState({
         name: "",
     });
@@ -29,6 +31,15 @@ export const CollectionRegistrationArea = () => {
         }));
     };
 
+    const navigateToDashboard = async () => {
+        await setIsSuccessModalOpen(false);
+        return navigate("/dashboard");
+    }
+
+    const handleSuccessModalPersist = () => {
+        setIsSuccessModalOpen(true);
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -37,7 +48,7 @@ export const CollectionRegistrationArea = () => {
             const response = await addCollection(token, formDetails);
             if (response.status === "Success") {
                 setLoading(false);
-                navigate("/dashboard")
+                setIsSuccessModalOpen(true);
             } else {
                 setLoading(false);
                 setError("Submission failed. Please check your inputs and try again.");
@@ -52,6 +63,15 @@ export const CollectionRegistrationArea = () => {
     return (
         <Layout>
             <CollectionRegistrationAreaWrapper>
+                <BaseModal
+                    open={isSuccessModalOpen}
+                    width={"40%"}
+                    height={"auto"}
+                    callToAction={"Continue"}
+                    message={"Collection created successfully"}
+                    onClose={handleSuccessModalPersist}
+                    handleCallToActionClick={navigateToDashboard}
+                />
                 <H2>REGISTER NEW PROJECT COLLECTION</H2>
                 <form onSubmit={handleSubmit}>
                     <Label>Collection Name</Label>

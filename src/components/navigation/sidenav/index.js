@@ -241,7 +241,7 @@ export const SideNav = () => {
                         </div>
                     ))}
                 </div>
-                <div>
+                <div className="side-nav-action-item">
                     {role === "SuperAdmin" && (
                         <P
                             style={{ color: "red", padding: "var(--cardPadding) var(--cardPadding) 0 var(--cardPadding)" }}

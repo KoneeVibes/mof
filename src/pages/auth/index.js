@@ -123,7 +123,7 @@ export const Auth = () => {
                                         required
                                         value={formDetails.password}
                                         onChange={handleChange}
-                                        width={"-webkit-fill-available"}
+                                        // width={"-webkit-fill-available"}
                                     />
                                     <Label className="showPassword">
                                         <input
