@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { getCurrencies } from "../../util/apis/getCurrencies";
 import Cookies from "universal-cookie";
 import { makeDisbursement } from "../../util/apis/makeDisbursement";
+import { BaseModal } from "../../components/modal";
 import { DotLoader } from "react-spinners";
 
 export const DisbursementRequestArea = () => {
@@ -18,9 +19,11 @@ export const DisbursementRequestArea = () => {
 
     const navigate = useNavigate();
     const { projectId } = useParams();
+
     const [currencies, setCurrencies] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [formDetails, setFormDetails] = useState({
         projectId: parseInt(projectId),
         purpose: "",
@@ -69,6 +72,15 @@ export const DisbursementRequestArea = () => {
         }));
     };
 
+    const navigateToDashboard = async () => {
+        await setIsSuccessModalOpen(false);
+        return navigate(-1);
+    }
+
+    const handleSuccessModalPersist = () => {
+        setIsSuccessModalOpen(true);
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -86,7 +98,7 @@ export const DisbursementRequestArea = () => {
         try {
             const response = await makeDisbursement(TOKEN, formData);
             if (response.status === "Success") {
-                navigate(-1);
+                setIsSuccessModalOpen(true);
             } else {
                 setError("Submission failed. Please check your inputs and try again.");
             }
@@ -110,6 +122,15 @@ export const DisbursementRequestArea = () => {
     return (
         <Layout>
             <DisbursementRequestAreaWrapper>
+                <BaseModal
+                    open={isSuccessModalOpen}
+                    width={"40%"}
+                    height={"auto"}
+                    callToAction={"Continue"}
+                    message={"Disbursement created successfully"}
+                    onClose={handleSuccessModalPersist}
+                    handleCallToActionClick={navigateToDashboard}
+                />
                 <H2>DISBURSEMENT POSTING</H2>
                 <form onSubmit={handleSubmit}>
                     <Label>Disbursement Purpose</Label>

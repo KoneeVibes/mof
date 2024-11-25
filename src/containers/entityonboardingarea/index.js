@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
 import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { DotLoader } from "react-spinners";
+import { BaseModal } from "../../components/modal";
 import { flattenOrganizations } from "../../config/flattenOrganizations";
 
 export const EntityOnboardingArea = () => {
@@ -21,6 +22,7 @@ export const EntityOnboardingArea = () => {
     const [error, setError] = useState(null);
     const [organizations, setOrganizations] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [formDetails, setFormDetails] = useState({
         name: "",
         orgType: "",
@@ -46,6 +48,15 @@ export const EntityOnboardingArea = () => {
         }
     }, [token]);
 
+    const navigateToDashboard = async () => {
+        await setIsSuccessModalOpen(false);
+        return navigate("/dashboard");
+      }
+    
+      const handleSuccessModalPersist = () => {
+        setIsSuccessModalOpen(true);
+      }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -54,7 +65,7 @@ export const EntityOnboardingArea = () => {
             const response = await addOrganization(token, formDetails);
             if (response.status === "Success") {
                 setLoading(false);
-                navigate("/dashboard");
+                setIsSuccessModalOpen(true);
             } else {
                 setLoading(false);
                 setError(`"Submission failed:". Please check your inputs and try again.`);
@@ -69,6 +80,15 @@ export const EntityOnboardingArea = () => {
     return (
         <Layout>
             <EntityOnboardingAreaWrapper>
+            <BaseModal
+                    open={isSuccessModalOpen}
+                    width={"40%"}
+                    height={"auto"}
+                    callToAction={"Continue"}
+                    message={"Organisation created successfully"}
+                    onClose={handleSuccessModalPersist}
+                    handleCallToActionClick={navigateToDashboard}
+                />
                 <H2>NEW MDA DETAILS</H2>
                 <form onSubmit={handleSubmit}>
                     <Label>Name of MDA:</Label>

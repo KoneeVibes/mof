@@ -11,6 +11,7 @@ import { onboardUser } from "../../util/apis/onboardUser";
 import { BaseButton } from "../../components/buttons/styled";
 import { DotLoader } from "react-spinners";
 import { flattenOrganizations } from "../../config/flattenOrganizations";
+import { BaseModal } from "../../components/modal";
 
 export const UserOnboardingArea = () => {
     const cookies = new Cookies();
@@ -21,6 +22,7 @@ export const UserOnboardingArea = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [organizations, setOrganizations] = useState([]);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [formDetails, setFormDetails] = useState({
         email: "",
         organization: ""
@@ -34,6 +36,15 @@ export const UserOnboardingArea = () => {
         }));
     };
 
+    const navigateToDashboard = async () => {
+        await setIsSuccessModalOpen(false);
+        return navigate("/dashboard");
+      }
+    
+      const handleSuccessModalPersist = () => {
+        setIsSuccessModalOpen(true);
+      }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -42,7 +53,7 @@ export const UserOnboardingArea = () => {
             const response = await onboardUser(token, formDetails);
             if (response.status === "Success") {
                 setLoading(false);
-                navigate("/dashboard")
+                setIsSuccessModalOpen(true);
             } else {
                 setLoading(false);
                 setError("Submission failed. Please check your inputs and try again.");
@@ -68,6 +79,15 @@ export const UserOnboardingArea = () => {
     return (
         <Layout>
             <UserOnboardingAreaWrapper>
+            <BaseModal
+                    open={isSuccessModalOpen}
+                    width={"40%"}
+                    height={"auto"}
+                    callToAction={"Continue"}
+                    message={"User Onboarded successfully"}
+                    onClose={handleSuccessModalPersist}
+                    handleCallToActionClick={navigateToDashboard}
+                />
                 <H2>USER DETAILS</H2>
                 <form onSubmit={handleSubmit}>
                     <Label>Enter Email</Label>

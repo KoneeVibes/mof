@@ -7,6 +7,7 @@ import { CurrencyOnboardingAreaWrapper } from "./styled";
 import { useNavigate } from "react-router-dom";
 import { DotLoader } from "react-spinners";
 import { onboardCurrency } from "../../util/apis/onboardCurrency";
+import { BaseModal } from "../../components/modal";
 import Cookies from "universal-cookie";
 
 export const CurrencyOnboardingArea = () => {
@@ -17,6 +18,7 @@ export const CurrencyOnboardingArea = () => {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [formDetails, setFormDetails] = useState({
         name: "",
         abbreviation: "",
@@ -31,6 +33,16 @@ export const CurrencyOnboardingArea = () => {
         }));
     };
 
+
+    const navigateToDashboard = async () => {
+        await setIsSuccessModalOpen(false);
+        return navigate("/dashboard");
+      }
+    
+      const handleSuccessModalPersist = () => {
+        setIsSuccessModalOpen(true);
+      }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -39,7 +51,7 @@ export const CurrencyOnboardingArea = () => {
             const response = await onboardCurrency(token, formDetails);
             if (response.status === "Success") {
                 setLoading(false);
-                navigate("/dashboard")
+                setIsSuccessModalOpen(true);
             } else {
                 setLoading(false);
                 setError("Submission failed. Please check your inputs and try again.");
@@ -54,6 +66,15 @@ export const CurrencyOnboardingArea = () => {
     return (
         <Layout>
             <CurrencyOnboardingAreaWrapper>
+            <BaseModal
+                    open={isSuccessModalOpen}
+                    width={"40%"}
+                    height={"auto"}
+                    callToAction={"Continue"}
+                    message={"Currency created successfully"}
+                    onClose={handleSuccessModalPersist}
+                    handleCallToActionClick={navigateToDashboard}
+                />
                 <H2>CURRENCY</H2>
                 <form onSubmit={handleSubmit}>
                     <Label>Currency Name</Label>

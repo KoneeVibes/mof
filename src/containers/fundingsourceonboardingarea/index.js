@@ -7,6 +7,7 @@ import { FundingSourceOnboardingAreaWrapper } from "./styled";
 import { useNavigate } from "react-router-dom";
 import { DotLoader } from "react-spinners";
 import { onboardFundingSource } from "../../util/apis/onboardFundingSource";
+import { BaseModal } from "../../components/modal";
 import Cookies from "universal-cookie";
 
 export const FundingSourceOnboardingArea = () => {
@@ -17,6 +18,7 @@ export const FundingSourceOnboardingArea = () => {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [formDetails, setFormDetails] = useState({
         name: "",
         abbreviation: ""
@@ -30,6 +32,15 @@ export const FundingSourceOnboardingArea = () => {
         }));
     };
 
+    const navigateToDashboard = async () => {
+        await setIsSuccessModalOpen(false);
+        return navigate("/dashboard");
+      }
+    
+      const handleSuccessModalPersist = () => {
+        setIsSuccessModalOpen(true);
+      }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -38,7 +49,7 @@ export const FundingSourceOnboardingArea = () => {
             const response = await onboardFundingSource(token, formDetails);
             if (response.status === "Success") {
                 setLoading(false);
-                navigate("/dashboard")
+                setIsSuccessModalOpen(true);
             } else {
                 setLoading(false);
                 setError("Submission failed. Please check your inputs and try again.");
@@ -53,6 +64,15 @@ export const FundingSourceOnboardingArea = () => {
     return (
         <Layout>
             <FundingSourceOnboardingAreaWrapper>
+            <BaseModal
+                    open={isSuccessModalOpen}
+                    width={"40%"}
+                    height={"auto"}
+                    callToAction={"Continue"}
+                    message={"Funding source created successfully"}
+                    onClose={handleSuccessModalPersist}
+                    handleCallToActionClick={navigateToDashboard}
+                />
                 <H2>FUNDING SOURCE</H2>
                 <form onSubmit={handleSubmit}>
                     <Label>Funding Source Name</Label>

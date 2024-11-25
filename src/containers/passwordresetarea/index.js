@@ -6,6 +6,7 @@ import { Layout } from "../layout";
 import { PasswordResetAreaWrapper } from "./styled";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { DotLoader } from "react-spinners";
+import { BaseModal } from "../../components/modal";
 import Cookies from "universal-cookie";
 import { resetPassword } from "../../util/apis/passwordReset";
 
@@ -20,6 +21,7 @@ export const PasswordResetArea = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [queryToken, setQueryToken] = useState(undefined);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [formDetails, setFormDetails] = useState({
         ...((action === "passwordreset" || action === "firsttimepasswordreset") && { oldPassword: "" }),
         newPassword: "",
@@ -40,6 +42,15 @@ export const PasswordResetArea = () => {
         }));
     };
 
+    const navigateToDashboard = async () => {
+        await setIsSuccessModalOpen(false);
+        return navigate("/");
+      }
+    
+      const handleSuccessModalPersist = () => {
+        setIsSuccessModalOpen(true);
+      }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -51,7 +62,7 @@ export const PasswordResetArea = () => {
             const response = await resetPassword(token, action, formDetails);
             if (response.status === "Success") {
                 setLoading(false);
-                navigate("/");
+                setIsSuccessModalOpen(true);
             } else {
                 setLoading(false);
                 setError("Submission failed. Please check your inputs and try again.");
@@ -66,6 +77,15 @@ export const PasswordResetArea = () => {
     return (
         <Layout>
             <PasswordResetAreaWrapper>
+            <BaseModal
+                    open={isSuccessModalOpen}
+                    width={"40%"}
+                    height={"auto"}
+                    callToAction={"Continue"}
+                    message={"Password reset successfully"}
+                    onClose={handleSuccessModalPersist}
+                    handleCallToActionClick={navigateToDashboard}
+                />
                 <H2>RESET PASSWORD</H2>
                 <form onSubmit={handleSubmit}>
                     {(action === "passwordreset" || action === "firsttimepasswordreset") && (

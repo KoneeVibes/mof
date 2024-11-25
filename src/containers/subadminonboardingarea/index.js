@@ -11,6 +11,7 @@ import { BaseButton } from "../../components/buttons/styled";
 import { DotLoader } from "react-spinners";
 import { flattenOrganizations } from "../../config/flattenOrganizations";
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
+import { BaseModal } from "../../components/modal";
 
 export const SubAdminOnboardingArea = () => {
     const cookies = new Cookies();
@@ -21,6 +22,7 @@ export const SubAdminOnboardingArea = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [organizations, setOrganizations] = useState([]);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [formDetails, setFormDetails] = useState({
         email: "",
         organization: ""
@@ -34,6 +36,15 @@ export const SubAdminOnboardingArea = () => {
         }));
     };
 
+    const navigateToDashboard = async () => {
+        await setIsSuccessModalOpen(false);
+        return navigate("/dashboard");
+      }
+    
+      const handleSuccessModalPersist = () => {
+        setIsSuccessModalOpen(true);
+      }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -42,7 +53,7 @@ export const SubAdminOnboardingArea = () => {
             const response = await onboardSubAdmin(token, formDetails);
             if (response.status === "Success") {
                 setLoading(false);
-                navigate("/dashboard");
+                setIsSuccessModalOpen(true);
             } else {
                 setLoading(false);
                 setError("Submission failed. Please check your inputs and try again.");
@@ -68,6 +79,15 @@ export const SubAdminOnboardingArea = () => {
     return (
         <Layout>
             <SubAdminOnboardingAreaWrapper>
+            <BaseModal
+                    open={isSuccessModalOpen}
+                    width={"40%"}
+                    height={"auto"}
+                    callToAction={"Continue"}
+                    message={"Subadmin created successfully"}
+                    onClose={handleSuccessModalPersist}
+                    handleCallToActionClick={navigateToDashboard}
+                />
                 <H2>SUB-ADMIN DETAILS</H2>
                 <form onSubmit={handleSubmit}>
                     <Label>Enter email</Label>

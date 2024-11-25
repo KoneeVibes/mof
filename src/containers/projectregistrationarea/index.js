@@ -279,9 +279,9 @@ export const ProjectRegistrationArea = () => {
               </SelectFieldWrapper>
               <ProjectRegistrationBaseInput
                 name="amount"
-                placeholder="Amount"
+                placeholder="Enter amount"
                 required
-                value={source.amount}
+                value={source.amount || ""} // Ensure value is empty initially
                 onChange={(e) => {
                   const value = e.target.value;
                   if (/^\d*$/.test(value)) { // Allow only digits
