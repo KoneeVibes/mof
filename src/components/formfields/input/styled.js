@@ -8,11 +8,18 @@ export const BaseInputWrapper = styled("input")`
             marginInlineStart: margininlinestart || "0",
             border: "none",
             outline: "none",
-            fontFamily: "AvenirNext",
+            fontFamily: "Avenir-Next",
             fontSize: "14px",
             fontWeight: "500",
             borderRadius: "10px",
             backgroundColor: "#FFFFFF",
+            "&::placeholder": {
+                color: "#000000",
+                opacity: 1, /* Firefox */
+            },
+            "&::-ms-input-placeholder": {
+                color: "#000000",
+            },
             "@supports (width: -webkit-fill-available)": {
                 width: width || "-webkit-fill-available",
             },
@@ -26,11 +33,11 @@ export const BaseInputWrapper = styled("input")`
 export const SearchButtonWrapper = styled("button")(
     ({ cardPadding = 'var(--cardPadding)' }) => {
         return `
-            padding: calc(${cardPadding}/2.5);
-            background-color: #059212;
+            padding: calc(${cardPadding} / 2.5);
+            background - color: #059212;
             border: none;
             border-radius: 8px;
-    `
+        `
     })
 
 export const InputFieldWrapper = styled(Row)(({ width }) => {

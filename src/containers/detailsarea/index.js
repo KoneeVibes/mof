@@ -247,8 +247,6 @@ export const ProjectDetailsArea = () => {
       });
   }, [projectId, token, shouldShowDetailsEditArea, error, loading]);
 
-  useEffect(() => console.log(project), [project]);
-
   useEffect(() => {
     getFilteredDisbursements(token, projectId, formDetails).then((requests) =>
       setRequests(requests)
@@ -258,8 +256,6 @@ export const ProjectDetailsArea = () => {
   useEffect(() => {
     setProjectStatus(project?.status);
   }, [project?.status]);
-
-  useEffect(() => console.log(project), [project])
 
   useEffect(() => {
     getProjectMembers(token, projectId)

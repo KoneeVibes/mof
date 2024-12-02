@@ -230,7 +230,13 @@ export const DetailsEditArea = React.forwardRef((props, ref) => {
                                 <Label>{`${labelPrefix} ${index + 1}`}</Label>
                                 {Object.entries(item).map(([field, value], subIndex) => (
                                     <React.Fragment key={subIndex}>
-                                        <Label>{toTitleCase(field.replace(/([A-Z])/g, ' $1').trim())}</Label>
+                                        <Label>
+                                            {(toTitleCase(field.replace(/([A-Z])/g, ' $1').trim()) === "Credit No")
+                                                ? "Credit Number"
+                                                : (toTitleCase(field.replace(/([A-Z])/g, ' $1').trim()) === "Loan No")
+                                                    ? "Loan Number"
+                                                    : toTitleCase(field.replace(/([A-Z])/g, ' $1').trim())}
+                                        </Label>
                                         {(field === "funderName" && modalId === "funding") ? (
                                             <SelectFieldWrapper
                                                 as="select"
