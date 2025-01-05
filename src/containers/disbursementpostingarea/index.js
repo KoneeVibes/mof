@@ -157,6 +157,7 @@ export const DisbursementRequestArea = () => {
                     <SelectFieldWrapper
                         as="select"
                         name="currencyName"
+                        required
                         value={formDetails.currencyName}
                         onChange={handleChange}
                     >

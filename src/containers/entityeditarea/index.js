@@ -1,23 +1,25 @@
-import { Layout } from "../layout";
-import { EntityOnboardingAreaWrapper } from "./styled";
-import { BaseInputWrapper } from "../../components/formfields/input/styled";
-import { H2, Label, P } from "../../components/typography/styled";
-import { BaseButton } from "../../components/buttons/styled";
 import { useEffect, useState } from "react";
-import { addOrganization } from "../../util/apis/addOrganization";
-import Cookies from "universal-cookie";
-import { useNavigate } from "react-router-dom";
-import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
-import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { DotLoader } from "react-spinners";
+import { BaseButton } from "../../components/buttons";
+import { BaseInputWrapper } from "../../components/formfields/input/styled";
+import { SelectFieldWrapper } from "../../components/formfields/select/styled";
 import { BaseModal } from "../../components/modal";
+import { H2, Label, P } from "../../components/typography/styled";
+import { Layout } from "../layout";
+import { useNavigate, useParams } from "react-router-dom";
+import Cookies from "universal-cookie";
+import { EntityEditAreaWrapper } from "./styled";
+import { updateOrganization } from "../../util/apis/updateOrganization";
 import { flattenOrganizations } from "../../config/flattenOrganizations";
+import { getAllOrganizations } from "../../util/apis/getAllOrganizations";
+import { getOrganization } from "../../util/apis/getOrganization";
 
-export const EntityOnboardingArea = () => {
+export const EntityEditArea = () => {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
     const orgTypes = ["Ministry", "Department", "Agency", "State"];
 
+    const { entityId } = useParams();
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [organizations, setOrganizations] = useState([]);
@@ -28,14 +30,6 @@ export const EntityOnboardingArea = () => {
         orgType: "",
         parentOrg: "",
     });
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormDetails((prevDetails) => ({
-            ...prevDetails,
-            [name]: value,
-        }));
-    };
 
     useEffect(() => {
         if (token) {
@@ -48,21 +42,47 @@ export const EntityOnboardingArea = () => {
         }
     }, [token]);
 
-    const navigateToDashboard = async () => {
-        await setIsSuccessModalOpen(false);
-        return navigate("/dashboard");
-    };
+    useEffect(() => {
+        if (!entityId) return;
+        const fetchOrganization = async () => {
+            try {
+                const response = await getOrganization(token, entityId);
+                setFormDetails({
+                    name: response.name,
+                    orgType: response.orgType,
+                    parentOrg: response.parentOrg ?? "",
+                });
+            } catch (error) {
+                console.error("Failed to fetch organization:", error);
+            }
+        };
+        fetchOrganization();
+    }, [entityId, token]);
 
     const handleSuccessModalPersist = () => {
         setIsSuccessModalOpen(true);
     };
 
+    const navigateToDashboard = async () => {
+        await setIsSuccessModalOpen(false);
+        return navigate("/dashboard");
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormDetails((prevDetails) => ({
+            ...prevDetails,
+            [name]: value,
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!entityId) return;
         setError(null);
         setLoading(true);
         try {
-            const response = await addOrganization(token, formDetails);
+            const response = await updateOrganization(token, entityId, formDetails);
             if (response.status === "Success") {
                 setLoading(false);
                 setIsSuccessModalOpen(true);
@@ -79,17 +99,17 @@ export const EntityOnboardingArea = () => {
 
     return (
         <Layout>
-            <EntityOnboardingAreaWrapper>
+            <EntityEditAreaWrapper>
                 <BaseModal
                     open={isSuccessModalOpen}
                     width={"40%"}
                     height={"auto"}
                     callToAction={"Continue"}
-                    message={"Organisation created successfully"}
+                    message={"Organisation updated successfully"}
                     onClose={handleSuccessModalPersist}
                     handleCallToActionClick={navigateToDashboard}
                 />
-                <H2>NEW MDA DETAILS</H2>
+                <H2>EDIT MDA</H2>
                 <form onSubmit={handleSubmit}>
                     <Label>Name of MDA:</Label>
                     <BaseInputWrapper
@@ -136,7 +156,7 @@ export const EntityOnboardingArea = () => {
                     </BaseButton>
                 </form>
                 {error && <P style={{ color: 'red' }}>{error}</P>}
-            </EntityOnboardingAreaWrapper>
+            </EntityEditAreaWrapper>
         </Layout>
-    );
-};
+    )
+}

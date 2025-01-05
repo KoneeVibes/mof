@@ -8,11 +8,12 @@ import { P } from "../typography/styled";
 import React, { useContext } from "react";
 import { Context } from "../../context";
 import { useNavigate } from "react-router-dom";
+import { Column } from "../flex/styled";
 
 export const Avatar = ({ location }) => {
     const cookies = new Cookies();
     const cookie = cookies.getAll();
-    const { email, role, userId } = cookie.USER || {};
+    const { email, role, userId, organization } = cookie.USER || {};
 
     const navigate = useNavigate();
     const { isavatarmodalopen, setIsAvatarModalOpen } = useContext(Context);
@@ -60,7 +61,10 @@ export const Avatar = ({ location }) => {
         >
             {/* <ProfilePhoto /> */}
             <FontAwesomeIcon icon={faUser} />
-            <span>{email}</span>
+            <Column className="loggedInUser">
+                <span>{email}</span>
+                <span>{organization}</span>
+            </Column>
             <AvatarModalWrapper
                 isavatarmodalopen={isavatarmodalopen}
             >

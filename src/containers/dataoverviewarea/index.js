@@ -146,7 +146,7 @@ export const DataOverviewArea = () => {
     }, []);
 
     useEffect(() => {
-        if (token) {
+        if (token && (cookie?.USER?.role === "SuperAdmin")) {
             getAllOrganizations(token).then((listOfOrganizations) => {
                 const collapsedList = flattenOrganizations(listOfOrganizations);
                 setOrganizations(collapsedList.map((organizationInfo) => organizationInfo.name));
@@ -154,7 +154,7 @@ export const DataOverviewArea = () => {
                 console.error("Failed to fetch organizations:", error);
             });
         }
-    }, [token]);
+    }, [token, cookie?.USER?.role]);
 
     useEffect(() => {
         getDashboardMetrics(token, orgId)
@@ -192,7 +192,7 @@ export const DataOverviewArea = () => {
                 <PieChart
                     title={"Project Metrics"}
                     values={[dashboardOverview?.projectsMetrics.completed, dashboardOverview?.projectsMetrics.ongoing, dashboardOverview?.projectsMetrics.terminated, dashboardOverview?.projectsMetrics.pending]}
-                    label={"% of Completion"}
+                    label={null}
                     labels={['Completed', 'Ongoing', 'Terminated', 'Pending']}
                     maxHeight={"400px"}
                     bgColor={['#059212', '#E9ECF1', '#FF0000', "#0000FF"]}

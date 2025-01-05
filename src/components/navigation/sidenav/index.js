@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback, Fragment } from "react";
 import Cookies from "universal-cookie";
 import { getProjectsPerOrganization } from "../../../util/apis/getProjectsPerOrganization";
 import { getAllOrganizations } from "../../../util/apis/getAllOrganizations";
@@ -10,6 +10,7 @@ import { SideNavItemsListWrapper, SideNavWrapper } from "./styled";
 import { Row } from "../../flex/styled";
 import { sideNavItems } from "../../../data";
 import { DotLoader } from "react-spinners";
+import { useQuery } from "@tanstack/react-query";
 
 export const SideNav = () => {
     const cookies = new Cookies();
@@ -33,8 +34,13 @@ export const SideNav = () => {
     const [organizationProjects, setOrganizationProjects] = useState([]);
     const [activeEntity, setActiveEntity] = useState(null);
     const [organizations, setOrganizations] = useState([]);
-    const [populatedStatus, setPopulatedStatus] = useState({});
     const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [isFirstPage, setIsFirstPage] = useState(true);
+    const [isLastPage, setIsLastPage] = useState(false);
+    const [isEmpty, setIsEmpty] = useState(false);
+    const [showMore, setShowMore] = useState(false);
+    const itemsPerPage = 10;
 
     const { role, orgType, organizationId, organization, userId } = cookie.USER || {};
     const entities = (role === "SuperAdmin") ? Object.keys(listOfProjectPerOrganization) : ["Projects"];
@@ -50,6 +56,10 @@ export const SideNav = () => {
         if (e.currentTarget.getAttribute("data-nav-key") === "password") {
             return navigate(`/user/${userId}/passwordreset`);
         }
+        // handle click of sub admins
+        if (e.currentTarget.getAttribute("data-nav-key") === "Sub Admins") {
+            return navigate(`/system/sub-admins`);
+        }
         // handle click of any of the projects
         if (role !== "SuperAdmin") {
             return navigate(`/${parsedOrganization}/${id}`);
@@ -60,17 +70,19 @@ export const SideNav = () => {
 
     const updateListOfOrganizations = async () => {
         try {
+            // the getAllOrganizations should filter for search query and 
+            // should support pagination
             const organizations = await getAllOrganizations(token);
-            const Ministry = organizations.filter(
+            const Ministry = organizations?.filter(
                 (org) => org.orgType === "Ministry"
             );
-            const Department = organizations.flatMap((org) =>
+            const Department = organizations?.flatMap((org) =>
                 org.subOrganizations.filter((subOrg) => subOrg.orgType === "Department")
             );
-            const Agency = organizations.flatMap((org) =>
+            const Agency = organizations?.flatMap((org) =>
                 org.subOrganizations.filter((subOrg) => subOrg.orgType === "Agency")
             );
-            const State = organizations.filter((org) => org.orgType === "State");
+            const State = organizations?.filter((org) => org.orgType === "State");
             setListOfOrganizations({
                 Ministry: Ministry,
                 Department: Department,
@@ -98,31 +110,62 @@ export const SideNav = () => {
                 (project) => project.organization === organization
             );
             setOrganizationProjects(filteredProjects);
-        }
+        };
         setLoading(false);
     };
+
+    const handlePrevious = () => {
+        setCurrentPage((prevPage) => Math.max(prevPage - 1, 0));
+    };
+
+    const handleNext = () => {
+        setCurrentPage((prevPage) => {
+            const maxPage = Math.ceil((role === "SuperAdmin" ? organizations.length : organizationProjects.length) / itemsPerPage) - 1;
+            return Math.min(prevPage + 1, maxPage);
+        });
+    };
+
+    const paginatedItems = useCallback((items) => {
+        const startIndex = currentPage * itemsPerPage;
+        return items?.slice(startIndex, startIndex + itemsPerPage);
+    }, [currentPage, itemsPerPage]);
+
+    const { data: populatedStatus } = useQuery({
+        queryKey: ['populatedStatus', token, organizations],
+        queryFn: async () => {
+            if (!Array.isArray(organizations) || organizations.length === 0) {
+                return {};
+            }
+            const status = {};
+            await Promise.all(
+                organizations.map(async (org) => {
+                    if (org?.id) {
+                        try {
+                            const projectList = await getProjectsPerOrganization(token, org.id);
+                            status[org.id] = projectList?.length < 1 ? "unpopulated" : null;
+                        } catch (error) {
+                            console.error(`Error fetching projects for organization ${org.id}:`, error);
+                        }
+                    }
+                })
+            );
+            return status;
+        },
+        enabled: !!token && Array.isArray(organizations) && organizations.length > 0,
+    });
+
+    useEffect(() => {
+        setIsFirstPage(currentPage === 0);
+        const items = role === "SuperAdmin" ? organizations : organizationProjects;
+        setIsLastPage(currentPage === Math.ceil(items?.length / itemsPerPage) - 1);
+        setIsEmpty(paginatedItems(items)?.length === 0);
+    }, [currentPage, organizations, organizationProjects, role, itemsPerPage, paginatedItems]);
 
     useEffect(() => {
         if (activeEntity) {
             setOrganizations(listOfOrganizations[activeEntity]);
         }
     }, [activeEntity, listOfOrganizations]);
-
-    useEffect(() => {
-        const updateOrganizationStatus = async () => {
-            const status = {};
-            if (Array.isArray(organizations) && organizations.length > 0) {
-                for (const org of organizations) {
-                    if (org.id) {
-                        const projectList = await getProjectsPerOrganization(token, org.id);
-                        status[org.id] = projectList.length < 1 ? "unpopulated" : null;
-                    }
-                }
-                setPopulatedStatus(status);
-            }
-        };
-        updateOrganizationStatus();
-    }, [organizations, token]);
 
     useEffect(() => {
         if (token && organizationId) {
@@ -181,8 +224,7 @@ export const SideNav = () => {
                                 >
                                     {entity}
                                 </P>
-                                {/* Mirabel, add a drop down symbol here */}
-                                <Row className="dotloaderItem">
+                                <div className="dotloaderItem">
                                     {(loading && (entity === activeEntity || role !== "SuperAdmin")) ?
                                         <DotLoader
                                             size={20}
@@ -196,21 +238,23 @@ export const SideNav = () => {
                                                     ? "rotate(270deg)" : "rotate(0deg)",
                                         }}></i>
                                     }
-                                </Row>
+                                </div>
                             </Row>
-                            {(activeEntity === entity || entities.length === 1) && (
+                            {/* First condition sets the dropdown to toggle appropriately for superadmin
+                            The second condition sets the dropdown to toggle properly for sub admin and users */}
+                            {(activeEntity === entity || (entities.length === 1 && (organizationProjects && organizationProjects.length > 0))) && (
                                 <ul>
                                     {role === "SuperAdmin"
-                                        ? organizations?.map((organization, k) => (
+                                        ? paginatedItems(organizations)?.map((organization, k) => (
                                             <Li
                                                 key={k}
                                                 className={
-                                                    populatedStatus[organization.id] === "unpopulated"
+                                                    populatedStatus && populatedStatus?.[organization.id] === "unpopulated"
                                                         ? "unpopulated"
                                                         : ""
                                                 }
                                                 onClick={(e) =>
-                                                    populatedStatus[organization.id] !==
+                                                    populatedStatus?.[organization.id] !==
                                                     "unpopulated" &&
                                                     navigateFromSideBar(
                                                         organization.name,
@@ -222,7 +266,7 @@ export const SideNav = () => {
                                                 {organization.name}
                                             </Li>
                                         ))
-                                        : organizationProjects?.map((project, k) => (
+                                        : paginatedItems(organizationProjects)?.map((project, k) => (
                                             <Li
                                                 key={k}
                                                 onClick={(e) =>
@@ -238,26 +282,77 @@ export const SideNav = () => {
                                         ))}
                                 </ul>
                             )}
+                            {(activeEntity === entity || (entities.length === 1 && (organizationProjects && organizationProjects.length > 0))) && (
+                                <Row
+                                    className="pagination"
+                                >
+                                    <P
+                                        className={`previous-button ${isFirstPage || isEmpty ? "disable-click" : ""}`}
+                                        onClick={handlePrevious}
+                                    >
+                                        Previous
+                                    </P>
+                                    <P
+                                        className={`next-button ${isLastPage || isEmpty ? "disable-click" : ""}`}
+                                        onClick={handleNext}
+                                    >
+                                        Next
+                                    </P>
+                                </Row>
+                            )}
                         </div>
                     ))}
                 </div>
                 <div className="side-nav-action-item">
-                    {role === "SuperAdmin" && (
-                        <P
-                            style={{ color: "red", padding: "var(--cardPadding) var(--cardPadding) 0 var(--cardPadding)" }}
-                            data-nav-key={"archives"}
-                            onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
-                        >
-                            Archives
-                        </P>
-                    )}
-                    <P
-                        style={{ color: "red" }}
+                    < P
+                        style={{
+                            color: "red",
+                            padding: (role === "SuperAdmin") ? "var(--cardPadding) var(--cardPadding) 0 var(--cardPadding)" : "var(--cardPadding)"
+                        }}
                         data-nav-key={"password"}
                         onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
                     >
                         Password Reset
                     </P>
+                    {(role === "SuperAdmin") && (
+                        <Fragment>
+                            <Row
+                                className="other-controls"
+                                onClick={() => setShowMore(!showMore)}
+                            >
+                                <P
+                                    style={{ color: "red", flex: 1 }}
+                                >
+                                    Other Controls
+                                </P>
+                                <div className="dotloaderItem">
+                                    <i className="fa-solid fa-caret-down" style={{
+                                        transform:
+                                            showMore
+                                                ? "rotate(270deg)" : "rotate(0deg)",
+                                    }}></i>
+                                </div>
+                            </Row>
+                            <div
+                                style={{ display: showMore ? "block" : "none" }}
+                            >
+                                <P
+                                    style={{ color: "red", padding: "0 var(--cardPadding)", paddingLeft: "calc(var(--cardPadding) * 2)" }}
+                                    data-nav-key={"archives"}
+                                    onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
+                                >
+                                    Archives
+                                </P>
+                                <P
+                                    style={{ color: "red", paddingLeft: "calc(var(--cardPadding) * 2)" }}
+                                    data-nav-key={"Sub Admins"}
+                                    onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
+                                >
+                                    Sub Admins
+                                </P>
+                            </div>
+                        </Fragment>
+                    )}
                 </div>
                 <div className="avatar-div">
                     <Avatar location={"side-nav"} />

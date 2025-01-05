@@ -23,6 +23,8 @@ export const BarChart = ({ axis, title, labels, datasets, barThickness }) => {
     const options = {
         responsive: true,
         indexAxis: axis,
+        devicePixelRatio: 4,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top',

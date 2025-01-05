@@ -10,6 +10,7 @@ export const ProjectDetailsAreaWrapper = styled.div(
       flexDirection: "column",
       gap: "var(--flexGap)",
       position: "relative",
+      overflow: "hidden",
       ".tableWrapper": {
         overflow: "auto",
       },
@@ -19,6 +20,9 @@ export const ProjectDetailsAreaWrapper = styled.div(
       },
       ".filterField": {
         width: "auto",
+      },
+      "& .projectMembersCard": {
+        overflow: "unset",
       },
       table: {
         width: "100%",
@@ -42,6 +46,13 @@ export const ProjectDetailsAreaWrapper = styled.div(
         padding: cardPadding,
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       },
+      "& a": {
+        textDecoration: "none",
+        color: "#000000",
+        "&:hover": {
+          color: "#059212",
+        },
+      }
     };
   }
 );

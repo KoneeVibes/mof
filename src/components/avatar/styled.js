@@ -10,6 +10,16 @@ export const AvatarWrapper = styled(Row)(({ location }) => {
         position: relative;
         z-index: 1;
 
+        .loggedInUser{
+            gap: 0;
+        }
+
+        .loggedInUser>span:last-of-type {
+            color: #059212;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
         @media screen and (min-width: 0px) and (max-width: 768px){
             display: ${(location === "top-nav") ? "none" : "flex"};
         }

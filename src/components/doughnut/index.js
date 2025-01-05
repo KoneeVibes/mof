@@ -7,6 +7,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export const PieChart = ({ title, labels, label, values, bgColor, borderColor, radius, maxHeight }) => {
     const options = {
         responsive: true,
+        devicePixelRatio: 4,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top',

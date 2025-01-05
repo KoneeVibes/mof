@@ -1,9 +1,9 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const deleteDisbursement = async (token, disbursementId) => {
+export const getSearchResult = async (token, query) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements/delete/${disbursementId}`, {
-            method: 'PATCH',
+        const response = await fetch(`${BASE_ENDPOINT}/api/Projects/?search=${encodeURIComponent(query)}`, {
+            method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -14,7 +14,7 @@ export const deleteDisbursement = async (token, disbursementId) => {
             console.error('Error:', res);
             throw new Error(res.message);
         }
-        return res;
+        return res.data;
     } catch (error) {
         console.error('API fetch error:', error);
         throw error;

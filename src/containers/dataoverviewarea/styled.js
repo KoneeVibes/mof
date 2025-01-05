@@ -8,6 +8,10 @@ export const DataOverviewAreaWrapper = styled(Column)(() => {
             margin-block: 0;
         }
 
+        .card-component {
+            min-height: 22rem;
+        }
+
         .card-component .bar-chart-component,
         .card-component .pie-chart-component,
         .card-component .line-graph-component {

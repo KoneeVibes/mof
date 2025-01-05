@@ -43,5 +43,8 @@ export const EntitiesTableWrapper = styled.div(({ cardPadding = "var(--cardPaddi
         "tbody tr td:nth-child(1)": {
             textAlign: "left",
         },
+        "& tbody tr:hover": {
+            background: "#F5F5F5"
+        }
     }
 })

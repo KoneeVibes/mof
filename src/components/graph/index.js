@@ -24,6 +24,8 @@ ChartJS.register(
 export const LineGraph = ({ title, labels, datasets }) => {
     const options = {
         responsive: true,
+        devicePixelRatio: 4,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top',

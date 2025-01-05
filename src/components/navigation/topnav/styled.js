@@ -48,7 +48,7 @@ export const LeftSideTopNavWrapper = styled(Row)(() => {
                 height: auto;
             }
 
-            .search-results{
+            .search-results-box{
                 position: absolute;
                 top: var(--navHeight);
                 left: calc(var(--navWidth));
@@ -58,7 +58,25 @@ export const LeftSideTopNavWrapper = styled(Row)(() => {
                 background: #FFFFFF;
                 border: 3px solid #F0F0F0;
                 border-radius: 8px;
+                max-height: 300px;
+                overflow: auto;
                 display: none;
+            }
+
+            .search-message{
+                color: red;
+            }
+
+            .search-result{
+                cursor: pointer;
+                white-space: nowrap;
+                &:hover{
+                    color: #0000FF;
+                }
+            }
+
+            .align-row{
+                align-items: center;
             }
         }
 
@@ -75,7 +93,7 @@ export const LeftSideTopNavWrapper = styled(Row)(() => {
                 display: none !important;
             }
 
-            .search-results{
+            .search-results-box{
                 display: block
             }
         }

@@ -45,11 +45,11 @@ export const PasswordResetArea = () => {
     const navigateToDashboard = async () => {
         await setIsSuccessModalOpen(false);
         return navigate("/");
-      }
-    
-      const handleSuccessModalPersist = () => {
+    }
+
+    const handleSuccessModalPersist = () => {
         setIsSuccessModalOpen(true);
-      }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -57,8 +57,10 @@ export const PasswordResetArea = () => {
         setLoading(true);
         if (queryToken) {
             token = queryToken;
+            console.log("Token from query:", token);
         };
         try {
+            console.log("Token:", token);
             const response = await resetPassword(token, action, formDetails);
             if (response.status === "Success") {
                 setLoading(false);
@@ -77,7 +79,7 @@ export const PasswordResetArea = () => {
     return (
         <Layout>
             <PasswordResetAreaWrapper>
-            <BaseModal
+                <BaseModal
                     open={isSuccessModalOpen}
                     width={"40%"}
                     height={"auto"}

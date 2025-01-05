@@ -84,10 +84,18 @@ export const ProjectsTableArea = () => {
         navigate(`/${organization.replace(/\s+/g, '').toLowerCase()}/${projectId}`);
     };
 
+    const handleNavigateToEditOrganization = () => {
+        return navigate(`/update/${entityId}/entity`);
+    };
+
     return (
         <Layout>
             <EntitiesAreaWrapper>
-                <Jumbotron entity={projects[0]?.organization} />
+                <Jumbotron
+                    location={"projects table area"}
+                    entity={projects[0]?.organization}
+                    handleJumbotronButtonClick={handleNavigateToEditOrganization}
+                />
                 <EntitiesTableWrapper>
                     <Table
                         categories={categories}

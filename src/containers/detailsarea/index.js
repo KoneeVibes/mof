@@ -49,6 +49,7 @@ export const ProjectDetailsArea = () => {
     basic: useRef(null),
     beneficiaries: useRef(null),
     funding: useRef(null),
+    members: useRef(null),
   };
   const detailsEditAreaRef = useRef(null);
   const navigate = useNavigate();
@@ -367,21 +368,25 @@ export const ProjectDetailsArea = () => {
                   <P onClick={(e) => handleEditModalClose(e, true, "basic", "basic")}>
                     Edit Basic Details
                   </P>
-                  <P
-                    onClick={(e) => handleEditModalClose(e, true, "basic", "members")}
-                  >
-                    Edit Project Members
-                  </P>
                 </ProjectDetailEditModal>
               </Row>
             </ProjectDetailActionRow>
+            {project?.projectCollection && <span>{project?.projectCollection}</span>}
             <H3>{`${project?.projectTitle}(${project?.projectSerialNo})`}</H3>
-            <P>{`Loan Number: ${project?.fundingSources.map(
+            <P>{`Loan Numbers: ${project?.fundingSources.map(
               (fundingSource) => ` ${fundingSource.loanNo}`
+            )}`}</P>
+            <P>{`Credit Numbers: ${project?.fundingSources.map(
+              (fundingSource) => ` ${fundingSource.creditNo}`
+            )}`}</P>
+            <P>{`Credit Types: ${project?.fundingSources.map(
+              (fundingSource) => ` ${fundingSource.creditType}`
             )}`}</P>
             <P>{`MDA: ${project?.organization}`}</P>
             <P>{`Tier of Government: ${project?.governmentTier}`}</P>
+            <P>{`Start Date: ${project?.startDate}`}</P>
             <P>{`Effective Date: ${project?.dateEffective}`}</P>
+            <P>{`Closing Date: ${project?.endDate}`}</P>
             {project?.dateUpdated && projectStatus !== "Ongoing" && (
               <P>{`Closing Date: ${project?.dateUpdated}`}</P>
             )}
@@ -509,6 +514,44 @@ export const ProjectDetailsArea = () => {
             })()}
           />
         </Row>
+        <Row>
+          <ProjectDetailCardWrapper className="projectMembersCard">
+            <ProjectDetailActionRow>
+              <H3>Project Members</H3>
+              {cookie.USER.role === "SubAdmin" && (
+                <i
+                  className="fa-solid fa-ellipsis-vertical pad-up"
+                  style={{ padding: "0.5rem", cursor: "pointer" }}
+                  onClick={(e) => handleEditModalOpen(e, "members")}
+                />
+              )}
+              <ProjectDetailEditModal
+                ref={modalRefs.members}
+                display={
+                  activeEditModal === "members" ? "block" : "none"
+                }
+              >
+                <P
+                  onClick={(e) =>
+                    handleEditModalClose(
+                      e,
+                      true,
+                      "members",
+                      "members"
+                    )
+                  }
+                >
+                  Edit Project Members List
+                </P>
+              </ProjectDetailEditModal>
+            </ProjectDetailActionRow>
+            <ul>
+              {project?.team?.map((member, key) => (
+                <Li key={key}>{member?.email}</Li>
+              ))}
+            </ul>
+          </ProjectDetailCardWrapper>
+        </Row>
         <H2>Disbursements</H2>
         <div style={{ overflow: "auto" }}>
           <Table
@@ -516,7 +559,7 @@ export const ProjectDetailsArea = () => {
             columnTitles={columns}
             rowItems={requests}
             uniqueCurrencies={currencies}
-            onSelectOption={(x, y, event) => event.preventDefault()}
+            onSelectOption={(x, y, event) => event.stopPropagation()}
             performAction={handleDeleteDisbursement}
             role={cookie.USER.role}
             exportToExcel={handleExportToExcel}
@@ -532,7 +575,6 @@ export const ProjectDetailsArea = () => {
             Post a disbursement
           </ProjectDetailBaseButton>
         )}
-
         <ProjectDetailCardWrapper>
           <H2>Remarks</H2>
           <Column>

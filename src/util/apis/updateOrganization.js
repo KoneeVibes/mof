@@ -1,13 +1,14 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const deleteDisbursement = async (token, disbursementId) => {
+export const updateOrganization = async (token, orgId, newOrganizationDetails) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements/delete/${disbursementId}`, {
+        const response = await fetch(`${BASE_ENDPOINT}/api/organizations/${orgId}`, {
             method: 'PATCH',
             headers: {
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify(newOrganizationDetails)
         });
         const res = await response.json();
         if (!response.ok) {
@@ -16,7 +17,7 @@ export const deleteDisbursement = async (token, disbursementId) => {
         }
         return res;
     } catch (error) {
-        console.error('API fetch error:', error);
+        console.error('API fetch error:', error.message);
         throw error;
     }
 };

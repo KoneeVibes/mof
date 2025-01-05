@@ -21,7 +21,11 @@ export const Table = ({
   collections,
   status,
   postersId,
-  handleFilterValueChange
+  handleFilterValueChange,
+  subAdminModalRef,
+  activatedSubAdminEmail,
+  handleSelectedSubAdmin,
+  handleSubAdminModalActionItemClick
 }) => {
   return (
     <React.Fragment>
@@ -224,7 +228,7 @@ export const Table = ({
                 </tr>
               </React.Fragment>
             ) : (
-              // handle the disbursements area
+              // handle the disbursements area and subadmins table area
               <tr>
                 {columnTitles?.map((columnTitle, index) => (
                   <Th key={index}>{columnTitle}</Th>
@@ -244,6 +248,7 @@ export const Table = ({
                   {rowItem.title ||
                     rowItem.dateDisbursed ||
                     rowItem.projectTitle ||
+                    rowItem.email ||
                     ""}
                 </Td>
                 {location === "detailsArea" && (
@@ -267,7 +272,16 @@ export const Table = ({
                         )}
                       </Td>
                     )}
-                    <Td>{rowItem?.attachments[0] || ""}</Td>
+                    <Td>
+                      <a
+                        download
+                        href={rowItem?.attachments[0]?.fileUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Download Attachment
+                      </a>
+                    </Td>
                     <Td>{rowItem?.disbursementStatus || ""}</Td>
                     {role === "Individual" && (
                       <Td
@@ -383,6 +397,29 @@ export const Table = ({
                       </Td>
                     </React.Fragment>
                   )}
+                {(location === "subAdminsArea") && (
+                  <Td
+                    onClick={(e) => handleSelectedSubAdmin(e, rowItem.email)}
+                  >
+                    <i className="fa-solid fa-ellipsis-vertical"></i>
+                    <ul
+                      ref={subAdminModalRef(rowItem.email)}
+                      className="dropdown-modal"
+                      style={{ display: (rowItem.email === activatedSubAdminEmail) ? "block" : "none" }}
+                    >
+                      <li
+                        onClick={(e) => handleSubAdminModalActionItemClick(e, "edit", rowItem.email)}
+                      >
+                        Edit Sub Admin
+                      </li>
+                      <li
+                        onClick={(e) => handleSubAdminModalActionItemClick(e, "delete", rowItem.email)}
+                      >
+                        Delete Sub Admin
+                      </li>
+                    </ul>
+                  </Td>
+                )}
               </tr>
             ))}
             {(location === "dataOverviewArea" ||

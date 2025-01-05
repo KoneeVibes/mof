@@ -49,25 +49,31 @@ export const SideNavItemsListWrapper = styled(Column)(
         return `
         gap: 0;
         justify-content: space-between;
+
         @supports (height: -webkit-fill-available) {
             height: -webkit-fill-available;
         }
+
         @supports (height: -moz-available) {
             height: -moz-available;
         }
+
         p {
             padding: ${cardPadding};
             margin-block: 0;
             cursor: pointer;
         }
+
         .navItem {
             align-items: center;
+            justify-content: space-between;
             &:hover {
                 border-left: 6px solid;
                 border-left-color: #059212;
                 background-color: #afedb5;
             }
         }
+
         .dashboard{
             &:hover {
             border-left: 6px solid;
@@ -75,23 +81,28 @@ export const SideNavItemsListWrapper = styled(Column)(
             background-color: #afedb5;
             }
         }
+
         li {
             cursor: pointer;
             padding: 0 ${cardPadding};
             margin-block: 0.5rem;
         }
+
         ul {
             margin-left: 1.9rem;
             margin-block: 0;
         }
+
         .unpopulated{
             cursor: none;
             color: #EBEBE4;
         }
+
         dropdown {
             position: relative;
             display: inline-block;
         }
+
         .dropbtn {
             background-color: transparent;
             color: black;
@@ -105,20 +116,47 @@ export const SideNavItemsListWrapper = styled(Column)(
         .dotLoader{
             margin: 0 auto;
         }
+
         .entity{
             align-items: center;
         }
+
         .entityItem {
-          display: inline-flex;
-          flex-direction: column;
-          align-items: flex-start;
-          width: 50%;
-         }
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+            flex: 1;
+        }
+
        .dotloaderItem {
-          display: flex;
-          align-items: center; 
-          gap: 10px; 
-         width: 50%; 
+            display: flex;
+            align-items: center; 
+            flex: 1; 
+        }
+            
+        .pagination{
+            font-style: italic;
+            padding: 0 ${cardPadding};
+            justify-content: space-between;
+            margin-block: calc(${cardPadding} / 2);
+        }
+
+        .pagination p {
+            padding: 0;
+        }
+
+        .disable-click{
+            pointer-events: none;
+            color: #EBEBE4;
+        }
+
+        .other-controls {
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .side-nav-action-item {
+            border-top: 1px solid #CACACA;
         }
     `;
     }

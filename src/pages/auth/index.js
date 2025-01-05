@@ -123,7 +123,7 @@ export const Auth = () => {
                                         required
                                         value={formDetails.password}
                                         onChange={handleChange}
-                                        // width={"-webkit-fill-available"}
+                                    // width={"-webkit-fill-available"}
                                     />
                                     <Label className="showPassword">
                                         <input
@@ -135,9 +135,7 @@ export const Auth = () => {
                                         SHOW
                                     </Label>
                                 </div>
-                                {/* when this is fully ready to be setup, just replace the false in the setShowPasswordRecovery
-                                function to true. */}
-                                <P className="forgotPassword" onClick={() => setShowPasswordRecoveryForm(false)}>FORGOT PASSWORD?</P>
+                                <P className="forgotPassword" onClick={() => setShowPasswordRecoveryForm(true)}>FORGOT PASSWORD?</P>
                             </React.Fragment>
                         )}
                         <BaseButton type="submit">

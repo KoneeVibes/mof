@@ -16,6 +16,8 @@ import { CurrencyOnboardingArea } from './containers/currencyonboardingarea';
 import { CollectionRegistrationArea } from './containers/collectionregistrationarea';
 import { RouteProtector } from './routeprotector';
 import { PasswordResetArea } from './containers/passwordresetarea';
+import { EntityEditArea } from './containers/entityeditarea';
+import { SubAdminsArea } from './containers/subadminsarea';
 
 function App() {
   return (
@@ -28,6 +30,7 @@ function App() {
           <Route path='/:entity/:projectId' element={<ProjectDetailsArea />} />
           <Route path='/:entity/:projectId/request' element={<DisbursementRequestArea />} />
           <Route path='/registration/project' element={<ProjectRegistrationArea />} />
+          <Route path='/system/sub-admins' element={<SubAdminsArea />} />
           {/* Route to the archives area */}
           <Route path='/admin/:userId/archives' element={<ArchivesArea />} />
           {/* Route to add a funding source */}
@@ -42,6 +45,8 @@ function App() {
           <Route path='/registration/:superAdminId/subadmin' element={<SubAdminOnboardingArea />} />
           {/* Route to onboard an organization */}
           <Route path='/registration/:superAdminId/entity' element={<EntityOnboardingArea />} />
+          {/* Route to update an organization details */}
+          <Route path='/update/:entityId/entity' element={<EntityEditArea />} />
           {/* Route to add a project collection */}
           <Route path='/registration/:superAdminId/collection' element={<CollectionRegistrationArea />} />
           {/* Route to reset password */}

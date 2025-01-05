@@ -47,7 +47,7 @@ export const ProjectRegistrationArea = () => {
     startDate: "",
     endDate: "",
     governmentTier: "",
-    fundingSources: [{ funderName: "", amount: 0, currencyName: "" }],
+    fundingSources: [{ funderName: "", amount: 0, currencyName: "", loanNo: "", creditNo: "" }],
     projectMembers: [{ email: "" }],
     beneficiaries: [{ name: "" }],
   });
@@ -111,12 +111,12 @@ export const ProjectRegistrationArea = () => {
   const handleAddNewEntry = (section) => {
     const newItem =
       section === "fundingSources"
-        ? { funderName: "", amount: 0, currencyName: "" }
+        ? { funderName: "", amount: 0, currencyName: "", loanNo: "", creditNo: "" }
         : section === "projectMembers"
-        ? { email: "" }
-        : section === "beneficiaries"
-        ? { name: "" }
-        : null;
+          ? { email: "" }
+          : section === "beneficiaries"
+            ? { name: "" }
+            : null;
 
     if (newItem) {
       setFormDetails((prevDetails) => ({
@@ -147,6 +147,7 @@ export const ProjectRegistrationArea = () => {
     e.preventDefault();
     setError(null);
     setLoading(true);
+    console.log(formDetails);
     try {
       const response = await addProject(token, formDetails);
       if (response.status === "Success") {
@@ -305,18 +306,18 @@ export const ProjectRegistrationArea = () => {
               </SelectFieldWrapper>
               <ProjectRegistrationBaseInput
                 type="string"
-                name="loanNumber"
+                name="loanNo"
                 placeholder=" Enter loan number"
                 required
-                value={source.loanNumber}
+                value={source.loanNo}
                 onChange={(e) => handleNestedChange("fundingSources", index, e)}
               />
               <ProjectRegistrationBaseInput
                 type="string"
-                name="creditNumber"
+                name="creditNo"
                 placeholder="Enter credit number"
                 required
-                value={source.creditNumber}
+                value={source.creditNo}
                 onChange={(e) => handleNestedChange("fundingSources", index, e)}
               />
               <SelectFieldWrapper
