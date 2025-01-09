@@ -25,7 +25,12 @@ export const Table = ({
   subAdminModalRef,
   activatedSubAdminEmail,
   handleSelectedSubAdmin,
-  handleSubAdminModalActionItemClick
+  handleSubAdminModalActionItemClick,
+  handleDownloadAttachment,
+  collectionModalRef,
+  activatedCollectionId,
+  handleSelectedCollection,
+  handleCollectionModalActionItemClick,
 }) => {
   return (
     <React.Fragment>
@@ -249,6 +254,7 @@ export const Table = ({
                     rowItem.dateDisbursed ||
                     rowItem.projectTitle ||
                     rowItem.email ||
+                    rowItem.name.replace(/\b\w/g, char => char.toUpperCase()) ||
                     ""}
                 </Td>
                 {location === "detailsArea" && (
@@ -272,15 +278,11 @@ export const Table = ({
                         )}
                       </Td>
                     )}
-                    <Td>
-                      <a
-                        download
-                        href={rowItem?.attachments[0]?.fileUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Download Attachment
-                      </a>
+                    <Td
+                      className="download-attachment"
+                      onClick={() => handleDownloadAttachment(rowItem)}
+                    >
+                      Download Attachment
                     </Td>
                     <Td>{rowItem?.disbursementStatus || ""}</Td>
                     {role === "Individual" && (
@@ -398,24 +400,42 @@ export const Table = ({
                     </React.Fragment>
                   )}
                 {(location === "subAdminsArea") && (
+                  <React.Fragment>
+                    <Td>
+                      {rowItem?.organization}
+                    </Td>
+                    <Td
+                      onClick={(e) => handleSelectedSubAdmin(e, rowItem.email)}
+                    >
+                      <i className="fa-solid fa-ellipsis-vertical"></i>
+                      <ul
+                        ref={subAdminModalRef(rowItem.email)}
+                        className="dropdown-modal"
+                        style={{ display: (rowItem.email === activatedSubAdminEmail) ? "block" : "none" }}
+                      >
+                        <li
+                          onClick={(e) => handleSubAdminModalActionItemClick(e, "edit", rowItem.userId, rowItem.organizationId)}
+                        >
+                          Edit Sub Admin
+                        </li>
+                      </ul>
+                    </Td>
+                  </React.Fragment>
+                )}
+                {(location === "collectionsArea") && (
                   <Td
-                    onClick={(e) => handleSelectedSubAdmin(e, rowItem.email)}
+                    onClick={(e) => handleSelectedCollection(e, rowItem.collectionId)}
                   >
                     <i className="fa-solid fa-ellipsis-vertical"></i>
                     <ul
-                      ref={subAdminModalRef(rowItem.email)}
+                      ref={collectionModalRef(rowItem.collectionId)}
                       className="dropdown-modal"
-                      style={{ display: (rowItem.email === activatedSubAdminEmail) ? "block" : "none" }}
+                      style={{ display: (rowItem.collectionId === activatedCollectionId) ? "block" : "none" }}
                     >
                       <li
-                        onClick={(e) => handleSubAdminModalActionItemClick(e, "edit", rowItem.email)}
+                        onClick={(e) => handleCollectionModalActionItemClick(e, "edit", rowItem.collectionId)}
                       >
-                        Edit Sub Admin
-                      </li>
-                      <li
-                        onClick={(e) => handleSubAdminModalActionItemClick(e, "delete", rowItem.email)}
-                      >
-                        Delete Sub Admin
+                        Edit Collection
                       </li>
                     </ul>
                   </Td>
@@ -524,6 +544,6 @@ export const Table = ({
           </tbody>
         </table>
       </div>
-    </React.Fragment>
+    </React.Fragment >
   );
 };

@@ -1,15 +1,9 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const getFilteredDashboard = async (token, { orgName, status, collection }) => {
+export const getUser = async (token, userId) => {
     try {
-        const queryParams = new URLSearchParams();
-        if (status) queryParams.append('status', status);
-        if (orgName) queryParams.append('orgName', orgName);
-        if (collection) queryParams.append('collection', collection);
-        
-        const url = `${BASE_ENDPOINT}/api/Dashboard/filter` +
-            (queryParams.toString() ? `?${queryParams.toString()}` : '');
-        const response = await fetch(url, {
+        const endpoint = `${BASE_ENDPOINT}/api/accounts/${userId}`;
+        const response = await fetch(endpoint, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -26,4 +20,4 @@ export const getFilteredDashboard = async (token, { orgName, status, collection 
         console.error('API fetch error:', error);
         throw error;
     }
-};
+}

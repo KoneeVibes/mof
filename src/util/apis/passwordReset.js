@@ -24,7 +24,6 @@ export const resetPassword = async (token, action, authDetails) => {
             break;
     }
     try {
-        console.log(transformedAuthDetails);
         const response = await fetch(`${BASE_ENDPOINT}/api/accounts/${subRoute}`, {
             method: 'POST',
             headers: {

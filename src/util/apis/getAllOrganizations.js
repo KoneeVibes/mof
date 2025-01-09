@@ -2,7 +2,7 @@ import { BASE_ENDPOINT } from "../endpoint";
 
 export const getAllOrganizations = async (token) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/organization`, {
+        const response = await fetch(`${BASE_ENDPOINT}/api/organizations`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,

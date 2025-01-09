@@ -1,39 +1,39 @@
 import { createRef, useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
 import { Jumbotron } from "../../components/jumbotron";
 import { Table } from "../../components/table";
 import { Layout } from "../layout";
-import { SubAdminsAreaTableWrapper, SubAdminsAreaWrapper } from "./styled";
-import { retrieveSubAdmins } from "../../util/apis/retrieveSubAdmins";
-import Cookies from "universal-cookie";
-import { useNavigate } from "react-router-dom";
+import { CollectionsAreaTableWrapper, CollectionsAreaWrapper } from "./styled";
+import { getAllCollections } from "../../util/apis/getAllCollections";
 
-export const SubAdminsArea = () => {
-    const columns = ["Email", "Organization", "Actions"];
+export const CollectionsArea = () => {
+    const columns = ["Collection", "Actions"];
     const cookies = new Cookies();
     const cookie = cookies.getAll();
     const token = cookie.TOKEN;
 
     const navigate = useNavigate();
     const dropdownRefs = useRef({});
-    const [subAdminsInfo, setSubAdminsInfo] = useState([]);
+    const [collectionsInfo, setCollectionsInfo] = useState([]);
     const [activatedRowId, setActivatedRowId] = useState(null);
 
-    const handleSelectedSubAdmin = (e, id) => {
+    const handleSelectedCollection = (e, id) => {
         e.preventDefault();
         setActivatedRowId(id);
     };
 
-    const handleActionItemClick = (e, action, userId, entityId) => {
+    const handleActionItemClick = (e, action, collectionId) => {
         e.stopPropagation();
         if (action !== "edit") return;
-        return navigate(`/update/sub-admin/${userId}/${entityId}`)
+        return navigate(`/update/collection/${collectionId}`)
     };
 
-    const getDropdownRef = (email) => {
-        if (!dropdownRefs.current[email]) {
-            dropdownRefs.current[email] = createRef();
+    const getDropdownRef = (id) => {
+        if (!dropdownRefs.current[id]) {
+            dropdownRefs.current[id] = createRef();
         }
-        return dropdownRefs.current[email];
+        return dropdownRefs.current[id];
     };
 
     const handleDropDownClickOutside = useCallback((event) => {
@@ -44,15 +44,15 @@ export const SubAdminsArea = () => {
     }, [activatedRowId]);
 
     useEffect(() => {
-        const fetchSubAdmins = async () => {
+        const fetchAllCollections = async () => {
             try {
-                const response = await retrieveSubAdmins(token);
-                setSubAdminsInfo(response);
+                const response = await getAllCollections(token);
+                setCollectionsInfo(response);
             } catch (error) {
                 console.error(error);
             }
         };
-        fetchSubAdmins();
+        fetchAllCollections();
     }, [token]);
 
 
@@ -67,25 +67,26 @@ export const SubAdminsArea = () => {
         };
     }, [activatedRowId, handleDropDownClickOutside]);
 
+
     return (
         <Layout>
-            <SubAdminsAreaWrapper>
+            <CollectionsAreaWrapper>
                 <Jumbotron
-                    entity={"Sub-Admins"}
+                    entity={"Collections"}
                 />
-                <SubAdminsAreaTableWrapper>
+                <CollectionsAreaTableWrapper>
                     <Table
-                        location={"subAdminsArea"}
+                        location={"collectionsArea"}
                         columnTitles={columns}
-                        rowItems={subAdminsInfo}
+                        rowItems={collectionsInfo}
                         onSelectOption={(x, y, event) => event.preventDefault()}
-                        subAdminModalRef={getDropdownRef}
-                        activatedSubAdminEmail={activatedRowId}
-                        handleSelectedSubAdmin={handleSelectedSubAdmin}
-                        handleSubAdminModalActionItemClick={handleActionItemClick}
+                        collectionModalRef={getDropdownRef}
+                        activatedCollectionId={activatedRowId}
+                        handleSelectedCollection={handleSelectedCollection}
+                        handleCollectionModalActionItemClick={handleActionItemClick}
                     />
-                </SubAdminsAreaTableWrapper>
-            </SubAdminsAreaWrapper>
+                </CollectionsAreaTableWrapper>
+            </CollectionsAreaWrapper>
         </Layout>
     )
 }

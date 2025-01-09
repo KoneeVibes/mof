@@ -2,7 +2,7 @@ import { BASE_ENDPOINT } from "../endpoint";
 
 export const getOrganizationMembers = async (token, organizationId) => {
     try {
-        const endpoint = `${BASE_ENDPOINT}/api/accounts/${organizationId}`;
+        const endpoint = `${BASE_ENDPOINT}/api/accounts/organizations/${organizationId}`;
         const response = await fetch(endpoint, {
             method: 'GET',
             headers: {

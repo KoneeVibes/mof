@@ -1,14 +1,21 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const getFilteredProjectsPerOrganization = async (token, organizationId, { orgType, status }) => {
+export const getFilteredProjectsPerOrganization = async (token, organizationId, { status }) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/projects/orgs/${organizationId}?status=${encodeURIComponent(status)}&orgName=${encodeURIComponent(orgType)}`, {
+        const queryParams = new URLSearchParams();
+        if (status) queryParams.append('status', status);
+
+        const url = `${BASE_ENDPOINT}/api/projects/orgs/${organizationId}` +
+            (queryParams.toString() ? `?${queryParams.toString()}` : '');
+
+        const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             }
         });
+
         const res = await response.json();
         if (!response.ok) {
             console.error('Error:', res);

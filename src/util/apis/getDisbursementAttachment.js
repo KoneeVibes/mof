@@ -1,9 +1,8 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const getExcelSheet = async (token, subRoute, orgName, collection, status) => {
+export const getDisbursementAttachment = async (token, disbursementId, attachmentId) => {
     try {
-        const response = await fetch(
-            `${BASE_ENDPOINT}/api/${subRoute}/export?orgName=${orgName ? orgName : ""}&collection=${collection ? collection : ""}&status=${status ? status[0] : ""}&status=${status ? status[1] : ""}`, {
+        const response = await fetch(`${BASE_ENDPOINT}/api/disbursements/${disbursementId}/attachments/${attachmentId}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,

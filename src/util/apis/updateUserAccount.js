@@ -1,14 +1,14 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const addOrganization = async (token, newOrganizationDetails) => {
+export const updateUserAccount = async (token, userId, userDetails) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/organizations`, {
-            method: 'POST',
+        const response = await fetch(`${BASE_ENDPOINT}/api/accounts/${userId}`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify(newOrganizationDetails)
+            body: JSON.stringify(userDetails)
         });
         const res = await response.json();
         if (!response.ok) {
@@ -17,7 +17,7 @@ export const addOrganization = async (token, newOrganizationDetails) => {
         }
         return res;
     } catch (error) {
-        console.error('API fetch error:', error);
+        console.error('API fetch error:', error.message);
         throw error;
     }
 };

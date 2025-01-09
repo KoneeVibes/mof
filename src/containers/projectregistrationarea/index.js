@@ -147,7 +147,6 @@ export const ProjectRegistrationArea = () => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    console.log(formDetails);
     try {
       const response = await addProject(token, formDetails);
       if (response.status === "Success") {

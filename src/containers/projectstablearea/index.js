@@ -8,6 +8,7 @@ import { Table } from "../../components/table";
 import { getExcelSheet } from "../../util/apis/getExcelSheet";
 import { status } from "../dataoverviewarea"
 import { getFilteredProjectsPerOrganization } from "../../util/apis/getFilteredProjectsPerOrganization";
+import { getOrganization } from "../../util/apis/getOrganization";
 
 export const ProjectsTableArea = () => {
     const cookies = new Cookies();
@@ -20,7 +21,6 @@ export const ProjectsTableArea = () => {
     // const [columns, setColumns] = useState(categories);
     const [uniqueCurrencies, setUniqueCurrencies] = useState([]);
     const [formDetails, setFormDetails] = useState({
-        orgType: "",
         status: "",
     });
 
@@ -31,7 +31,8 @@ export const ProjectsTableArea = () => {
         e.preventDefault();
         // Loader starts
         try {
-            const blob = await getExcelSheet(token, "projects");
+            const organization = await getOrganization(token, entityId);
+            const blob = await getExcelSheet(token, "projects", organization.name, undefined, [formDetails.status]);
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -93,7 +94,7 @@ export const ProjectsTableArea = () => {
             <EntitiesAreaWrapper>
                 <Jumbotron
                     location={"projects table area"}
-                    entity={projects[0]?.organization}
+                    entity={projects[0]?.organization.replace(/\b\w/g, char => char.toUpperCase())}
                     handleJumbotronButtonClick={handleNavigateToEditOrganization}
                 />
                 <EntitiesTableWrapper>

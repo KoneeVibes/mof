@@ -82,7 +82,11 @@ export const EntityEditArea = () => {
         setError(null);
         setLoading(true);
         try {
-            const response = await updateOrganization(token, entityId, formDetails);
+            const transformedPayload = { ...formDetails };
+            if (formDetails.parentOrg === "") {
+                delete transformedPayload.parentOrg;
+            }
+            const response = await updateOrganization(token, entityId, transformedPayload)
             if (response.status === "Success") {
                 setLoading(false);
                 setIsSuccessModalOpen(true);
@@ -116,7 +120,7 @@ export const EntityEditArea = () => {
                         type="text"
                         name="name"
                         required
-                        value={formDetails.name}
+                        value={formDetails.name.replace(/\b\w/g, char => char.toUpperCase())}
                         onChange={handleChange}
                     />
                     <Label>Select Organisation Type:</Label>

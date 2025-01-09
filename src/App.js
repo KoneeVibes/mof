@@ -18,6 +18,9 @@ import { RouteProtector } from './routeprotector';
 import { PasswordResetArea } from './containers/passwordresetarea';
 import { EntityEditArea } from './containers/entityeditarea';
 import { SubAdminsArea } from './containers/subadminsarea';
+import { SubAdminEditArea } from './containers/subadmineditarea';
+import { CollectionsArea } from './containers/collectionsarea';
+import { CollectionEditArea } from './containers/collectioneditarea';
 
 function App() {
   return (
@@ -30,7 +33,14 @@ function App() {
           <Route path='/:entity/:projectId' element={<ProjectDetailsArea />} />
           <Route path='/:entity/:projectId/request' element={<DisbursementRequestArea />} />
           <Route path='/registration/project' element={<ProjectRegistrationArea />} />
+          {/* Route to the subadmin area */}
           <Route path='/system/sub-admins' element={<SubAdminsArea />} />
+          {/* Route to update subadmin */}
+          <Route path='/update/sub-admin/:userId/:entityId' element={<SubAdminEditArea />} />
+          {/* Route to the collections area */}
+          <Route path='/system/collections' element={<CollectionsArea />} />
+          {/* Route to update collections */}
+          <Route path='/update/collection/:collectionId' element={<CollectionEditArea />} />
           {/* Route to the archives area */}
           <Route path='/admin/:userId/archives' element={<ArchivesArea />} />
           {/* Route to add a funding source */}

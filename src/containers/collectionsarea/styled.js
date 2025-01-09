@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const SubAdminsAreaWrapper = styled("div")(
+export const CollectionsAreaWrapper = styled("div")(
     ({ theme }) => {
         return {
             display: "flex",
@@ -10,7 +10,7 @@ export const SubAdminsAreaWrapper = styled("div")(
     }
 )
 
-export const SubAdminsAreaTableWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
+export const CollectionsAreaTableWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
     return {
         ".tableWrapper": {
             overflow: "auto",
@@ -44,13 +44,9 @@ export const SubAdminsAreaTableWrapper = styled.div(({ cardPadding = "var(--card
         },
         "tbody tr td:nth-child(1)": {
             textAlign: "left",
-            width: "40%",
+            width: "100%",
         },
         "tbody tr td:nth-child(2)": {
-            textAlign: "left",
-            width: "40%",
-        },
-        "tbody tr td:nth-child(3)": {
             textAlign: "center",
         },
         "& .dropdown-modal": {

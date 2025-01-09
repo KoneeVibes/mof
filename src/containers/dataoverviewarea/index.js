@@ -66,7 +66,7 @@ export const DataOverviewArea = () => {
         e.preventDefault();
         // Loader starts
         try {
-            const blob = await getExcelSheet(token, "dashboard");
+            const blob = await getExcelSheet(token, "dashboard", formDetails.orgName, formDetails.collection, [formDetails.status]);
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;

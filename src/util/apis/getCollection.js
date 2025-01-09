@@ -1,14 +1,14 @@
 import { BASE_ENDPOINT } from "../endpoint";
 
-export const addOrganization = async (token, newOrganizationDetails) => {
+export const getCollection = async (token, collectionId) => {
     try {
-        const response = await fetch(`${BASE_ENDPOINT}/api/organizations`, {
-            method: 'POST',
+        const endpoint = `${BASE_ENDPOINT}/api/collections/${collectionId}`;
+        const response = await fetch(endpoint, {
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(newOrganizationDetails)
+                'Content-Type': 'application/json'
+            }
         });
         const res = await response.json();
         if (!response.ok) {
@@ -20,4 +20,4 @@ export const addOrganization = async (token, newOrganizationDetails) => {
         console.error('API fetch error:', error);
         throw error;
     }
-};
+}

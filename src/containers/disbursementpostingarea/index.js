@@ -146,12 +146,16 @@ export const DisbursementRequestArea = () => {
                     <Label>Amount</Label>
                     <BaseInputWrapper
                         as="input"
-                        type="number"
                         name="amount"
                         placeholder="Enter Amount"
                         required
                         value={formDetails.amount}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (/^\d*$/.test(value)) { // Allow only digits
+                                return handleChange(e)
+                            }
+                        }}
                     />
                     <Label>Select Currency:</Label>
                     <SelectFieldWrapper

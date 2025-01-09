@@ -57,10 +57,8 @@ export const PasswordResetArea = () => {
         setLoading(true);
         if (queryToken) {
             token = queryToken;
-            console.log("Token from query:", token);
         };
         try {
-            console.log("Token:", token);
             const response = await resetPassword(token, action, formDetails);
             if (response.status === "Success") {
                 setLoading(false);

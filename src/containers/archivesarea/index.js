@@ -33,7 +33,7 @@ export const ArchivesArea = () => {
     e.preventDefault();
     // Loader starts
     try {
-      const blob = await getExcelSheet(token, "dashboard");
+      const blob = await getExcelSheet(token, "dashboard", undefined, undefined, ["Terminated", "Closed"]);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

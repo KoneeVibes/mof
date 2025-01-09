@@ -60,6 +60,10 @@ export const SideNav = () => {
         if (e.currentTarget.getAttribute("data-nav-key") === "Sub Admins") {
             return navigate(`/system/sub-admins`);
         }
+        // handle click of collections
+        if (e.currentTarget.getAttribute("data-nav-key") === "Collections") {
+            return navigate(`/system/collections`);
+        }
         // handle click of any of the projects
         if (role !== "SuperAdmin") {
             return navigate(`/${parsedOrganization}/${id}`);
@@ -263,7 +267,7 @@ export const SideNav = () => {
                                                     )
                                                 }
                                             >
-                                                {organization.name}
+                                                {organization.name.replace(/\b\w/g, char => char.toUpperCase())}
                                             </Li>
                                         ))
                                         : paginatedItems(organizationProjects)?.map((project, k) => (
@@ -277,7 +281,7 @@ export const SideNav = () => {
                                                     )
                                                 }
                                             >
-                                                {project.title}
+                                                {project.title.replace(/\b\w/g, char => char.toUpperCase())}
                                             </Li>
                                         ))}
                                 </ul>
@@ -344,11 +348,18 @@ export const SideNav = () => {
                                     Archives
                                 </P>
                                 <P
-                                    style={{ color: "red", paddingLeft: "calc(var(--cardPadding) * 2)" }}
+                                    style={{ color: "red", padding: "var(--cardPadding) var(--cardPadding) 0", paddingLeft: "calc(var(--cardPadding) * 2)" }}
                                     data-nav-key={"Sub Admins"}
                                     onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
                                 >
                                     Sub Admins
+                                </P>
+                                <P
+                                    style={{ color: "red", paddingLeft: "calc(var(--cardPadding) * 2)" }}
+                                    data-nav-key={"Collections"}
+                                    onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
+                                >
+                                    Collections
                                 </P>
                             </div>
                         </Fragment>

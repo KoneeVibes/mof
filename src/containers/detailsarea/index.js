@@ -28,6 +28,7 @@ import { DotLoader } from "react-spinners";
 import { BaseButton } from "../../components/buttons/index";
 import { postRemark } from "../../util/apis/postRemark";
 import { getActions } from "../../config/actions";
+import { getDisbursementAttachment } from "../../util/apis/getDisbursementAttachment";
 
 export const ProjectDetailsArea = () => {
   const cookies = new Cookies();
@@ -93,7 +94,7 @@ export const ProjectDetailsArea = () => {
   const handleExportToExcel = async (e) => {
     e.preventDefault();
     try {
-      const blob = await getExcelSheet(token, `disbursements/${projectId}`);
+      const blob = await getExcelSheet(token, `disbursements/${projectId}`, undefined, undefined, undefined);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -191,6 +192,23 @@ export const ProjectDetailsArea = () => {
       ...prevDetails,
       [name]: value,
     }));
+  };
+
+  const handleDownloadAttachment = async (item) => {
+    try {
+      const blob = await getDisbursementAttachment(token, item.disbursementId, item?.attachments[0]?.attachmentId);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `attachment-${item?.attachments[0]?.dateAdded}` || "file";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      console.log("Successfully downloaded attachment");
+    } catch (error) {
+      console.error("Failed to download:", error);
+    }
   };
 
   const handleSubmitRemark = async (e) => {
@@ -303,7 +321,7 @@ export const ProjectDetailsArea = () => {
             project={project}
           />
         )}
-        <Jumbotron entity={project?.organization} />
+        <Jumbotron entity={project?.organization.replace(/\b\w/g, char => char.toUpperCase())} />
         <Row tocolumn={1}>
           <ProjectDetailCardWrapper>
             <ProjectDetailActionRow>
@@ -566,6 +584,7 @@ export const ProjectDetailsArea = () => {
             status={status}
             postersId={projectMembers}
             handleFilterValueChange={handleFilterValueChange}
+            handleDownloadAttachment={(item) => handleDownloadAttachment(item)}
           />
         </div>
         {(cookie.USER.role === "Individual" && project.status === "Ongoing") && (

@@ -46,9 +46,7 @@ export const ProjectDetailsAreaWrapper = styled.div(
         padding: cardPadding,
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       },
-      "& a": {
-        textDecoration: "none",
-        color: "#000000",
+      "& .download-attachment": {
         "&:hover": {
           color: "#059212",
         },

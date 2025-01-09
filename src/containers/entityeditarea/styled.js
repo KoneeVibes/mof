@@ -13,7 +13,7 @@ export const EntityEditAreaWrapper = styled.div(() => {
             gap: var(--flexGap);
         }
 
-                .dotLoader{
+        .dotLoader{
             margin-left: auto;
             margin-right: auto;
         }
