@@ -144,7 +144,7 @@ export const Auth = () => {
                                     size={20}
                                     color="white"
                                     className="dotLoader"
-                                /> : (!showPasswordRecoveryForm) ? "LOG IN" : "RESET PASSWORD"}
+                                /> : (!showPasswordRecoveryForm) ? "Login" : "RESET PASSWORD"}
                         </BaseButton>
                     </form>
                     {error && <P style={{ color: 'red' }}>{error}</P>}
