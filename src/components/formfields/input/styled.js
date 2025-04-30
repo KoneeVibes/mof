@@ -13,7 +13,7 @@ export const BaseInputWrapper = styled("input")`
     return {
       padding: `calc(${cardPadding}/2.5)`,
       marginInlineStart: margininlinestart || "0",
-      border: border || "1px solid #E5E7EF",
+      border: border || "none",
       boxShadow: "1px 1px 1px #3232470D",
       outline: "none",
       fontFamily: "Avenir-Next",

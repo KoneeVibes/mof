@@ -62,6 +62,13 @@ export const AuthWrapper = styled("div")(() => ({
         marginLeft: "auto",
         marginRight: "auto",
     },
+    ".flex": {
+        display: "flex",
+        width: "100%",
+        backgroundColor: "#ffffff",
+        borderRadius: "12px",
+        padding: "5px 10px"
+    }
 }))
 
 export const AuthRow = styled(Row)(() => {

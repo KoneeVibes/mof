@@ -9,6 +9,9 @@ import Cookies from "universal-cookie";
 import { authenticateUser } from "../../util/apis/authUser";
 import { DotLoader } from "react-spinners";
 import { resetPassword } from "../../util/apis/passwordReset";
+import email from "../../assets/emailicon.svg";
+import password from "../../assets/passwordicon.svg";
+import showPassword from "../../assets/showpassword.svg";
 
 export const Auth = () => {
     const cookies = new Cookies();
@@ -105,26 +108,32 @@ export const Auth = () => {
                         <P>Enter email address</P>
                     )}
                     <form onSubmit={handleSubmit}>
-                        <BaseInputWrapper
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            required
-                            value={formDetails.email}
-                            onChange={handleChange}
-                        />
+                        <div className="flex">
+                            <img src={email} alt="email icon" />
+                            <BaseInputWrapper
+                                type="email"
+                                name="email"
+                                placeholder="Email Address"
+                                required
+                                value={formDetails.email}
+                                onChange={handleChange}
+                            />
+                        </div>
                         {(!showPasswordRecoveryForm) && (
                             <React.Fragment>
                                 <div style={{ position: "relative", width: "-webkit-fill-available" }}>
-                                    <BaseInputWrapper
-                                        type={passwordVisible ? "text" : "password"}
-                                        name="password"
-                                        placeholder="Password"
-                                        required
-                                        value={formDetails.password}
-                                        onChange={handleChange}
-                                    // width={"-webkit-fill-available"}
-                                    />
+                                    <div className="flex">
+                                        <img src={password} alt="password icon" />
+                                        <BaseInputWrapper
+                                            type={passwordVisible ? "text" : "password"}
+                                            name="password"
+                                            placeholder="Enter Password"
+                                            required
+                                            value={formDetails.password}
+                                            onChange={handleChange}
+                                        // width={"-webkit-fill-available"}
+                                        />
+                                    </div>
                                     <Label className="showPassword">
                                         <input
                                             type="checkbox"
@@ -132,7 +141,7 @@ export const Auth = () => {
                                             onChange={togglePasswordVisibility}
                                             style={{ display: "none", marginRight: "5px" }}
                                         />
-                                        SHOW
+                                        <img src={showPassword} alt="show password" />
                                     </Label>
                                 </div>
                                 <P className="forgotPassword" onClick={() => setShowPasswordRecoveryForm(true)}>FORGOT PASSWORD?</P>
