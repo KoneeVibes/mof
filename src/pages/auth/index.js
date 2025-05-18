@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { BaseButton } from "../../components/buttons/styled";
 import { AuthWrapper, AuthRow } from "./styled";
 import authImg from "../../assets/authImg.svg";
+import fmof from '../../assets/fmof.png';
 import { BaseInputWrapper } from "../../components/formfields/input/styled";
 import { H1, Label, P } from "../../components/typography/styled";
 import Cookies from "universal-cookie";
@@ -94,32 +95,46 @@ export const Auth = () => {
     return (
         <AuthWrapper>
             <AuthRow tocolumn={"true"}>
-                <div className="auth-img-div">
-                    <img src={authImg} alt="auth-img" />
+                <div className="auth-div">
+                <img src={fmof} alt="Logo" width={"1rem"} height={"1rem"} /> 
+                    <div className="text">
+                    <H1>Secure Login Portal</H1>
+                    <P>Welcome to the International Economic Relations Portal's secure login portal. This portal is for authorised personnel only. Please enter your credentials to access the system.</P>
+                    </div>
                 </div>
+            <div className="background">
                 <div className="auth-form-div">
-                    <H1>International Economic Relations Portal</H1>
+                    <H1>Welcome Back</H1>
                     {(!showPasswordRecoveryForm) ? (
-                        <P>Enter details to login.</P>
+                        <P></P>
                     ) : (
                         <P>Enter email address</P>
                     )}
                     <form onSubmit={handleSubmit}>
+                    <div style={{ position: "relative", width: "-webkit-fill-available", }}>
+                        <Label className="Email"> Email Address</Label>
                         <BaseInputWrapper
+                        
                             type="email"
                             name="email"
-                            placeholder="Email"
+                            placeholder="Email Address"
                             required
                             value={formDetails.email}
                             onChange={handleChange}
+                    
                         />
+                    </div>
+
+                        
                         {(!showPasswordRecoveryForm) && (
                             <React.Fragment>
+                            
                                 <div style={{ position: "relative", width: "-webkit-fill-available" }}>
+                                    <Label className="Password"> Password</Label>
                                     <BaseInputWrapper
                                         type={passwordVisible ? "text" : "password"}
                                         name="password"
-                                        placeholder="Password"
+                                        placeholder="Enter password"
                                         required
                                         value={formDetails.password}
                                         onChange={handleChange}
@@ -149,6 +164,7 @@ export const Auth = () => {
                     </form>
                     {error && <P style={{ color: 'red' }}>{error}</P>}
                 </div>
+            </div>
             </AuthRow>
         </AuthWrapper>
     );

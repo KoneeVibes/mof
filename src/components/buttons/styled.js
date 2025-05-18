@@ -5,7 +5,7 @@ export const BaseButton = styled.button(
         return {
             //styles for button should begin below this line.
             textAlign: "center",
-            backgroundColor: "#059212",
+            backgroundColor: "#003E06",
             border: "none",
             color: "white",
             borderRadius: "7px",
