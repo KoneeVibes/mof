@@ -3,26 +3,26 @@ import { Row } from "../../flex/styled";
 
 export const BaseInputWrapper = styled("input")`
   ${({
-    cardPadding = "var(--cardPadding)",
-    width,
-    border,
-    borderradius,
-    backgroundcolor,
-    margininlinestart,
-  }) => {
+  cardPadding = "var(--cardPadding)",
+  width,
+  border,
+  borderradius,
+  backgroundcolor,
+  margininlinestart,
+}) => {
     return {
       padding: `calc(${cardPadding}/2.5)`,
       marginInlineStart: margininlinestart || "0",
-      border: border || "none",
+      border: border || "1px solid #E5E7EF",
       boxShadow: "1px 1px 1px #3232470D",
       outline: "none",
-      fontFamily: "Avenir-Next",
+      fontFamily: "Inter",
       fontSize: "14px",
       fontWeight: "500",
       borderRadius: borderradius || "12px",
       backgroundColor: backgroundcolor || "#FFFFFF",
       "&::placeholder": {
-        color: "##808080",
+        color: "#808080",
         opacity: 1 /* Firefox */,
       },
       "&::-ms-input-placeholder": {
@@ -51,7 +51,6 @@ export const SearchButtonWrapper = styled("button")(
 
 export const InputFieldWrapper = styled(Row)(({ width }) => {
   return {
-    // border: "1px solid #213F7D",
     borderRadius: "49px",
     width: width || "auto",
   };
