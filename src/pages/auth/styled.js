@@ -64,10 +64,11 @@ export const AuthWrapper = styled("div")(() => ({
     },
     ".flex": {
         display: "flex",
-        width: "100%",
+        width: "-webkit-fill-available",
         backgroundColor: "#ffffff",
         borderRadius: "12px",
-        padding: "5px 10px"
+        padding: "5px 10px",
+        border: "1.5px solid #E5E7EF"
     }
 }))
 

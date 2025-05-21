@@ -115,6 +115,8 @@ export const Auth = () => {
                                 name="email"
                                 placeholder="Email Address"
                                 required
+                                border={"none"}
+                                boxshadow={"none"}
                                 value={formDetails.email}
                                 onChange={handleChange}
                             />
@@ -129,6 +131,8 @@ export const Auth = () => {
                                             name="password"
                                             placeholder="Enter Password"
                                             required
+                                            border={"none"}
+                                            boxshadow={"none"}
                                             value={formDetails.password}
                                             onChange={handleChange}
                                         // width={"-webkit-fill-available"}
