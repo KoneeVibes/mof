@@ -10,7 +10,7 @@ export const SubAdminEditAreaWrapper = styled("div")(() => {
         "& form": {
             display: "flex",
             flexDirection: "column",
-            gap: "var(--flexGap)",
+            gap: "var(--flex-gap)",
         },
 
         "& .dotLoader": {

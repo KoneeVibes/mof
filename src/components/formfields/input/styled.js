@@ -3,7 +3,7 @@ import { Row } from "../../flex/styled";
 
 export const BaseInputWrapper = styled("input")`
   ${({
-  cardPadding = "var(--cardPadding)",
+  cardPadding = "var(--basic-padding)",
   width,
   border,
   boxshadow,
@@ -14,20 +14,20 @@ export const BaseInputWrapper = styled("input")`
     return {
       padding: `calc(${cardPadding}/2.5)`,
       marginInlineStart: margininlinestart || "0",
-      border: border || "1px solid #E5E7EF",
-      boxShadow: boxshadow || "1px 1px 1px #3232470D",
+      border: border || "1px solid var(--border-stroke-color)",
+      boxShadow: boxshadow || "1px 1px 1px var(--box-shadow-color)",
       outline: "none",
       fontFamily: "Inter",
       fontSize: "14px",
-      fontWeight: "500",
+      fontWeight: 500,
       borderRadius: borderradius || "12px",
-      backgroundColor: backgroundcolor || "#FFFFFF",
+      backgroundColor: backgroundcolor || "var(--light-color)",
       "&::placeholder": {
-        color: "#808080",
+        color: "var(--gray-variant-color)",
         opacity: 1 /* Firefox */,
       },
       "&::-ms-input-placeholder": {
-        color: "#000000",
+        color: "var(--dark-color)",
       },
       "@supports (width: -webkit-fill-available)": {
         width: width || "-webkit-fill-available",
@@ -40,10 +40,10 @@ export const BaseInputWrapper = styled("input")`
 `;
 
 export const SearchButtonWrapper = styled("button")(
-  ({ cardPadding = "var(--cardPadding)" }) => {
+  ({ cardPadding = "var(--basic-padding)" }) => {
     return `
             padding: calc(${cardPadding} / 2.5);
-            background-color: #059212;
+            background-color: var(--primary-color);
             border: none;
             border-radius: 8px;
         `;

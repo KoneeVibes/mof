@@ -4,11 +4,11 @@ import { BaseButton } from "../../components/buttons/styled";
 import { Row } from "../../components/flex/styled";
 
 export const ProjectDetailsAreaWrapper = styled.div(
-  ({ cardPadding = "var(--cardPadding)" }) => {
+  ({ cardPadding = "var(--basic-padding)" }) => {
     return {
       display: "flex",
       flexDirection: "column",
-      gap: "var(--flexGap)",
+      gap: "var(--flex-gap)",
       position: "relative",
       overflow: "hidden",
       ".tableWrapper": {
@@ -56,7 +56,7 @@ export const ProjectDetailsAreaWrapper = styled.div(
 );
 
 export const ProjectDetailCardWrapper = styled(CardWrapper)(
-  ({ cardPadding = "var(--cardPadding)" }) => {
+  ({ cardPadding = "var(--basic-padding)" }) => {
     return {
       padding: cardPadding,
       textAlign: "justify",
@@ -74,7 +74,7 @@ export const ProjectDetailCardWrapper = styled(CardWrapper)(
 );
 
 export const ProjectDetailBaseButton = styled(BaseButton)(
-  ({ cardPadding = "var(--cardPadding)" }) => {
+  ({ cardPadding = "var(--basic-padding)" }) => {
     return {
       width: "fit-content",
       padding: `calc(${cardPadding}/2) calc(${cardPadding})`,
@@ -92,7 +92,7 @@ export const ProjectDetailActionRow = styled(Row)(() => {
 });
 
 export const ProjectDetailEditModal = styled(CardWrapper)(
-  ({ display, cardPadding = "var(--cardPadding)" }) => {
+  ({ display, cardPadding = "var(--basic-padding)" }) => {
     return {
       position: "absolute",
       top: "100%",

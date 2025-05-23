@@ -3,13 +3,12 @@ import styled from "styled-components";
 export const TextAreaWrapper = styled("textarea")(() => {
     return `
         border-radius: 10px;
-        // background-color: EEEE;
         border: none;
         min-height: 7rem;
         cursor: text;
         display: block;
-        padding: calc(var(--cardPadding) / 2.5);
-        backgroundColor: #FFFFFF;
+        padding: calc(var(--basic-padding) / 2.5);
+        backgroundColor: var(--light-color);
         @supports (width: -webkit-fill-available) {
             width: -webkit-fill-available;
         }

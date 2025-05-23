@@ -6,7 +6,7 @@ export const LayoutWrapper = styled("div")(() => {
     }
 })
 
-export const MainAreaWrapper = styled("div")(({ cardPadding = "var(--cardPadding)" }) => {
+export const MainAreaWrapper = styled("div")(({ cardPadding = "var(--basic-padding)" }) => {
     return `
         position: absolute;
         top: calc(var(--navHeight));

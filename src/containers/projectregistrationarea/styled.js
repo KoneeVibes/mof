@@ -12,7 +12,7 @@ export const ProjectRegistrationAreaWrapper = styled.div(() => {
         form{
             display: flex;
             flex-direction: column;
-            gap: var(--flexGap);
+            gap: var(--flex-gap);
             overflow: hidden;
         }
 
@@ -44,7 +44,7 @@ export const ProjectRegistrationBaseInput = styled(BaseInputWrapper)(
 );
 
 export const ProjectRegistrationBaseInputWrapper = styled(Row)(
-  ({ flexGap = "var(--flexGap)" }) => {
+  ({ flexGap = "var(--flex-gap)" }) => {
     return {
       flexWrap: "wrap",
       overflow: "hidden",
@@ -59,7 +59,7 @@ export const ProjectRegistrationBaseInputWrapper = styled(Row)(
 );
 
 export const ProjectRegistrationBaseButton = styled(BaseButton)(
-  ({ cardPadding = "var(--cardPadding)" }) => {
+  ({ cardPadding = "var(--basic-padding)" }) => {
     return {
       width: "fit-content",
       padding: `calc(${cardPadding}/2) calc(${cardPadding})`,

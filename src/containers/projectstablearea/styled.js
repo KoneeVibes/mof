@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const EntitiesAreaWrapper = styled.div(({ flexGap = "var(--flexGap)" }) => {
+export const EntitiesAreaWrapper = styled.div(({ flexGap = "var(--flex-gap)" }) => {
     return `
         display: flex;
         flex-direction: column;
@@ -8,7 +8,7 @@ export const EntitiesAreaWrapper = styled.div(({ flexGap = "var(--flexGap)" }) =
     `
 })
 
-export const EntitiesTableWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
+export const EntitiesTableWrapper = styled.div(({ cardPadding = "var(--basic-padding)" }) => {
     return {
         ".tableWrapper": {
             overflow: "auto",

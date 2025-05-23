@@ -10,7 +10,7 @@ export const CollectionRegistrationAreaWrapper = styled("div")(() => {
         form{
             display: flex;
             flex-direction: column;
-            gap: var(--flexGap);
+            gap: var(--flex-gap);
         }
 
         .dotLoader{

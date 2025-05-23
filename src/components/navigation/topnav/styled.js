@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Row } from "../../flex/styled";
 
 export const TopNavWrapper = styled(Row)`
-    ${({ cardPadding = 'var(--cardPadding)', navHeight = "var(--navHeight)" }) => {
+    ${({ cardPadding = 'var(--basic-padding)', navHeight = "var(--navHeight)" }) => {
         return `
             padding: ${cardPadding};
             position: fixed;
@@ -35,7 +35,7 @@ export const LeftSideTopNavWrapper = styled(Row)(() => {
     return `
         @media screen and (min-width: 0px){
             flex-basis: 50%;
-            gap: calc(1.5 * var(--flexGap));
+            gap: calc(1.5 * var(--flex-gap));
             display: none;
 
             .input-field-div{
@@ -52,8 +52,8 @@ export const LeftSideTopNavWrapper = styled(Row)(() => {
                 position: absolute;
                 top: var(--navHeight);
                 left: calc(var(--navWidth));
-                right: var(--cardPadding);
-                padding: var(--cardPadding);
+                right: var(--basic-padding);
+                padding: var(--basic-padding);
                 z-index: 1;
                 background: #FFFFFF;
                 border: 3px solid #F0F0F0;
@@ -103,7 +103,7 @@ export const LeftSideTopNavWrapper = styled(Row)(() => {
         }
 
         @media screen and (min-width: 1280px){
-            gap: calc(2 * var(--flexGap));
+            gap: calc(2 * var(--flex-gap));
         }
     `
 })

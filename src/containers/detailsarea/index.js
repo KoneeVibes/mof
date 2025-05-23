@@ -599,9 +599,9 @@ export const ProjectDetailsArea = () => {
           <Column>
             {project.remarks.map((remark, index) => {
               return (
-                <Column key={index} style={{ gap: "calc(var(--flexGap)/4)" }} >
+                <Column key={index} style={{ gap: "calc(var(--flex-gap)/4)" }} >
                   <P style={{ marginBlock: 0, color: "#059212" }}>{remark.text}</P>
-                  <Column style={{ fontStyle: "italic", gap: "calc(var(--flexGap)/4)" }}>
+                  <Column style={{ fontStyle: "italic", gap: "calc(var(--flex-gap)/4)" }}>
                     <P style={{ marginBlock: 0 }}>{remark.creator}</P>
                     <P style={{ marginBlock: 0 }}>{remark.dateCreated}</P>
                   </Column>
@@ -617,7 +617,7 @@ export const ProjectDetailsArea = () => {
                   placeholder="Enter your remark here"
                   style={{
                     border: "1.5px solid",
-                    marginBlock: "var(--sectionMargin)",
+                    marginBlock: "var(--basic-margin)",
                   }}
                 />
                 <BaseButton type="submit">

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { CardWrapper } from "../../components/card/styled";
 
 export const DetailsEditAreaWrapper = styled(CardWrapper)(
-  ({ cardPadding = "var(--cardPadding)" }) => {
+  ({ cardPadding = "var(--basic-padding)" }) => {
     return {
       position: "fixed",
       top: "50%",
@@ -19,7 +19,7 @@ export const DetailsEditAreaWrapper = styled(CardWrapper)(
       form: {
         display: "flex",
         flexDirection: "column",
-        gap: "var(--flexGap)",
+        gap: "var(--flex-gap)",
       },
       ".dotLoader": {
         marginLeft: "auto",

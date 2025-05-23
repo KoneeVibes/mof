@@ -4,7 +4,7 @@ import { useContext, useEffect } from "react";
 import { Context } from "../../../context";
 
 export const SideNavWrapper = styled("div")`
-  ${({ cardPadding = "var(--cardPadding)" }) => {
+  ${({ cardPadding = "var(--basic-padding)" }) => {
         const { isMenuOpen } = useContext(Context);
         useEffect(() => {
             if (isMenuOpen) {
@@ -45,7 +45,7 @@ export const SideNavWrapper = styled("div")`
 `;
 
 export const SideNavItemsListWrapper = styled(Column)(
-    ({ cardPadding = "var(--cardPadding)" }) => {
+    ({ cardPadding = "var(--basic-padding)" }) => {
         return `
         gap: 0;
         justify-content: space-between;

@@ -7,7 +7,7 @@ export const ArchivesAreaWrapper = styled(Column)(() => {
     }
 })
 
-export const ArchivesAreaTableWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
+export const ArchivesAreaTableWrapper = styled.div(({ cardPadding = "var(--basic-padding)" }) => {
     return {
         ".tableWrapper": {
             overflow: "auto",

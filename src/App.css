@@ -1,30 +1,32 @@
 @media screen and (min-width: 0px) {
-    html {
+
+    html,
+    body,
+    #root {
         box-sizing: border-box;
         margin: 0;
-        height: 100%;
-        background-color: #F0F0F0;
-        --pagePadding: 1.5rem;
-        --sectionMargin: 2rem;
-        --flexGap: 2rem;
-        --cardPadding: 2rem;
+        min-height: 100vh;
+        background-color: var(--light-color);
+
+        --primary-color: #003E06;
+        --light-color: #FFFFFF;
+        --dark-color: #000000;
+        --off-white-color: #F2F4FD;
+        --border-stroke-color: #E5E7EF;
+        --body-text-color: #656F7D;
+        --heading-text-color: #2A2E34;
+        --form-label-color: #4F5762;
+        --gray-variant-color: #808080;
+        --box-shadow-color: #3232470D;
+
+        --basic-margin: 2rem;
+        --basic-padding: 2rem;
+        --flex-gap: 2rem;
         --navHeight: 8.37rem;
         --navWidth: 16.125rem;
     }
 
     * {
         /* outline: 1px red solid; */
-    }
-}
-
-@media screen and (min-width: 425px) {
-    html {
-        --pagePadding: 2.5rem;
-    }
-}
-
-@media screen and (min-width: 1024px) {
-    html {
-        --pagePadding: 4rem
     }
 }

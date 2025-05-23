@@ -5,12 +5,12 @@ export const CollectionsAreaWrapper = styled("div")(
         return {
             display: "flex",
             flexDirection: "column",
-            gap: "var(--flexGap)",
+            gap: "var(--flex-gap)",
         }
     }
 )
 
-export const CollectionsAreaTableWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
+export const CollectionsAreaTableWrapper = styled.div(({ cardPadding = "var(--basic-padding)" }) => {
     return {
         ".tableWrapper": {
             overflow: "auto",
@@ -55,11 +55,11 @@ export const CollectionsAreaTableWrapper = styled.div(({ cardPadding = "var(--ca
             zIndex: 1,
             borderRadius: "8px",
             boxShadow: "0px 4px 4px 4px rgba(0, 0, 0, 0.25)",
-            padding: "calc(var(--cardPadding)/2) 0",
+            padding: "calc(var(--basic-padding)/2) 0",
             "& li": {
                 listStyleType: "none",
                 textAlign: "left",
-                padding: "calc(var(--cardPadding)/4) calc(var(--cardPadding)/2)",
+                padding: "calc(var(--basic-padding)/4) calc(var(--basic-padding)/2)",
             },
             "& li:hover": {
                 backgroundColor: "#059212",

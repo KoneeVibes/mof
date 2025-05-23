@@ -5,12 +5,12 @@ export const BaseButton = styled.button(
         return {
             //styles for button should begin below this line.
             textAlign: "center",
-            backgroundColor: "#003E06",
+            backgroundColor: "var(--primary-color)",
             border: "none",
-            color: "white",
+            color: "var(--light-color)",
             borderRadius: "10px",
             width: width || "100%",
-            padding: "1.5rem",
+            padding: "calc(var(--basic-padding)/2) calc(var(--basic-padding))",
             textTransform: "capitalize",
             fontSize: "1rem",
             fontWeight: "500",

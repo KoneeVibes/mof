@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const BaseFlex = styled.div(({ direction, alignitems, justifycontent, flex, gap }) => ({
     display: "flex",
     flexDirection: direction || "row",
-    gap: gap || "var(--flexGap)",
+    gap: gap || "var(--flex-gap)",
     alignItems: alignitems || "stretch",
     justifyContent: justifycontent || "flex-start",
     flex: flex || "0 1 auto",

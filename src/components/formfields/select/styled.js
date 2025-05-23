@@ -1,17 +1,17 @@
 import styled from "styled-components";
 
 export const SelectFieldWrapper = styled("select")`
-    ${({ cardPadding = 'var(--cardPadding)', width, margininlinestart }) => {
+    ${({ cardPadding = 'var(--basic-padding)', width, margininlinestart }) => {
         return {
             padding: `calc(${cardPadding}/2.5)`,
             marginInlineStart: margininlinestart || "0",
             border: "none",
             outline: "none",
-            fontFamily: "Avenir-Next",
+            fontFamily: "Inter",
             fontSize: "14px",
             fontWeight: "500",
             borderRadius: "10px",
-            backgroundColor: "#FFFFFF",
+            backgroundColor: "var(--light-color)",
             "@supports (width: -webkit-fill-available)": {
                 width: width || "-webkit-fill-available",
             },

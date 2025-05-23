@@ -12,7 +12,7 @@ export const DisbursementRequestAreaWrapper = styled.div(() => {
         form{
             display: flex;
             flex-direction: column;
-            gap: var(--flexGap);
+            gap: var(--flex-gap);
         }
 
         .dotLoader{
@@ -22,7 +22,7 @@ export const DisbursementRequestAreaWrapper = styled.div(() => {
     `
 })
 
-export const DisbursementRequestBaseInputWrapper = styled(Row)(({ flexGap = "var(--flexGap)" }) => {
+export const DisbursementRequestBaseInputWrapper = styled(Row)(({ flexGap = "var(--flex-gap)" }) => {
     return {
         "@media screen and (max-width: 425px)": {
             flexDirection: "column",
@@ -34,7 +34,7 @@ export const DisbursementRequestBaseInputWrapper = styled(Row)(({ flexGap = "var
     }
 })
 
-export const DisbursementRequestBaseButton = styled(BaseButton)(({ cardPadding = "var(--cardPadding)" }) => {
+export const DisbursementRequestBaseButton = styled(BaseButton)(({ cardPadding = "var(--basic-padding)" }) => {
     return {
         width: "fit-content",
         padding: `calc(${cardPadding}/2) calc(${cardPadding})`,

@@ -33,8 +33,8 @@ export const AvatarWrapper = styled(Row)(({ location }) => {
 export const AvatarModalWrapper = styled(CardWrapper)(({ isavatarmodalopen }) => {
     return `
         display: ${isavatarmodalopen ? "block" : "none"};
-        padding: var(--cardPadding);
-        padding-bottom: calc(var(--cardPadding)/4);
+        padding: var(--basic-padding);
+        padding-bottom: calc(var(--basic-padding)/4);
         position: absolute;
         top: 50%;
         right: 0;

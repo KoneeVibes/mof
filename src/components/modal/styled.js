@@ -14,7 +14,7 @@ export const BaseModalWrapper = styled("div")(({ open, height, width }) => {
         transform: "translate(-50%, -50%)",
         background: "#FFFFFF",
         borderRadius: "8px",
-        padding: "var(--cardPadding)",
+        padding: "var(--basic-padding)",
         boxShadow: "0px 4px 4px 4px rgba(0, 0, 0, 0.25)",
         "& h2": {
             textAlign: "center",

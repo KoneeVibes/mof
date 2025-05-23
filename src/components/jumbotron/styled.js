@@ -18,7 +18,7 @@ export const JumbotronWrapper = styled.div(() => {
             min-height: inherit;
             height: 100%;
             position: relative;
-            padding: var(--cardPadding);
+            padding: var(--basic-padding);
         }
 
         .entity-logo-div>img{

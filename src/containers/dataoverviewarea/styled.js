@@ -34,14 +34,14 @@ export const ChartsCardWrapper = styled(CardWrapper)(() => {
     return `
         @media screen and (min-width: 425px){
             min-width: 22rem;
-            padding: calc(var(--cardPadding)/2);
+            padding: calc(var(--basic-padding)/2);
         }
     `
 })
 
 export const NewProjectCardWrapper = styled(CardWrapper)(() => {
     return `
-        padding: var(--cardPadding);
+        padding: var(--basic-padding);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -51,7 +51,7 @@ export const NewProjectCardWrapper = styled(CardWrapper)(() => {
     `
 })
 
-export const DataOverviewTableWrapper = styled.div(({ cardPadding = "var(--cardPadding)" }) => {
+export const DataOverviewTableWrapper = styled.div(({ cardPadding = "var(--basic-padding)" }) => {
     return {
         ".tableWrapper": {
             overflow: "auto",

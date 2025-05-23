@@ -311,7 +311,7 @@ export const SideNav = () => {
                     < P
                         style={{
                             color: "red",
-                            padding: (role === "SuperAdmin") ? "var(--cardPadding) var(--cardPadding) 0 var(--cardPadding)" : "var(--cardPadding)"
+                            padding: (role === "SuperAdmin") ? "var(--basic-padding) var(--basic-padding) 0 var(--basic-padding)" : "var(--basic-padding)"
                         }}
                         data-nav-key={"password"}
                         onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
@@ -341,21 +341,21 @@ export const SideNav = () => {
                                 style={{ display: showMore ? "block" : "none" }}
                             >
                                 <P
-                                    style={{ color: "red", padding: "0 var(--cardPadding)", paddingLeft: "calc(var(--cardPadding) * 2)" }}
+                                    style={{ color: "red", padding: "0 var(--basic-padding)", paddingLeft: "calc(var(--basic-padding) * 2)" }}
                                     data-nav-key={"archives"}
                                     onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
                                 >
                                     Archives
                                 </P>
                                 <P
-                                    style={{ color: "red", padding: "var(--cardPadding) var(--cardPadding) 0", paddingLeft: "calc(var(--cardPadding) * 2)" }}
+                                    style={{ color: "red", padding: "var(--basic-padding) var(--basic-padding) 0", paddingLeft: "calc(var(--basic-padding) * 2)" }}
                                     data-nav-key={"Sub Admins"}
                                     onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
                                 >
                                     Sub Admins
                                 </P>
                                 <P
-                                    style={{ color: "red", paddingLeft: "calc(var(--cardPadding) * 2)" }}
+                                    style={{ color: "red", paddingLeft: "calc(var(--basic-padding) * 2)" }}
                                     data-nav-key={"Collections"}
                                     onClick={(e) => navigateFromSideBar(undefined, undefined, e)}
                                 >
